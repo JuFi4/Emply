@@ -16,10 +16,9 @@ export class AccueilPage {
 
   constructor(public navCtrl: NavController, private navParams: NavParams) {
     this.utilisateur = navParams.get('utilisateur');
-  }
+  }//constructor
   
   ionViewDidLoad() {
     console.log('Hello Accueil Page');
   }
-
 }

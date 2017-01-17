@@ -1,7 +1,9 @@
+// Modules ionic
 import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 
+// Pages
 import { LoginPage } from '../pages/login/login';
 import { AccueilPage } from '../pages/accueil/accueil';
 import { ControlePage } from '../pages/controle/controle';
@@ -9,6 +11,9 @@ import { MeshorairesPage } from '../pages/meshoraires/meshoraires';
 import { DemandesPage } from '../pages/demandes/demandes';
 import { MonprofilPage } from '../pages/monprofil/monprofil';
 import { SaisiedemandePage } from '../pages/saisiedemande/saisiedemande';
+
+// Providers
+import { NotificationsLocalesService } from '../providers/notifications-locales-service';
 
 @NgModule({
   declarations: [
@@ -35,6 +40,6 @@ import { SaisiedemandePage } from '../pages/saisiedemande/saisiedemande';
     MonprofilPage,
     SaisiedemandePage
   ],
-  providers: []
+  providers: [NotificationsLocalesService]
 })
 export class AppModule {}

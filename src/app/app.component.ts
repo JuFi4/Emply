@@ -8,7 +8,6 @@ import { ControlePage } from '../pages/controle/controle';
 import { MeshorairesPage } from '../pages/meshoraires/meshoraires';
 import { DemandesPage } from '../pages/demandes/demandes';
 import { MonprofilPage } from '../pages/monprofil/monprofil';
-import { SaisiedemandePage } from '../pages/saisiedemande/saisiedemande';
 
 
 @Component({

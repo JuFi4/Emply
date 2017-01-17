@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
-import { SaisiedemandePage } from 'C:/MesProjetsIonic/Emply/src/pages/saisiedemande/saisiedemande';
+import { SaisiedemandePage } from '../saisiedemande/saisiedemande';
 
 /*
   Generated class for the Demandes page.
