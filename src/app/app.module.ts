@@ -11,6 +11,7 @@ import { MeshorairesPage } from '../pages/meshoraires/meshoraires';
 import { DemandesPage } from '../pages/demandes/demandes';
 import { MonprofilPage } from '../pages/monprofil/monprofil';
 import { SaisiedemandePage } from '../pages/saisiedemande/saisiedemande';
+import {ServiceUsers} from "../providers/user-service";
 
 // Providers
 import { NotificationsLocalesService } from '../providers/notifications-locales-service';
@@ -40,6 +41,6 @@ import { NotificationsLocalesService } from '../providers/notifications-locales-
     MonprofilPage,
     SaisiedemandePage
   ],
-  providers: [NotificationsLocalesService]
+  providers: [NotificationsLocalesService, ServiceUsers]
 })
 export class AppModule {}

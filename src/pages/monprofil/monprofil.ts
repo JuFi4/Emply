@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
-
+import {User} from "../models/user";
+import {ServiceUsers} from "../../providers/user-service";
 /*
   Generated class for the Monprofil page.
 
@@ -12,19 +13,32 @@ import { AlertController } from 'ionic-angular';
   selector: 'page-monprofil',
   templateUrl: 'monprofil.html'
 })
-/*export class MonprofilPage {
+ export class MonprofilPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+  user : any = [];
+  inputDisabled : boolean;	
 
-  ionViewDidLoad() {
-    console.log('Hello MonProfil Page');
+  constructor(public navCtrl: NavController, public navParams: NavParams, public serviceUsers : ServiceUsers, public alertCtrl: AlertController) {
+    this.user.id = 4;
+    this.user.token = "Marcuzzo | 587fc844ef548587fc844ef580587fc844ef5b9";
+    serviceUsers.getUser(this.user.id, this.user.token).subscribe(user => {
+      this.user = user;
+      console.log(user);
+    })
+   this.inputDisabled = true;
+  }
+  
+   modifier(){
+    this.inputDisabled = false;
   }
 
-}*/
-
-
-export class MonprofilPage {
-  constructor(public alertCtrl: AlertController) {
+  enregistrer(){
+    this.serviceUsers.setUser(this.user.id, this.user.token, this.user.nom, this.user.prenom, this.user.dateNaissance, this.user.adresse,this.user.suppAdresse, this.user.codePostal, this.user.ville, this.user.telFix, this.user.telMobile)
+    console.log(this.user.id, this.user.token, this.user.nom, this.user.prenom, this.user.dateNaissance, this.user.adresse)
+  }
+  
+  ionViewDidLoad() {
+    console.log('Hello MonProfil Page');
   }
 
   doChangementMDP() {
@@ -58,7 +72,7 @@ export class MonprofilPage {
         {
           text: 'Confirmer',
           handler: data => {
-            console.log('Changement confirmé');
+            console.log('Changement confirmï¿½');
             this.doCheck();
           }
         }
@@ -98,7 +112,7 @@ export class MonprofilPage {
         {
           text: 'Confirmer',
           handler: data => {
-            console.log('Changement confirmé');
+            console.log('Changement confirmï¿½');
           }
         }
       ]

@@ -14,16 +14,40 @@
   </ion-navbar>
 
 </ion-header>
-
-
 <ion-content padding>
-    <h3>Vue de mon profil</h3>
-    <form>
-    <h5>Mon mot de passe : </h5>
-    <button ion-button (click)="doChangementMDP()">Modifier mon mot de passe</button>    
-    <h5>Mon adresse mail : </h5>
-    <button ion-button (click)="doChangementMail()">Modifier mon email</button> 
-    </form>
+	<ion-item>
+      <ion-label>Date de naissance :</ion-label> <ion-datetime displayFormat="YYY-MM-DD" [disabled] ="inputDisabled" required [(ngModel)]="user.DateNaissance" name = "date"></ion-datetime>
+  </ion-item>
+  <ion-item>
+      <ion-label>Nom :</ion-label> <ion-input type = "text"  [disabled] ="inputDisabled" required [(ngModel)]="user.nom" name = "nom"></ion-input>   
+   </ion-item>
+   <ion-item>
+      <ion-label>Prenom :</ion-label> <ion-input type = "text" [disabled] ="inputDisabled" required [(ngModel)]="user.prenom" name = "prenom"></ion-input>
+   </ion-item>
+   <ion-item>
+      <ion-label>Adresse :</ion-label> <ion-input type = "text" [disabled] ="inputDisabled" required [(ngModel)]="user.adresse" name = "adresse"></ion-input>
+   </ion-item>
+   <ion-item>
+      <ion-label>Adresse suite :</ion-label> <ion-input type = "text" [disabled] ="inputDisabled" required [(ngModel)]="user.suppAdresse" name = "suppAdresse"></ion-input>
+   </ion-item>
+   <ion-item>
+      <ion-label>Code postale :</ion-label> <ion-input type = "number" [disabled] ="inputDisabled" required [(ngModel)]="user.codePostale" name = "codePostal"></ion-input>
+   </ion-item>
+   <ion-item>
+      <ion-label>Ville :</ion-label> <ion-input type = "text" [disabled] ="inputDisabled" required [(ngModel)]="user.ville" name = "ville"></ion-input>
+   </ion-item>
+   <ion-item>
+      <ion-label>Telephone Fixe :</ion-label> <ion-input type = "text" [disabled] ="inputDisabled" required [(ngModel)]="user.telFix" name = "telFix"></ion-input>
+   </ion-item>
+   <ion-item>
+      <ion-label>Telephone Mobile :</ion-label> <ion-input type = "text" [disabled] ="inputDisabled" required [(ngModel)]="user.telMobile" name = "telMobile"></ion-input>-->
+   </ion-item>
+   <button ion-button type="submit" (click)= "modifier()" block>Modifier</button>
+   <button ion-button type="submit" (click)= "enregistrer()" block>Enregistrer</button> 
+   <h5>Mon mot de passe : </h5>
+   <button ion-button (click)="doChangementMDP()">Modifier mon mot de passe</button>    
+   <h5>Mon adresse mail : </h5>
+   <button ion-button (click)="doChangementMail()">Modifier mon email</button>  
 </ion-content>
 
 
