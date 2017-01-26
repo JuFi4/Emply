@@ -1,9 +1,9 @@
-export interface User {
-    userId : number;
-    token : string;
+export interface UserModel {
+    id: string;
+    token: string;
     nom : string;
     prenom : string;
-    dateNaissance : String;
+    dateNaissance : string;
     adresse : string;
     suppAdresse : string;
     codePostal : number;

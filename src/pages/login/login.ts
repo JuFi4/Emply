@@ -6,12 +6,9 @@ import { LocalNotifications, Push, Splashscreen, StatusBar } from 'ionic-native'
 // Pages
 import { AccueilPage } from '../accueil/accueil';
 import {MeshorairesPage} from "../meshoraires/meshoraires";
-/*
-  Generated class for the Login page.
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
+// Providers
+import { ApiBddService } from '../../providers/api-bdd-service';
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html'
@@ -30,9 +27,34 @@ export class LoginPage {
   }//ionViewDidLoad
 
   connexion() {
+      /* TODO JULIANA : traiter les données pour la connexion :
+      -1) Remplacer les données de test dans l'api de connexion par les varaibles isssues du formulaire
+      -2) Traiter le résultat de l'API : 
+          - si connexion OK (le " if(data)" dans le code), sauver les données + charger la page suivante
+          - sinon (le "else" dans le code) afficher un message d'erreur, ou ce que tu veux
+
+        Note : j'ai mis le code en commentaire juste pour pas que ça me change mon token à chaque fois !!!
+        Tu peux enlever les commentaire et mettre les données de ton user  
+    */
+    // Format de la fonction: connexion(login : string, password: string, deviceToken: string)
+    /* this.abiBddCtrl.connexion("lucille@gmail.com", "1234", "12345678").subscribe(
+                data => {        
+                    if(data) {       
+                      console.log("ID : " + data.id);
+                      console.log("Token : " + data.token);
+                    } else {
+                      console.log("Connexion échouée : mauvais mail ou mdp");
+                    }
+                },
+                err => {
+                    console.log(err);
+                },
+            );
+      */   
+
     this.navCtrl.push(AccueilPage, {utilisateur: "utilisateur"});
 
-
+    // TODO VANESSA: Ranger ce code dans une fonction séparée, il ne doit pas être ici !!! 
     //Push et récupération du divice-token
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -52,6 +74,7 @@ export class LoginPage {
       });
 
       push.on('registration', (data) => {
+        // TODO VANESSA / JULIANA : Enregsitrer le deviceToken afin de l'envoyer à l'API Lors du login : Id est dans data.registrationId
         console.log("device token ->", data.registrationId);
         //TODO - send device token to server
       });
