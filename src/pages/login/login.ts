@@ -16,15 +16,35 @@ import { ApiBddService } from '../../providers/api-bdd-service';
 export class LoginPage {
    @ViewChild(Nav) nav: Nav;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform) {      
+  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService) {      
     //TODO : vérifier si l'utilisateur est connecté, si ce n'est pas le cas, on lui demande de se connecter, puis, une fois la connexion
     // effectuée, on affiche la notification
-    LocalNotifications.on("click", (notification, state) => {this.afficherNotificationLocale(notification.id, notification.title, notification.text);});     
+    LocalNotifications.on("click", (notification, state) => {this.afficherNotificationLocale(notification.id, notification.title, notification.text);});    
   }
 
    ionViewDidLoad() {
     console.log('Hello Login Page');
   }//ionViewDidLoad
+
+  nouveauMotDePasse(){
+        /* TODO JULIANA : intégration de l'api nouveau mot de passe :
+      -1) Remplacer les données de test dans l'api par la variable dans laquelle tu aura demandé le mail de l'utilisateur
+      -2) Traiter le résultat de l'API : 
+          - ai OK  (le " if(data)" dans le code) => message pour dire que le nouveau mdp a été envoyé par email
+          - sinon (le "else" dans le code) = l'email indiqué n'existe pas dans le BDD -> afficher un message d'erreur, ou ce que tu veux     
+    */
+    // Format de la fonction: setNewPassword(email : string)
+    this.abiBddCtrl.setNewPassword("lucille.guillerault@gmail.com").subscribe(
+                data => {        
+                    if(data) { // OK    
+                      
+                    } else { // Erreur
+                      console.log("Connexion échouée : mauvais mail ou mdp");
+                    }
+                }
+            );      
+
+  }//nouveauMotDePasse
 
   connexion() {
       /* TODO JULIANA : traiter les données pour la connexion :
@@ -39,16 +59,13 @@ export class LoginPage {
     // Format de la fonction: connexion(login : string, password: string, deviceToken: string)
     /* this.abiBddCtrl.connexion("lucille@gmail.com", "1234", "12345678").subscribe(
                 data => {        
-                    if(data) {       
+                    if(data) {  // OK      
                       console.log("ID : " + data.id);
                       console.log("Token : " + data.token);
-                    } else {
+                    } else { // Erreur
                       console.log("Connexion échouée : mauvais mail ou mdp");
                     }
-                },
-                err => {
-                    console.log(err);
-                },
+                }
             );
       */   
 

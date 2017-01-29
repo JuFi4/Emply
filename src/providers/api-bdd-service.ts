@@ -23,6 +23,15 @@ export class ApiBddService {
      return response;
    }//connexion
 
+  // Requête pour générer un nouveau mot de passe
+ // / Renvois : true ou false. TRUE = nouveau mot de passe généré + envoyé par mail, FALSE = erreur  => l'adresse email n'existe pas
+  setNewPassword(email : string){
+     var url =this.baseUrl + 'type=setNewPassword&email=' + encodeURI(email);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());
+     return response;
+   }//setNewPassword
+
  // Récupération du profil d'un utilisateur
  // Renvois :  un JSON avec les données du profil utilisateurs (requête réussie), soit False (requête réussie)
   getProfil(userId : string, token: string) : Observable<UserModel> {

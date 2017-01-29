@@ -34,12 +34,9 @@ export class MonprofilPage {
       */
      abiBddCtrl.getProfil("3", "Guillerault | 5889f59b92f3d5889f59b92f745889f59b92fab").subscribe(
         user => {
-           if(user) {  
+           if(user) { // OK     
              this.user = user    
-              console.log("Nom : " + this.user.nom); 
-              console.log("Prenom : " + this.user.prenom);
-              console.log(this.user);
-             } else {
+             } else { // Erreur
                  console.log("Connexion échouée : mauvais token ou ID");
              }
         });   
@@ -67,9 +64,9 @@ export class MonprofilPage {
             codePostal : number, ville : string, telFix : string, telMobile: string) */
     this.abiBddCtrl.setProfil("3", "Guillerault | 5889f59b92f3d5889f59b92f745889f59b92fab",this.user.nom, this.user.prenom, this.user.dateNaissance, this.user.adresse, this.user.suppAdresse, this.user.codePostal, this.user.ville, this.user.telFix, this.user.telMobile).subscribe(
         data => {
-           if(data) {      
+           if(data) {  // OK        
               console.log("Modifications profil enregsitrées");
-             } else {
+             } else { // Erreur
                  console.log("Connexion échouée : mauvais token ou ID");
              }
         });
@@ -175,9 +172,9 @@ export class MonprofilPage {
     // Modèle de la fonction: setPassword(userId : string, token: string, ancienPassword : string, nouveauPassword : string)
     this.abiBddCtrl.setPassword("3", "Guillerault | 588766143d17c588766143d1b4588766143d1eb", "1234", "1234").subscribe(        
       data => {
-           if(data) {      
+           if(data) {  // OK         
               console.log("Modifications mot de passe enregsitrées");
-             } else {
+             } else { // Erreur
                  console.log("Connexion échouée : mauvais mot de passe, token ou ID");
              }
         });
@@ -198,9 +195,9 @@ export class MonprofilPage {
     // Modèle de la fonction: setEmail(userId : string, token: string, mail : string)
     this.abiBddCtrl.setEmail("3", "Guillerault | 588766143d17c588766143d1b4588766143d1eb", "lucille@gmail.com").subscribe(        
        data => {
-           if(data) {      
+           if(data) { // OK     
               console.log("Modifications de l'adresse email enregsitrées");
-             } else {
+             } else { // Erreur
                  console.log("Connexion échouée : mauvais mot de passe, token ou ID");
              }
         });
