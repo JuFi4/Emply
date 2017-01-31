@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, AlertController } from 'ionic-angular';
 
 /*
   Generated class for the Accueil page.
@@ -14,7 +14,7 @@ import { NavController, NavParams } from 'ionic-angular';
 export class AccueilPage {
   utilisateur: string;
 
-  constructor(public navCtrl: NavController, private navParams: NavParams) {
+  constructor(private navCtrl: NavController, private navParams: NavParams, private alertCtrl: AlertController) {
     this.utilisateur = navParams.get('utilisateur');
   }//constructor
   

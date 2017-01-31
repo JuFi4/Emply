@@ -48,4 +48,6 @@ export class MyApp {
     this.nav.setRoot(page.component);
   }
 
+  
+
 }
