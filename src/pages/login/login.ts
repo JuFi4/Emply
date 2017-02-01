@@ -46,7 +46,7 @@ export class LoginPage {
 
   }//nouveauMotDePasse
 
-  connexion() {
+  connecter() {
       /* TODO JULIANA : traiter les données pour la connexion :
       -1) Remplacer les données de test dans l'api de connexion par les varaibles isssues du formulaire
       -2) Traiter le résultat de l'API : 
@@ -129,7 +129,17 @@ export class LoginPage {
         console.log(e.message);
       });
     }); 
-  }//connexion
+  }//connecter
+
+  demanderNouveauMotDePasse() {
+    console.log('Bah bravo!');
+    let alert = this.alertCtrl.create({
+    title: 'Bah bravo!',
+    subTitle: 'Tu as une mémoire de moineau...',
+    buttons: ['Désolé']
+  });
+  alert.present();
+  }//demanderNouveauMotDePasse
 
   afficherNotificationLocale(idNotification, titreNotification, messageNotification) {
     if(idNotification == 1){
