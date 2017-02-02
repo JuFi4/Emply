@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Platform, MenuController, Nav } from 'ionic-angular';
+import { Platform, MenuController, Nav, AlertController} from 'ionic-angular';
 import { StatusBar } from 'ionic-native';
 
 import { LoginPage } from '../pages/login/login';
@@ -19,7 +19,7 @@ export class MyApp {
   rootPage = LoginPage;
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, public menu: MenuController) {
+  constructor(public platform: Platform, public menu: MenuController, public alertCtrl: AlertController) {
     this.initializeApp();
 
     this.pages = [
@@ -47,7 +47,36 @@ export class MyApp {
     // navigate to the new page if it is not the current page
     this.nav.setRoot(page.component);
   }
-
   
+  deconnecter() {
+    let alert = this.alertCtrl.create({
+    title: 'Déconnexion',
+    message: 'Êtes-vous sûr(e) de vouloir vous déconnecter?',
+    buttons: [
+      {
+        text: 'Annuler',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      },
+      {
+        text: 'Oui',
+        handler: () => {
+          window.localStorage.clear();
+          console.log('Logged out');
+          console.log("Utilisateur: " + window.localStorage.getItem('utilisateur'));
+          console.log("Mot de passe: " + window.localStorage.getItem('motDePasse'));
+          console.log("Id: " + window.localStorage.getItem('id'));
+          console.log("Token bdd: " + window.localStorage.getItem('tokenBDD'));
+          this.nav.setRoot(LoginPage);
+          this.nav.popToRoot();
+        }
+      }
+    ]
+  });
+  alert.present();
+    
+  }
 
 }

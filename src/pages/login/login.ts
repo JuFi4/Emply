@@ -1,7 +1,8 @@
 // Modules ionic
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams , AlertController, Nav, Platform} from 'ionic-angular';
+import { NavController, NavParams , AlertController, Nav, Platform, LoadingController} from 'ionic-angular';
 import { LocalNotifications, Push, Splashscreen, StatusBar } from 'ionic-native';
+
 
 // Pages
 import { AccueilPage } from '../accueil/accueil';
@@ -15,8 +16,21 @@ import { ApiBddService } from '../../providers/api-bdd-service';
 })
 export class LoginPage {
    @ViewChild(Nav) nav: Nav;
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService) {      
+   utilisateur = "";
+   motDePasse = "";
+   token = "12345678";
+  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController) {      
+    if((window.localStorage.getItem('utilisateur') === "undefined" || window.localStorage.getItem('utilisateur') === null) && 
+       (window.localStorage.getItem('motDePasse') === "undefined" || window.localStorage.getItem('motDePasse') === null)) {
+      console.log('Pas de données sauvegardées.');
+      this.navCtrl.setRoot(LoginPage);
+      this.navCtrl.popToRoot();
+    } else {
+      this.navCtrl.push(AccueilPage, {utilisateur: this.utilisateur});
+      console.log(window.localStorage.getItem('utilisateur'));
+      console.log(window.localStorage.getItem('motDePasse'));
+    }
+    
     //TODO : vérifier si l'utilisateur est connecté, si ce n'est pas le cas, on lui demande de se connecter, puis, une fois la connexion
     // effectuée, on affiche la notification
     LocalNotifications.on("click", (notification, state) => {this.afficherNotificationLocale(notification.id, notification.title, notification.text);});    
@@ -26,6 +40,16 @@ export class LoginPage {
     console.log('Hello Login Page');
   }//ionViewDidLoad
 
+demanderNouveauMotDePasse() {
+    console.log('Bah bravo!');
+    let alert = this.alertCtrl.create({
+    title: 'Bah bravo!',
+    subTitle: 'Tu as une mémoire de moineau...',
+    buttons: ['Désolé']
+    });
+    alert.present();
+  }//demanderNouveauMotDePasse
+
   nouveauMotDePasse(){
         /* TODO JULIANA : intégration de l'api nouveau mot de passe :
       -1) Remplacer les données de test dans l'api par la variable dans laquelle tu aura demandé le mail de l'utilisateur
@@ -33,16 +57,48 @@ export class LoginPage {
           - ai OK  (le " if(data)" dans le code) => message pour dire que le nouveau mdp a été envoyé par email
           - sinon (le "else" dans le code) = l'email indiqué n'existe pas dans le BDD -> afficher un message d'erreur, ou ce que tu veux     
     */
-    // Format de la fonction: setNewPassword(email : string)
-    this.abiBddCtrl.setNewPassword("lucille.guillerault@gmail.com").subscribe(
-                data => {        
-                    if(data) { // OK    
-                      
+    let alert = this.alertCtrl.create({
+    title: 'Demande de nouveau mot de passe',
+    inputs: [
+      {
+        name: 'mail',
+        placeholder: 'mail'
+      }
+    ],
+    buttons: [
+      {
+        text: 'Annuler',
+        role: 'cancel',
+        handler: data => {
+          console.log('Cancel clicked');
+        }
+      },
+      {
+        text: 'Envoyer',
+        handler: data => {
+          this.abiBddCtrl.setNewPassword(data.mail).subscribe(
+                data2 => {        
+                    if(data2) { // OK    
+                      console.log('Mail existant');
                     } else { // Erreur
-                      console.log("Connexion échouée : mauvais mail ou mdp");
+                      console.log("Mail inexistant");
+                      let alert2 = this.alertCtrl.create({
+                      title: 'Désolé',
+                      subTitle: 'Le mail saisi ne correspond à aucun utilisateur',
+                      buttons: ['Retour']
+                      });
+                      alert2.present();
                     }
                 }
-            );      
+            );
+          
+        }
+      }
+    ]
+  });
+  alert.present();
+    // Format de la fonction: setNewPassword(email : string)
+          
 
   }//nouveauMotDePasse
 
@@ -57,19 +113,28 @@ export class LoginPage {
         Tu peux enlever les commentaire et mettre les données de ton user  
     */
     // Format de la fonction: connexion(login : string, password: string, deviceToken: string)
-    /* this.abiBddCtrl.connexion("lucille@gmail.com", "1234", "12345678").subscribe(
+    this.abiBddCtrl.connexion(this.utilisateur, this.motDePasse, this.token).subscribe(
                 data => {        
                     if(data) {  // OK      
                       console.log("ID : " + data.id);
                       console.log("Token : " + data.token);
+                      window.localStorage.setItem('id', data.id);
+                      window.localStorage.setItem('tokenBDD', data.token);
+                      window.localStorage.setItem('utilisateur', this.utilisateur);
+                      window.localStorage.setItem('motDePasse', this.motDePasse);
+                      this.navCtrl.push(AccueilPage, {utilisateur: this.utilisateur});
                     } else { // Erreur
                       console.log("Connexion échouée : mauvais mail ou mdp");
+                      let alert = this.alertCtrl.create({
+                      title: 'Erreur',
+                      subTitle: 'Utilisateur et/ou mot de passe incorrect(s).',
+                      buttons: ['Retour']
+                      });
+                      alert.present();
                     }
                 }
-            );
-      */   
+            );  
 
-    this.navCtrl.push(AccueilPage, {utilisateur: "utilisateur"});
 
     // TODO VANESSA: Ranger ce code dans une fonction séparée, il ne doit pas être ici !!! 
     //Push et récupération du divice-token
@@ -131,15 +196,6 @@ export class LoginPage {
     }); 
   }//connecter
 
-  demanderNouveauMotDePasse() {
-    console.log('Bah bravo!');
-    let alert = this.alertCtrl.create({
-    title: 'Bah bravo!',
-    subTitle: 'Tu as une mémoire de moineau...',
-    buttons: ['Désolé']
-  });
-  alert.present();
-  }//demanderNouveauMotDePasse
 
   afficherNotificationLocale(idNotification, titreNotification, messageNotification) {
     if(idNotification == 1){
