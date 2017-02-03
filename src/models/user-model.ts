@@ -1,6 +1,4 @@
 export interface UserModel {
-    id: string;
-    token: string;
     nom : string;
     prenom : string;
     dateNaissance : string;
@@ -10,4 +8,5 @@ export interface UserModel {
     ville : string;
     telFix : string;
     telMobile: string;
+    email : string;
 }

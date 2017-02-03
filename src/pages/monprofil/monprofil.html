@@ -16,7 +16,7 @@
 </ion-header>
 <ion-content padding>
 	<ion-item>
-      <ion-label>Date de naissance :</ion-label> <ion-datetime displayFormat="YYY-MM-DD" [disabled] ="inputDisabled" required [(ngModel)]="user.dateNaissance" name = "date"></ion-datetime>
+      <ion-label>Date de naissance :</ion-label> <ion-datetime displayFormat="YYYY-MM-DD" [disabled] ="inputDisabled" required [(ngModel)]="user.dateNaissance" name = "date"></ion-datetime>
   </ion-item>
   <ion-item>
       <ion-label>Nom :</ion-label> <ion-input type = "text"  [disabled] ="inputDisabled" required [(ngModel)]="user.nom" name = "nom"></ion-input>   
@@ -42,12 +42,13 @@
    <ion-item>
       <ion-label>Telephone Mobile :</ion-label> <ion-input type = "text" [disabled] ="inputDisabled" required [(ngModel)]="user.telMobile" name = "telMobile"></ion-input>-->
    </ion-item>
-   <button ion-button type="submit" (click)= "modifier()" block>Modifier</button>
-   <button ion-button type="submit" (click)= "enregistrer()" block>Enregistrer</button> 
-   <h5>Mon mot de passe : </h5>
-   <button ion-button (click)="doChangementMDP()">Modifier mon mot de passe</button>    
-   <h5>Mon adresse mail : </h5>
-   <button ion-button (click)="doChangementMail()">Modifier mon email</button>  
+   <button ion-button type="submit" [hidden]="!inputDisabled" (click)= "modifier()" block>Modifier mes données</button>
+   <button ion-button type="submit"[hidden]="inputDisabled"   (click)= "enregistrer()" block  color="secondary">Enregistrer</button> 
+   <ion-item padding-top>
+      <ion-label>Adresse email :</ion-label> <ion-input type = "text" disabled ="true" required [(ngModel)]="user.mail"></ion-input>
+   </ion-item>  
+   <button ion-button (click)="doChangementMail()" block outline>Modifier mon email</button>  
+     <button ion-button (click)="doChangementMDP()" block outline >Modifier mon mot de passe</button>  
 </ion-content>
 
 

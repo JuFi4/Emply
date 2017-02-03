@@ -20,7 +20,7 @@ export class NotificationsLocalesService {
   public scheduleNotificationFinDeService(scheduleDate : Date) {
       console.log('scheduleNotificationFinDeService : ' + scheduleDate);
        LocalNotifications.schedule({
-            id: 1,
+            id: this.getNotificationNewId(),
             title: 'Validation de fin de service',
             text: 'Avez-vous bien travailler de telle heure à telle heure ?',
             at: scheduleDate,
@@ -34,7 +34,7 @@ export class NotificationsLocalesService {
   public scheduleNotificationValidationMensuelle(scheduleDate : Date) {
       console.log('scheduleNotificationValidationMensuelle : ' + scheduleDate);
        LocalNotifications.schedule({
-            id: 2,
+            id: 1,
             title: 'Validation mensuelle',
             text: 'Veuillez aller valider vos heures mensuelles',
             at: scheduleDate,
@@ -43,4 +43,18 @@ export class NotificationsLocalesService {
             led: 'FFFFFF'
         });
     }//scheduleNotificationValidationMensuelle 
+
+    // Retourne l'ID de la prochaine notification (incrémente de 1 l'id de plus grand)
+    public getNotificationNewId() : number {
+        var maxId = 1;
+        LocalNotifications.getAllIds().then((data) => {
+            for(let id in data){
+                if(Number(id) > maxId){
+                    maxId = Number(id);
+                }
+            }
+        });        
+        maxId++;
+        return maxId;
+    }//getNotificationNewId
 }//NotificationsLocalesService

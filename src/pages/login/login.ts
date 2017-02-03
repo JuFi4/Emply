@@ -18,23 +18,32 @@ export class LoginPage {
    @ViewChild(Nav) nav: Nav;
    utilisateur = "";
    motDePasse = "";
-   token = "12345678";
+   deviceToken : string;
+   rootPage : any; // Permet de définir une autre page d'accueil (pour les notifications)
+   isNotificationEnAttente = false;
+   notificationEnAttente =  {id: '', titre: '', message:'' };  
+
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController) {      
+     // Définition de la d'accueil par défaut
+     this.rootPage = AccueilPage; 
+    
+    // Instanciation des notifications push
+     this.instancierNotificationsPush();    
+
+      // Instanciation des notifications locales
+     this.instancierNotificationsLocales();  
+    
     if((window.localStorage.getItem('utilisateur') === "undefined" || window.localStorage.getItem('utilisateur') === null) && 
        (window.localStorage.getItem('motDePasse') === "undefined" || window.localStorage.getItem('motDePasse') === null)) {
       console.log('Pas de données sauvegardées.');
       this.navCtrl.setRoot(LoginPage);
       this.navCtrl.popToRoot();
-    } else {
+    } else { // Connexion automatique
       this.navCtrl.push(AccueilPage, {utilisateur: this.utilisateur});
       console.log(window.localStorage.getItem('utilisateur'));
       console.log(window.localStorage.getItem('motDePasse'));
-    }
-    
-    //TODO : vérifier si l'utilisateur est connecté, si ce n'est pas le cas, on lui demande de se connecter, puis, une fois la connexion
-    // effectuée, on affiche la notification
-    LocalNotifications.on("click", (notification, state) => {this.afficherNotificationLocale(notification.id, notification.title, notification.text);});    
-  }
+    } 
+  }//constructor
 
    ionViewDidLoad() {
     console.log('Hello Login Page');
@@ -97,10 +106,7 @@ demanderNouveauMotDePasse() {
     ]
   });
   alert.present();
-    // Format de la fonction: setNewPassword(email : string)
-          
-
-  }//nouveauMotDePasse
+ }//nouveauMotDePasse
 
   connecter() {
       /* TODO JULIANA : traiter les données pour la connexion :
@@ -113,7 +119,7 @@ demanderNouveauMotDePasse() {
         Tu peux enlever les commentaire et mettre les données de ton user  
     */
     // Format de la fonction: connexion(login : string, password: string, deviceToken: string)
-    this.abiBddCtrl.connexion(this.utilisateur, this.motDePasse, this.token).subscribe(
+    this.abiBddCtrl.connexion(this.utilisateur, this.motDePasse, this.deviceToken).subscribe(
                 data => {        
                     if(data) {  // OK      
                       console.log("ID : " + data.id);
@@ -122,7 +128,13 @@ demanderNouveauMotDePasse() {
                       window.localStorage.setItem('tokenBDD', data.token);
                       window.localStorage.setItem('utilisateur', this.utilisateur);
                       window.localStorage.setItem('motDePasse', this.motDePasse);
-                      this.navCtrl.push(AccueilPage, {utilisateur: this.utilisateur});
+                      window.localStorage.setItem('deviceToken', this.deviceToken);
+                      window.localStorage.setItem('utilisateurConnecte', "1");
+                      console.log("login " + window.localStorage.getItem('utilisateurConnecte'))
+                      if(this.isNotificationEnAttente) {
+                          this.afficherNotificationLocale(this.notificationEnAttente.id, this.notificationEnAttente.titre, this.notificationEnAttente.message);
+                      }
+                      this.navCtrl.push(this.rootPage, {utilisateur: this.utilisateur});
                     } else { // Erreur
                       console.log("Connexion échouée : mauvais mail ou mdp");
                       let alert = this.alertCtrl.create({
@@ -134,13 +146,10 @@ demanderNouveauMotDePasse() {
                     }
                 }
             );  
+  }//connecter
 
-
-    // TODO VANESSA: Ranger ce code dans une fonction séparée, il ne doit pas être ici !!! 
-    //Push et récupération du divice-token
-    this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
+  instancierNotificationsPush(){
+   this.platform.ready().then(() => {
       StatusBar.styleDefault();
       Splashscreen.hide();
       let push = Push.init({
@@ -155,57 +164,75 @@ demanderNouveauMotDePasse() {
         windows: {}
       });
 
+      // Récupération du deviceToken
       push.on('registration', (data) => {
-        // TODO VANESSA / JULIANA : Enregsitrer le deviceToken afin de l'envoyer à l'API Lors du login : Id est dans data.registrationId
-        console.log("device token ->", data.registrationId);
-        //TODO - send device token to server
+       this.deviceToken = data.registrationId;
+        console.log("device token ->", this.deviceToken);
       });
+
+      // Action en cas de récéption de Push
       push.on('notification', (data) => {
-        console.log('message', data.message);
-        let self = this;
-        //if user using app and push notification comes
-        if (data.additionalData.foreground) {
-          // if application open, show popup
-          let confirmAlert = this.alertCtrl.create({
-            title: 'New Notification',
-            message: data.message,
-            buttons: [{
-              text: 'Ignore',
-              role: 'cancel'
-            }, {
-              text: 'View',
-              handler: () => {
-                //TODO: Your logic here
-                self.nav.push(MeshorairesPage, {message: data.message});
-                alert(data.message)
-              }
-            }]
-          });
-          confirmAlert.present();
-        } else {
-          //if user NOT using app and push notification comes
-          //TODO: Your logic on click of push notification directly
-          self.nav.push(MeshorairesPage, {message: data.message});
-          alert(data.message)
-          console.log("Push notification clicked");
-        }
+        this.afficherNotificationPush(data.title, data.message, data.additionalData.foreground);      
       });
+
+      // Gestion des erreurs
       push.on('error', (e) => {
         console.log(e.message);
       });
     }); 
-  }//connecter
+  }//instancierNotificationsPush
 
+  afficherNotificationPush(titreNotification, messageNotification, isApplicationOpen){
+       let confirmAlert = this.alertCtrl.create({ // Création d'une alerte "confirm"
+            title: titreNotification,
+            message: messageNotification,
+            buttons: [{
+              text: 'Ignorer',
+              role: 'cancel'
+            }, {
+              text: 'Afficher',
+              handler: () => { // Si la personne est connectée ça ouvre la page des horaires
+                console.log("login " + window.localStorage.getItem('utilisateurConnecte'))
+                if(window.localStorage.getItem('utilisateurConnecte') === "1"){  
+                    this.navCtrl.push(MeshorairesPage);
+                } else { // Sinon : on lui demande de se connecter, et on affiche la page seulement après
+                    this.rootPage = MeshorairesPage; //On enregsitre la page à afficher après la connexion
+                    let alert = this.alertCtrl.create({ // On affiche une alert pour dire qu'il doit se connecter
+                      title: "Veuillez d'abord vous connecter !",
+                      buttons: ['OK']
+                    });
+                    alert.present();
+                }
+              }
+            }]
+          });
+          confirmAlert.present();
+  }//afficherNotificationPush
+
+  instancierNotificationsLocales(){
+    LocalNotifications.on("click", (notification, state) => {
+        console.log('notification' + notification.id);
+        if(window.localStorage.getItem('utilisateurConnecte') === "1"){  
+          this.afficherNotificationLocale(notification.id, notification.title, notification.text);
+        } else {
+            this.isNotificationEnAttente = true;
+            this.notificationEnAttente.id = notification.id;
+            this.notificationEnAttente.titre = notification.title;
+            this.notificationEnAttente.message = notification.text;   
+        }
+    }); 
+  }//instancierNotificationsLocales
 
   afficherNotificationLocale(idNotification, titreNotification, messageNotification) {
-    if(idNotification == 1){
-      this.afficherNotificationFinDeService(titreNotification, messageNotification);
-    } else  {
+    console.log('notification' + idNotification);
+    if(idNotification == 1){  // Si l'id est 1 = c'est la notification mensuelle de validation des heures
       this.afficherValidationMensuelle(titreNotification, messageNotification);
+    } else  {
+      this.afficherNotificationFinDeService(titreNotification, messageNotification);
     }    
   }//afficherNotificationLocale  
 
-    afficherNotificationFinDeService(titreNotification, messageNotification){
+  afficherNotificationFinDeService(titreNotification, messageNotification){
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,
@@ -226,9 +253,9 @@ demanderNouveauMotDePasse() {
         ]
       });
       alert.present();
-    }//afficherNotificationFinDeService
+   }//afficherNotificationFinDeService
 
-    afficherValidationMensuelle(titreNotification, messageNotification){
+   afficherValidationMensuelle(titreNotification, messageNotification){
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,
@@ -243,5 +270,4 @@ demanderNouveauMotDePasse() {
       });
       alert.present();
     }//afficherValidationMensuelle
-
 }//LoginPage
