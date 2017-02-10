@@ -1,3 +1,89 @@
 page-meshoraires {
 
 }
+ul {list-style-type: none;}
+body {font-family: Verdana, sans-serif;}
+
+/* Month header */
+.month {
+    padding: 10px 25px;
+    width: 100%;
+    background: lightseagreen;
+}
+
+/* Month list */
+.month ul {
+    margin: 50;
+    padding: 0;
+}
+
+.month ul li {
+    color: white;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-left: center;
+    margin-right: center;
+}
+
+
+/* Weekdays (Mon-Sun) */
+.weekdays {
+    margin: 0;
+    padding: 10px 0;
+    background-color:#ddd;
+}
+
+.weekdays li {
+    display: inline-block;
+    width: 13%;
+    color: #666;
+    text-align: center;
+}
+
+/* Days (1-31) */
+.days {
+    padding: 10px 0;
+    background: #eee;
+    margin: 0;
+}
+
+.horaireM{
+    //list-style-type: none;
+    //width: 13%;
+    text-align: left;
+    font-size:2px;
+    color:#777;
+}
+
+.horaireA{
+    //list-style-type: none;
+    //width: 13%;
+    text-align: left;
+    font-size:2px;
+    color:#777;
+}
+
+.DetailJour{
+    color:#777;
+    background:#eee;
+    border-color: #eee
+}
+
+.days li {
+    list-style-type: none;
+    display: inline-block;
+    width: 13%;
+    text-align: center;
+    margin-bottom: 5px;
+    font-size:20px;
+    color:#777;
+    border : 1px;
+}
+
+/* Highlight the "current" day */
+.days li .active {
+    padding: 10px;
+    background: #1abc9c;
+    color: white !important
+}

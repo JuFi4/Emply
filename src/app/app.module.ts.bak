@@ -15,7 +15,6 @@ import { SaisiedemandePage } from '../pages/saisiedemande/saisiedemande';
 // Providers
 import { NotificationsLocalesService } from '../providers/notifications-locales-service';
 import { ApiBddService } from '../providers/api-bdd-service';
-import {MoisService} from '../providers/mois-service';
 
 @NgModule({
   declarations: [
@@ -42,6 +41,6 @@ import {MoisService} from '../providers/mois-service';
     MonprofilPage,
     SaisiedemandePage
   ],
-  providers: [NotificationsLocalesService, ApiBddService, MoisService]
+  providers: [NotificationsLocalesService, ApiBddService]
 })
 export class AppModule {}

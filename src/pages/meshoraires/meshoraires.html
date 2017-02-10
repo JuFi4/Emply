@@ -6,14 +6,41 @@
 -->
 <ion-header>
 
-<!-- <ion-navbar>-->
+  <ion-navbar>
     <button ion-button icon-only menuToggle>
       <ion-icon name="menu"></ion-icon> 
     </button>
     <ion-title>Mes horaires</ion-title>
-<!--  </ion-navbar>-->
+  </ion-navbar>
 
 </ion-header>
 <ion-content padding>
-    <h3>Vue de mes horaires</h3>
+<ion-item>
+  <ion-label>Choisir un mois</ion-label> 
+    <ion-select [(ngModel)]= "mois" (ngModelChange)= "onChange(mois)">
+       <ion-option  *ngFor = "let mois of moisListe"> {{mois.nom}}</ion-option>
+    </ion-select>  
+</ion-item>
+<div *ngIf = "moisSelectionne">
+<div class="month" > 
+  <ul>
+    <li>
+     {{moisSelectionne}}
+    </li>
+  </ul>
+</div>
+
+<ul class="weekdays">
+  <li *ngFor = "let semaine of semaines">
+    <span>{{semaine.nom}}</span></li>
+</ul>
+
+<ul class="days"> 
+  <li  *ngFor ="let i of jours">
+   <button class="DetailJour" ion-button (click)="DetailHoraire(i)"> 
+     {{i}}    
+   </button>
+  </li>
+</ul>
+</div>
 </ion-content>
