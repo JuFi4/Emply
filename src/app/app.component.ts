@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Platform, MenuController, Nav, AlertController} from 'ionic-angular';
 import { StatusBar } from 'ionic-native';
 
+// Pages
 import { LoginPage } from '../pages/login/login';
 import { AccueilPage } from '../pages/accueil/accueil';
 import { ControlePage } from '../pages/controle/controle';
@@ -9,6 +10,8 @@ import { MeshorairesPage } from '../pages/meshoraires/meshoraires';
 import { DemandesPage } from '../pages/demandes/demandes';
 import { MonprofilPage } from '../pages/monprofil/monprofil';
 
+// Providers
+import { ApiBddService } from '../providers/api-bdd-service';
 
 @Component({
   templateUrl: 'app.html'
@@ -19,7 +22,7 @@ export class MyApp {
   rootPage = LoginPage;
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, public menu: MenuController, public alertCtrl: AlertController) {
+  constructor(public platform: Platform, public menu: MenuController, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) {
     this.initializeApp();
 
     this.pages = [
@@ -63,6 +66,10 @@ export class MyApp {
       {
         text: 'Oui',
         handler: () => {
+          this.abiBddCtrl.deconnexion(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
+            data => {
+              if(data) {}  // Déconnexion OK         
+            });
           window.localStorage.clear();
           console.log('Logged out');
           console.log("Utilisateur: " + window.localStorage.getItem('utilisateur'));
@@ -76,7 +83,6 @@ export class MyApp {
     ]
   });
   alert.present();
-    
   }
 
 }

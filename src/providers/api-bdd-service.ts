@@ -23,6 +23,15 @@ export class ApiBddService {
      return response;
    }//connexion
 
+ // Déconnexion  d'un utilisateur
+ // Renvois : true ou false. TRUE = déconnexion effectule, FALSE = erreur (mauvais  userId ou Token)
+  deconnexion(userId : string, token: string)  {    
+     var url =this.baseUrl + 'type=logout&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());
+     return response;
+   }//deconnexion
+
   // Requête pour générer un nouveau mot de passe
  // / Renvois : true ou false. TRUE = nouveau mot de passe généré + envoyé par mail, FALSE = erreur  => l'adresse email n'existe pas
   setNewPassword(email : string){
