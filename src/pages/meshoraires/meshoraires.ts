@@ -26,6 +26,7 @@ export class MeshorairesPage {
   semaine : Semaine;
   jours : any[] = [];
   selJour : any = [];
+  annee : any = []; 
   annneeCourrante = new Date().getFullYear(); // Année courrante
   isAnneBissextile= new Date(this.annneeCourrante, 2, 0).getDate() == 29; // Gestion des années bissextiles : "si le 1er mars est un 29 févirer XD"
 
@@ -70,6 +71,11 @@ export class MeshorairesPage {
      for(let i = 1; i <= nbJoursMois; i++){
         this.jours.push(i);
      }
+
+     //afficher l'année
+     this.annee = this.annneeCourrante;
+     console.log(this.annee)
+
     }//afficherMois
 
     // Récupére le mois sélectionné sous format String, et retourne le mois en format Mois correspondant
@@ -82,9 +88,8 @@ export class MeshorairesPage {
        return this.moisListe[0];
     }//getMoisSelectionne
 
-    // TODO VANESSA : nom de fonction qui commence par une minuscule 
-    // Quand j'essaye ça fait tout planter car je dois oublier de changer certains appels
-    DetailHoraire(i){
+    // 
+    detailHoraire(i){
       console.log(i)
         let prompt = this.alertCtrl.create({
           title: i,

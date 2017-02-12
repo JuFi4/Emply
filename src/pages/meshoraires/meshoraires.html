@@ -20,12 +20,15 @@
        <ion-option  *ngFor = "let mois of moisListe"> {{mois.nom}}</ion-option>
     </ion-select>  
 </ion-item>
-<div *ngIf = "moisSelectionne">
-<div class="month" > 
+<div *ngIf = "moisSelectionne && annee" >
+<div class="month"> 
   <ul>
+    <li >
+     {{moisSelectionne.nom}}     
+    </li>  
     <li>
-     {{moisSelectionne.nom}}
-    </li>
+      {{annee}}      
+    </li>  
   </ul>
 </div>
 
@@ -36,7 +39,7 @@
 
 <ul class="days"> 
   <li  *ngFor ="let i of jours">
-   <button class="DetailJour" ion-button (click)="DetailHoraire(i)"> 
+   <button class="DetailJour" ion-button (click)="detailHoraire(i)"> 
      {{i}}    
    </button>
   </li>

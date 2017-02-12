@@ -29,7 +29,7 @@ export class MonprofilPage {
       - Traiter le résultat de l'API : 
           - Si on a bien récupérer le profil (le " if(user)" dans le code) : vérifier que l'affichage des  les données dans la page profil est OK 
                   -> La date de naissance est buggée -> il y a un problème avec l'année, mais on l'avais déja vu (lors de la modification), donc il faudra le régler
-          - sinon (le "else" dans le code), trouver comment traiter cela, exemple: message d'erreur, et peut êre renvoyer sur la page de connexion
+          - sinon (le "else" dans le code), trouver comment traiter cela, exemple: message d'erreur, et peut être renvoyer sur la page de connexion
       */
      abiBddCtrl.getProfil(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
         user => {
