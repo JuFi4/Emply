@@ -45,4 +45,19 @@
   </li>
 </ul>
 </div>
+<div *ngIf="affichageH">
+  <h3 >Vos horaires du {{selJour}}</h3> 
+  <ion-item>
+      <ion-label>Horaire début :</ion-label> <ion-datetime displayFormat="H \H i \m\i\n" [disabled] ="inputDisabled"></ion-datetime>
+  </ion-item>
+  <ion-item >
+      <ion-label>Horaire fin :</ion-label> <ion-input displayFormat="H \H i \m\i\n"  [disabled] ="inputDisabled" ></ion-input>   
+   </ion-item>
+   <ion-item >
+      <ion-label>Horaire début :</ion-label> <ion-input displayFormat="H \H i \m\i\n" [disabled] ="inputDisabled"></ion-input>
+   </ion-item>
+   <ion-item >
+      <ion-label>Horaire fin :</ion-label> <ion-input displayFormat="H \H i \m\i\n" [disabled] ="inputDisabled"></ion-input>
+   </ion-item>
+</div>
 </ion-content>

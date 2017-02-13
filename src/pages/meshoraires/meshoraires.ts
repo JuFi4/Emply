@@ -7,6 +7,7 @@ import {MoisService} from '../../providers/mois-service';
 //models
 import {Mois} from '../../models/mois';
 import {Semaine} from '../../models/semaine';
+import {Horaires} from '../../models/horaires';
 
 /*
   Generated class for the Meshoraires page.
@@ -27,21 +28,25 @@ export class MeshorairesPage {
   jours : any[] = [];
   selJour : any = [];
   annee : any = []; 
+  affichageH : Boolean;
+  horaires : Horaires;
+  inputDisabled : Boolean;
+
   annneeCourrante = new Date().getFullYear(); // Année courrante
   isAnneBissextile= new Date(this.annneeCourrante, 2, 0).getDate() == 29; // Gestion des années bissextiles : "si le 1er mars est un 29 févirer XD"
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService, public moisService : MoisService, public alertCtrl: AlertController) {
      // Constructeur Date(Année, mois, jour, heure, minute) -> Atention, les mois se comptent à partrir de 0: 0 = janvier, 1= février...
-    // notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017, 0, 15, 0, 9));
+     // notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017, 0, 15, 0, 9));
      // notificationsLocalesCtrl.scheduleNotificationValidationMensuelle(new Date(2017, 0, 15, 0, 10));
      this.moisService.getSemaine().then(semaines => this.semaines = semaines);
      this.moisService.getMois().then(moisListe => this.moisListe = moisListe);
+     this.affichageH = false;
     }//constructor
 
     onChange(mois): void{
      this.moisSelectionne = this.getMoisSelectionne(mois.trim());
      this.afficherMois();
-    
     }//onChange
 
     afficherMois(){         
@@ -90,30 +95,12 @@ export class MeshorairesPage {
 
     // 
     detailHoraire(i){
-      console.log(i)
-        let prompt = this.alertCtrl.create({
-          title: i,
-          message: "Vos horaires du jour",
-          inputs: [
-          {
-            id: 'HoraireMatin',
-            name: 'HoraireMatin',
-            placeholder: '8:00 12:00'
-          },
-          {
-            id: 'HoraireMidi',
-            name: 'HoraireMidi',
-            placeholder: '13:00 18:00',
-            
-          },
-          {
-            id: 'horaireNuit',
-            name: 'horaireNuit',
-            placeholder: '-'
-          },
-        ]
-      });
-    prompt.present();
+      this.affichageH = true; 
+      this.selJour = i; //récupération du jour choisi
+      this.inputDisabled = true; //desactivation des champs horaires
+    //  if(this.horaires.jour == i){
+
+
     }//DetailHoraire
 
   ionViewDidLoad() {
