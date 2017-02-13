@@ -6,6 +6,7 @@ import 'rxjs/add/operator/map';
 
 //Models
 import { UserModel } from '../models/user-model';
+import { Horaires } from '../models/horaires';
 
 @Injectable()
 export class ApiBddService {  
@@ -78,5 +79,14 @@ export class ApiBddService {
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//setEmail
+
+ // Récupération des horaires d'un utilisateur
+ // Renvois :  un JSON avec les horaires pour la periode demandée (requête réussie), soit False (requête réussie)
+  getHoraires(userId : string, token: string, annee : string, mois: string) {
+     var url =this.baseUrl + 'type=getHoraires&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&annee=' + encodeURI(annee) + '&mois=' + encodeURI(mois);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());
+     return response;
+   }//getHoraires
 
 }//ApiBddService
