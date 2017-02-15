@@ -23,6 +23,8 @@
 <div *ngIf = "moisSelectionne && annee" >
 <div class="month"> 
   <ul>
+    <button  class="prev" ion-button (click)="GoToMoisPrecedent()">&#10094;</button>
+    <button class="next" ion-button (click)= "GoToMoisSuivant()" >&#10095;</button>
     <li >
      {{moisSelectionne.nom}}     
     </li>  
@@ -47,17 +49,15 @@
 </div>
 <div *ngIf="affichageH">
   <h3 >Vos horaires du {{selJour}}</h3> 
+ <ul>
+ <li *ngFor = "let hjours of horaireDuJour">
   <ion-item>
-      <ion-label>Horaire début :</ion-label> <ion-datetime displayFormat="H \H i \m\i\n" [disabled] ="inputDisabled"></ion-datetime>
+      <ion-label>Horaire début :</ion-label> <ion-input [disabled] ="inputDisabled" required [(ngModel)]="hjours.heureDebut" name = "debut"></ion-input>
   </ion-item>
   <ion-item >
-      <ion-label>Horaire fin :</ion-label> <ion-input displayFormat="H \H i \m\i\n"  [disabled] ="inputDisabled" ></ion-input>   
-   </ion-item>
-   <ion-item >
-      <ion-label>Horaire début :</ion-label> <ion-input displayFormat="H \H i \m\i\n" [disabled] ="inputDisabled"></ion-input>
-   </ion-item>
-   <ion-item >
-      <ion-label>Horaire fin :</ion-label> <ion-input displayFormat="H \H i \m\i\n" [disabled] ="inputDisabled"></ion-input>
-   </ion-item>
+      <ion-label>Horaire fin :</ion-label> <ion-input  [disabled] ="inputDisabled" required [(ngModel)]="hjours.heureFin" name = "fin"></ion-input>   
+  </ion-item>
+  </li>
+  </ul> 
 </div>
 </ion-content>

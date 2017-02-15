@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { Component,  } from '@angular/core';
+import { NavController, NavParams, ToastController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 
 // Providers
@@ -17,26 +17,18 @@ export class MonprofilPage {
   user : any = [];
   inputDisabled : boolean;	
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService,  public alertCtrl: AlertController) {
-   // ANCIEN CODE
-   /* this.user.id = 4;
-    this.user.token = "Marcuzzo | 587fc844ef548587fc844ef580587fc844ef5b9";
-    serviceUsers.getUser(this.user.id, this.user.token).subscribe(user => {
-      this.user = user;
-      console.log(user);
-    })*/
-     /* TODO VANESSA : : traiter les données du profil :
-      - Traiter le résultat de l'API : 
-          - Si on a bien récupérer le profil (le " if(user)" dans le code) : vérifier que l'affichage des  les données dans la page profil est OK 
-                  -> La date de naissance est buggée -> il y a un problème avec l'année, mais on l'avais déja vu (lors de la modification), donc il faudra le régler
-          - sinon (le "else" dans le code), trouver comment traiter cela, exemple: message d'erreur, et peut être renvoyer sur la page de connexion
-      */
+  constructor(public toastCtrl : ToastController, public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService,  public alertCtrl: AlertController) {
      abiBddCtrl.getProfil(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
         user => {
            if(user) { // OK     
              this.user = user    
              } else { // Erreur
-                 console.log("Connexion échouée : mauvais token ou ID");
+                  let prompt = this.alertCtrl.create({
+                    title: 'Erreur de connexion',
+                    message: "Problème de connexion",
+                    buttons:["ok"]
+                  });
+                  prompt.present();
              }
         }); 
    this.user.mail  = window.localStorage.getItem('utilisateur');
@@ -61,8 +53,19 @@ export class MonprofilPage {
         data => {
            if(data) {  // OK        
               console.log("Modifications profil enregsitrées");
+                 let toast = this.toastCtrl.create({
+                      message: `Modifications enregistrées`,
+                      duration: 2000,
+                      cssClass: "yourCssClassName",
+                });
+                toast.present();
              } else { // Erreur
-                 console.log("Connexion échouée : mauvais token ou ID");
+                 let prompt = this.alertCtrl.create({
+                    title: 'Erreur de connexion',
+                    message: "Connexion échouée",
+                    buttons:["ok"]
+                  });
+                  prompt.present();
              }
         });
        this.inputDisabled = true; // On désactive les champs du formulaire

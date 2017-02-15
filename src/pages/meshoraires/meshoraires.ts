@@ -133,19 +133,7 @@ export class MeshorairesPage {
     }//getHoraireDuJour
     
 
-    // TODO Vanessa : completer l'affichage des horaires du jour avec les données du tableau this.horaireDuJour
-    // -> C'est un tableau avec tous les horaires pour le jour, donc ton format prévu n'ira pas (car ce n'est pas formément matin/soir, comme on avait vu avec Joel) : 
-    // -> Le plus simple serait peut être de les afficher avec un ngfor ??
-    // (je m'y connais pas trop avec ces trucs là, mais vu la tête du code html que tu as fait tu as l'aire de bien comprendre comment ça marche !!)
-
-    // PROBLEME : si on clique sur un des jours du mois précédent, les mauvais horaires seront affichés : saurait-tu comment faire
-    // pour que les boutons des jours du mois précdent ne soient pas clicables ???? 
-
-    // ATTENTION : j'ai changer le nom des variables du modele "horaires"
-
-    // Ce serait bien des faire des "flèches" dans l'horaire pour directement passer au mois suivant/précédent
-    // Est-ce que tu pourrais intégrer ces flèches dans ton design de calendrier ? Si tu veux je ferais ensuite les fonction pour changer de mois
-
+  
     /* J'ai créer des horaires pour ton utilisateur, comme ça tu peux tester :
     2017-02-16 : 11:00:00 à 14:00:00
     2017-02-16 : 18:00:00 à 22:00:00
@@ -157,18 +145,31 @@ export class MeshorairesPage {
     */
     detailHoraire(i){
       this.getHoraireDuJour(i);
+      this.affichageH = true;
       if(this.horaireDuJour.length > 0){
         console.log(this.horaireDuJour); // Contient un tableau des horaires du jour choisi sous le format Horaire
       } else {
         console.log("pas d'horaire pour ce jour");
-      }
-      this.affichageH = true; 
+      } 
       this.selJour = i; //récupération du jour choisi
       this.inputDisabled = true; //desactivation des champs horaires
     //  if(this.horaires.jour == i){
 
 
     }//DetailHoraire
+
+    //TO KNOW Lucille je t'ai créé les Fonctions pour mois précédent et mois aprés. Les boutons existe aussi dans
+    //la partie HTML
+
+    GoToMoisPrecedent(){
+      console.log("mois d'avant")
+
+    }
+
+    GoToMoisSuivant(){
+      console.log("mois d'après")
+
+    }
 
   ionViewDidLoad() {
       console.log('Hello MesHoraires Page');

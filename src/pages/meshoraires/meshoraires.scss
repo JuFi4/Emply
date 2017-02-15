@@ -20,10 +20,25 @@ body {font-family: Verdana, sans-serif;}
 .month ul li {
     color: white;
     font-size: 20px;
+    text-align: center;
     text-transform: uppercase;
     letter-spacing: 3px;
     margin-left: center;
     margin-right: center;
+}
+
+/* Previous button inside month header */
+.month .prev {
+    float: left;
+    padding-top: 10px;
+    background: lightseagreen;
+}
+
+/* Next button */
+.month .next {
+    float: right;
+    padding-top: 10px;
+    background: lightseagreen;
 }
 
 
