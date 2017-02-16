@@ -20,11 +20,11 @@
        <ion-option  *ngFor = "let mois of moisListe"> {{mois.nom}}</ion-option>
     </ion-select>  
 </ion-item>
-<div *ngIf = "moisSelectionne && annee" >
+<div *ngIf = "moisSelectionne && annee"  (swipe)="changerMois($event)">
 <div class="month"> 
   <ul>
-    <button  class="prev" ion-button (click)="GoToMoisPrecedent()">&#10094;</button>
-    <button class="next" ion-button (click)= "GoToMoisSuivant()" >&#10095;</button>
+    <button  class="prev" ion-button (click)="goToMoisPrecedent()">&#10094;</button>
+    <button class="next" ion-button (click)= "goToMoisSuivant()" >&#10095;</button>
     <li >
      {{moisSelectionne.nom}}     
     </li>  

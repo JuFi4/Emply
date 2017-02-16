@@ -35,8 +35,7 @@ export class MeshorairesPage {
   horaireDuJour : Horaires[]; // Tableau qui contient les horaires du jour selectionné
   inputDisabled : Boolean;    
   annneeCourrante = new Date().getFullYear(); // Année courrante
-  anneeSelectionne : number; // TODO Vanessa : variable ou tu rangera l'année sélectionnée
-  isAnneBissextile : boolean ; // Gestion des années bissextiles : "si le 1er mars est un 29 févirer XD"
+  anneeSelectionne : number; 
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService, 
     public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) {    
@@ -48,7 +47,6 @@ export class MeshorairesPage {
      this.affichageH = false;
 
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante
-     this.isAnneBissextile = new Date(this.anneeSelectionne, 2, 0).getDate() == 29
     }//constructor
 
     onChange(mois): void{
@@ -67,7 +65,7 @@ export class MeshorairesPage {
      // On récupére le mois précédent depuis la liste, et on calcul son nombre de jours
      let moisPrecedent = this.moisListe[idMoisPrecedent];
      let nbJoursMoisPrecedent= moisPrecedent.nbJour;
-     if(moisPrecedent.moisId == 1 && this.isAnneBissextile) { nbJoursMoisPrecedent++; } // Si c'est le mois de février et que l'année est bissextile, on ajoute 1 jours
+     if(moisPrecedent.moisId == 1 && this.isAnneeBissextile(this.anneeSelectionne)) { nbJoursMoisPrecedent++; } // Si c'est le mois de février et que l'année est bissextile, on ajoute 1 jours
      // Défini quel est le 1er jours du mois d'avant à afficher pour que le mois courrant commance au bon jours 
      let permierJourMoisPrecedentAafficher = nbJoursMoisPrecedent - premierJoursMois + 1; // On met le "+1" car les jours sont déclalés de 1 : 0 = lundi, 1 = mardi...
      
@@ -78,7 +76,7 @@ export class MeshorairesPage {
      }
 
      let nbJoursMois = this.moisSelectionne.nbJour; // On fixe le nombre de jours en fonction du mois
-     if(this.moisSelectionne.moisId == 1 && this.isAnneBissextile) { nbJoursMois++; } // Si c'est le mois de février et que l'année est bissextile, on ajoute 1 jours
+     if(this.moisSelectionne.moisId == 1 && this.isAnneeBissextile(this.anneeSelectionne)) { nbJoursMois++; } // Si c'est le mois de février et que l'année est bissextile, on ajoute 1 jours
      // On remplis les jours du mois 
      for(let i = 1; i <= nbJoursMois; i++){
         this.jours.push(i);
@@ -154,22 +152,55 @@ export class MeshorairesPage {
       this.selJour = i; //récupération du jour choisi
       this.inputDisabled = true; //desactivation des champs horaires
     //  if(this.horaires.jour == i){
+    
+   }//DetailHoraire
 
-
-    }//DetailHoraire
-
-    //TO KNOW Lucille je t'ai créé les Fonctions pour mois précédent et mois aprés. Les boutons existe aussi dans
+    //TOTO Lucille je t'ai créé les Fonctions pour mois précédent et mois aprés. Les boutons existe aussi dans
     //la partie HTML
 
-    GoToMoisPrecedent(){
-      console.log("mois d'avant")
+    goToMoisPrecedent(){
+      console.log("mois d'avant");
+      // On regarde quel est le mois précédent (par rapport au moisId)
+      let idMois = this.moisSelectionne.moisId - 1;
+      // Si on est en janvier, c'est décembre (ID 11), et on change également d'année (décrément)
+      if(idMois === -1) { 
+        idMois = 11;
+        this.anneeSelectionne--;
+      };
+      // On défini ce mois comme moisSelectionne, et on appelle l'affichage.
+      this.moisSelectionne = this.moisListe[idMois];
+      this.afficherMois();
+    }//goToMoisPrecedent
 
-    }
+    goToMoisSuivant(){
+      console.log("mois d'après");
+      // On regarde quel est le mois suivante (par rapport au moisId)
+      let idMois = this.moisSelectionne.moisId +1;
+      // Si on est en décembre, c'est janvier (ID 0), et on change également d'année (incrément)
+      if(idMois === 12) { 
+        idMois = 0;
+        this.anneeSelectionne++;
+      };
+      // On définicele mois comme moisSelectionne, et on appelle l'affichage.
+      this.moisSelectionne = this.moisListe[idMois];
+      this.afficherMois();
+    }//goToMoisSuivant
 
-    GoToMoisSuivant(){
-      console.log("mois d'après")
+    changerMois(e){
+      console.log("changerMois");
+      if (e.direction == 2) { // Vers la gauche
+          console.log("gauche");
+          this.goToMoisSuivant();          
+      } else if (e.direction == 4) { // Vers la droite
+        console.log("droite");
+        this.goToMoisPrecedent();
+      }
+    }//changerMois
 
-    }
+
+   isAnneeBissextile(annee){
+      return new Date(annee, 2, 0).getDate() == 29
+    }//isAnneeBissextile
 
   ionViewDidLoad() {
       console.log('Hello MesHoraires Page');
