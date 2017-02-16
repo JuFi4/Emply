@@ -24,4 +24,11 @@
 
 <ion-content padding>
     <h3>Vue des demandes</h3>
+       <form><button ion-button (click)="faireDemandeVacances()">Faire une demande de vacances/férié</button>
+       <button ion-button (click)="faireDemandeConge()">Faire une demande de congé</button></form>
+       <form><button ion-button (click)="faireDemandeRecuperation()">Faire une demande de récupération</button>
+       <button ion-button (click)="faireDemandeInconnue()">Faire une demande spéciale</button></form>
+       
+      <form><button ion-button (click)="AfficherDemandes()" block outline>Voir toutes mes demandes</button></form>
+      
 </ion-content>

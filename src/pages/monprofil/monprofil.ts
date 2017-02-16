@@ -75,23 +75,26 @@ export class MonprofilPage {
     console.log('Hello MonProfil Page');
   }//ionViewDidLoad
 
-  doChangementMDP() {
+ faireChangementMDP() {
     let prompt = this.alertCtrl.create({
       title: 'Modification de mon mot de passe',
       message: "Entrez votre mot de passe : ",
       inputs: [
         {
           id: 'mdpAct',
+          type: 'password',
           name: 'mdpActuel',
           placeholder: 'Mot de passe actuel'
         },
         {
           id: 'NewMdp1',
+          type: 'password',
           name: 'mdpNew',
           placeholder: 'Nouveau Mot de passe'
         },
         {
           id: 'NewMdp2',
+          type: 'password',
           name: 'mdpNew2',
           placeholder: 'Confirmer votre nouveau Mot de passe'
         },
@@ -106,15 +109,17 @@ export class MonprofilPage {
         {
           text: 'Confirmer',
           handler: data => {
-            console.log('Changement confirm�');
-            this.doCheck();
+            //this.faireCheck();
+            this. modifierMotDePasse();
+            console.log('Changement ok');
           }
         }
       ]
     });
     prompt.present();
-  }
-  doCheck(){
+  }//faireChangementMDP
+
+  faireCheck(){
     console.log('doCheck');
     var MDP1 = document.getElementById("NewMdp1");
     var MDP2 = document.getElementById("NewMdp2");
@@ -125,13 +130,48 @@ export class MonprofilPage {
       console.log('false');
       return false;
     }
-  }
-  doChangementMail() {
+  }//faireCheck
+
+
+
+   modifierMotDePasse(){   
+     /* TODO CELINE : : traiter la modification du mot de passe :
+     - 1)  Mettre le code à la bonne place : garder la fonction modifierMotDePasse() et la completer (paramètres), ou créer une autre -> Je l'ai fait juste pour mettre le code
+          d'exemple à un endroit, mais tu en fait ce que tu veux
+      -2) Remplacer les données de test dans l'api  avec les données du profil issues du formulaire de modification de mot de passe
+      -3) Traiter le résultat de l'API : 
+          - Si la modification est bien enregsitrée (le "if(data)"" dans le code) : trouver comment traiter cela : alerte pour dire que c'est OK, 
+            ou rien du tout et juste remettre les champs en "nom modifiable".... à toi de voir ce que tu veux mettre
+          - sinon (le "else" dans le code) cela signifie que la modification n'a pas fonctionné 
+                -> erreur sur l'ancien mot de passe ou modification impossible pour une autre raison
+                -> Trouver comment traiter cela : message d'erreur "mauvais mot de passe", "modification impossible"... 
+      */
+
+    var MDPOld; 
+    MDPOld = document.getElementById("mdpAct").toString();
+    var MDPNew;
+    MDPNew = document.getElementById("NewMdp1").toString();
+    
+    // Modèle de la fonction: setPassword(userId : string, token: string, ancienPassword : string, nouveauPassword : string)
+    this.abiBddCtrl.setPassword(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'), MDPOld, MDPNew).subscribe(        
+      data => {
+           if(data) {  // OK         
+              console.log("Modifications mot de passe enregsitrées");
+              this.faireAlertOK();
+             } else { // Erreur
+                 console.log("Connexion échouée : mauvais mot de passe, token ou ID");
+                 this.faireAlertEchoue();
+             }
+        });
+  }//modifierMotDePasse
+
+ faireChangementMail() {
     let prompt = this.alertCtrl.create({
       title: 'Modification du mail',
       message: "Entrez votre nouvelle adresse email : ",
       inputs: [
         {
+          id: 'newMail',
           name: 'newMail',
           placeholder: 'Nouvelle adresse Email'
         },
@@ -146,37 +186,14 @@ export class MonprofilPage {
         {
           text: 'Confirmer',
           handler: data => {
-            console.log('Changement confirm�');
+             this.modifierEmail();
+            console.log('Changement confirmé');
           }
         }
       ]
     });
     prompt.present();
-  }//doChangementMDP
-
-   modifierMotDePasse(){   
-     /* TODO CELINE : : traiter la modification du mot de passe :
-     - 1)  Mettre le code à la bonne place : garder la fonction modifierMotDePasse() et la completer (paramètres), ou créer une autre -> Je l'ai fait juste pour mettre le code
-          d'exemple à un endroit, mais tu en fait ce que tu veux
-      -2) Remplacer les données de test dans l'api  avec les données du profil issues du formulaire de modification de mot de passe
-      -3) Traiter le résultat de l'API : 
-          - Si la modification est bien enregsitrée (le "if(data)"" dans le code) : trouver comment traiter cela : alerte pour dire que c'est OK, 
-            ou rien du tout et juste remettre les champs en "nom modifiable".... à toi de voir ce que tu veux mettre
-          - sinon (le "else" dans le code) cela signifie que la modification n'a pas fonctionné 
-                -> erreur sur l'ancien mot de passe ou modification impossible pour une autre raison
-                -> Trouver comment traiter cela : message d'erreur "mauvais mot de passe", "modification impossible"... 
-      */
-    
-    // Modèle de la fonction: setPassword(userId : string, token: string, ancienPassword : string, nouveauPassword : string)
-    this.abiBddCtrl.setPassword(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'), "1234", "1234").subscribe(        
-      data => {
-           if(data) {  // OK         
-              console.log("Modifications mot de passe enregsitrées");
-             } else { // Erreur
-                 console.log("Connexion échouée : mauvais mot de passe, token ou ID");
-             }
-        });
-  }//modifierMotDePasse
+  }//faireChangementMail
 
   modifierEmail(){   
      /* TODO CELINE : : traiter la modification de l^'email :
@@ -188,16 +205,47 @@ export class MonprofilPage {
             ou rien du tout et juste remettre les champs en "nom modifiable".... à toi de voir ce que tu veux mettre
           - sinon (le "else" dans le code), trouver comment traiter cela : message d'erreur "modification impossible",
       */
+
+    var newMail;
+    newMail = document.getElementById("newMail").toString();
     
     // Modèle de la fonction: setEmail(userId : string, token: string, mail : string)
-    this.abiBddCtrl.setEmail(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), "lucille@gmail.com").subscribe(        
+    this.abiBddCtrl.setEmail(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), newMail).subscribe(        
        data => {
            if(data) { // OK     
               console.log("Modifications de l'adresse email enregsitrées");
+              this.faireAlertOK();
              } else { // Erreur
                  console.log("Connexion échouée : mauvais mot de passe, token ou ID");
+                 this.faireAlertEchoue();
              }
         });
   }//modifierEmail
+
+  faireAlertOK(){
+      let prompt = this.alertCtrl.create({
+      title: 'Modification validée',
+      //message: "Modification validée",
+      buttons: [
+        {
+          text: 'Fermer',
+        }
+      ]
+    });
+    prompt.present();
+  }//faireAlertOK
+
+  faireAlertEchoue(){
+      let prompt = this.alertCtrl.create({
+      title: 'Modification échouée, veuillez recommencer',
+      //message: "Modification échouée, veuillez recommencer",
+      buttons: [
+        {
+          text: 'Fermer',
+        }
+      ]
+    });
+    prompt.present();
+  }//faireAlertEchoue
 
 }//MonprofilPage
