@@ -101,7 +101,7 @@ export class MeshorairesPage {
                     let horaire =  new Horaires(data[i].id, 
                       new Date(data[i].annee, data[i].mois-1, data[i].jour),
                       new Date(data[i].annee, data[i].mois-1, data[i].jour, data[i].heureDebut, data[i].minuteDebut),
-                      new Date(data[i].annee, data[i].mois-1, data[i].jour, data[i].heureFin, data[i].minuteFin));
+                      new Date(data[i].annee, data[i].mois-1, data[i].jour, data[i].heureFin, data[i].minuteFin));                    
                     this.horaires.push(horaire); // On ajoute l'horaire au tableau
                 }
                 console.log(this.horaires);
@@ -128,11 +128,11 @@ export class MeshorairesPage {
        for(let i = 0; i < this.horaires.length; i++){ // On parcour les horaires
           if(this.horaires[i].date.getTime() === dateDuJour.getTime()){ // Si l'horaire est pour la date du jour sélectionné (on passe en getTime() sinon il ne reconnait pas 2 dates pareilles !)
             this.horaireDuJour.push(this.horaires[i]); // On l'ajoute dans la liste
+            console.log(this.horaires[i].affichageHeureDebut);
+            console.log(this.horaires[i].affichageHeureFin);
           }
        }
     }//getHoraireDuJour
-    
-
   
     /* J'ai créer des horaires pour ton utilisateur, comme ça tu peux tester :
     2017-02-16 : 11:00:00 à 14:00:00
