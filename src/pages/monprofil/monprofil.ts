@@ -109,8 +109,8 @@ export class MonprofilPage {
         {
           text: 'Confirmer',
           handler: data => {
-            //this.faireCheck();
-            this. modifierMotDePasse();
+            this.faireCheck(data.mdpNew, data.mdpNew2);
+            this. modifierMotDePasse(data.mdpActuel, data.mdpNew);
             console.log('Changement ok');
           }
         }
@@ -119,11 +119,10 @@ export class MonprofilPage {
     prompt.present();
   }//faireChangementMDP
 
-  faireCheck(){
+  // TODO Céline: coder cette fonction
+  faireCheck(MDP1, MDP2){
     console.log('doCheck');
-    var MDP1 = document.getElementById("NewMdp1");
-    var MDP2 = document.getElementById("NewMdp2");
-    if (MDP1 == MDP2) {
+    if (MDP1 === MDP2) {
       console.log('true');
       return true;
     } else {
@@ -134,7 +133,7 @@ export class MonprofilPage {
 
 
 
-   modifierMotDePasse(){   
+   modifierMotDePasse(MDPOld, MDPNew){   
      /* TODO CELINE : : traiter la modification du mot de passe :
      - 1)  Mettre le code à la bonne place : garder la fonction modifierMotDePasse() et la completer (paramètres), ou créer une autre -> Je l'ai fait juste pour mettre le code
           d'exemple à un endroit, mais tu en fait ce que tu veux
@@ -145,13 +144,7 @@ export class MonprofilPage {
           - sinon (le "else" dans le code) cela signifie que la modification n'a pas fonctionné 
                 -> erreur sur l'ancien mot de passe ou modification impossible pour une autre raison
                 -> Trouver comment traiter cela : message d'erreur "mauvais mot de passe", "modification impossible"... 
-      */
-
-    var MDPOld; 
-    MDPOld = document.getElementById("mdpAct").toString();
-    var MDPNew;
-    MDPNew = document.getElementById("NewMdp1").toString();
-    
+      */   
     // Modèle de la fonction: setPassword(userId : string, token: string, ancienPassword : string, nouveauPassword : string)
     this.abiBddCtrl.setPassword(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'), MDPOld, MDPNew).subscribe(        
       data => {
@@ -186,7 +179,7 @@ export class MonprofilPage {
         {
           text: 'Confirmer',
           handler: data => {
-             this.modifierEmail();
+             this.modifierEmail(data.newMail);
             console.log('Changement confirmé');
           }
         }
@@ -195,7 +188,8 @@ export class MonprofilPage {
     prompt.present();
   }//faireChangementMail
 
-  modifierEmail(){   
+  modifierEmail(newMail){  
+    console.log("modifierEmail"); 
      /* TODO CELINE : : traiter la modification de l^'email :
      - 1)  Mettre le code à la bonne place : garder la fonction modifierMotDePasse() et la completer (paramètres), ou créer une autre -> Je l'ai fait juste pour mettre le code
           d'exemple à un endroit, mais tu en fait ce que tu veux
@@ -205,16 +199,13 @@ export class MonprofilPage {
             ou rien du tout et juste remettre les champs en "nom modifiable".... à toi de voir ce que tu veux mettre
           - sinon (le "else" dans le code), trouver comment traiter cela : message d'erreur "modification impossible",
       */
-
-    var newMail;
-    newMail = document.getElementById("newMail").toString();
-    
     // Modèle de la fonction: setEmail(userId : string, token: string, mail : string)
     this.abiBddCtrl.setEmail(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), newMail).subscribe(        
        data => {
            if(data) { // OK     
               console.log("Modifications de l'adresse email enregsitrées");
               this.faireAlertOK();
+              this.user.mail = newMail; // Affichage du nouvel email
              } else { // Erreur
                  console.log("Connexion échouée : mauvais mot de passe, token ou ID");
                  this.faireAlertEchoue();
