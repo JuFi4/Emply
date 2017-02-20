@@ -123,13 +123,15 @@ export class MeshorairesPage {
     getHoraireDuJour(jour){
       let dateDuJour = new Date(this.anneeSelectionne, this.moisSelectionne.moisId, jour);
       this.horaireDuJour = []; // Tableau pour les horaires du jour
-       for(let i = 0; i < this.horaires.length; i++){ // On parcour les horaires
-          if(this.horaires[i].date.getTime() === dateDuJour.getTime()){ // Si l'horaire est pour la date du jour sélectionné (on passe en getTime() sinon il ne reconnait pas 2 dates pareilles !)
-            this.horaireDuJour.push(this.horaires[i]); // On l'ajoute dans la liste
-            console.log(this.horaires[i].affichageHeureDebut);
-            console.log(this.horaires[i].affichageHeureFin);
-          }
-       }
+      if(this.horaires != null){ // Si des horaires existent
+        for(let i = 0; i < this.horaires.length; i++){ // On parcour les horaires
+            if(this.horaires[i].date.getTime() === dateDuJour.getTime()){ // Si l'horaire est pour la date du jour sélectionné (on passe en getTime() sinon il ne reconnait pas 2 dates pareilles !)
+              this.horaireDuJour.push(this.horaires[i]); // On l'ajoute dans la liste
+              console.log(this.horaires[i].affichageHeureDebut);
+              console.log(this.horaires[i].affichageHeureFin);
+            }
+        }
+      }
     }//getHoraireDuJour
   
     /* J'ai créer des horaires pour ton utilisateur, comme ça tu peux tester :
@@ -142,6 +144,7 @@ export class MeshorairesPage {
     2017-02-23 : 20:00:00 à 22:00:00
     */
     detailHoraire(i){
+       console.log("detailHoraire");
       this.getHoraireDuJour(i);
       this.affichageH = true;
       if(this.horaireDuJour.length > 0){
