@@ -81,12 +81,22 @@ export class ApiBddService {
    }//setEmail
 
  // Récupération des horaires d'un utilisateur
- // Renvois :  un JSON avec les horaires pour la periode demandée (requête réussie), soit False (requête réussie)
+ // Renvois :  un JSON avec les horaires pour la periode demandée (requête réussie), soit False (mauvais userId ou Token)
   getHoraires(userId : string, token: string, annee : string, mois: string) {
      var url =this.baseUrl + 'type=getHoraires&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&annee=' + encodeURI(annee) + '&mois=' + encodeURI(mois);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//getHoraires
+
+ // Enregsitrement d'une demande
+ // Renvois :  True (requête réussie), ou False (mauvais userId, demId, ou Token)
+  setDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, motif:string) {
+     var url =this.baseUrl + 'type=setDemande&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&demId=' + encodeURI(demId) 
+      + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin) + '&motif=' + encodeURI(motif);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());
+     return response;
+   }//setDemande
 
 }//ApiBddService

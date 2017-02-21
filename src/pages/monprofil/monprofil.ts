@@ -40,13 +40,6 @@ export class MonprofilPage {
   }//modifier
 
   enregistrer(){
-    // ANCIEN CODE :
-      /* TODO VANESSA : : traiter la modification du profil :     -
-      - Traiter le résultat de l'API : 
-          - Si la modification est bien enregsitrée (le "if(data)"" dans le code) : trouver comment traiter cela : alerte pour dire que c'est OK, 
-            ou rien du tout et juste remettre les champs en "nom modifiable".... à toi de voir ce que tu veux mettre
-          - sinon (le "else" dans le code), trouver comment traiter cela : message d'erreur "modification impossible",
-      */
     /* Modèle de la fonction: setProfil(userId : string, token: string, nom : string, prenom : string, dateNaissance : string, adresse : string, suppAdresse : string, 
             codePostal : number, ville : string, telFix : string, telMobile: string) */
     this.abiBddCtrl.setProfil(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'),this.user.nom, this.user.prenom, this.user.dateNaissance, this.user.adresse, this.user.suppAdresse, this.user.codePostal, this.user.ville, this.user.telFix, this.user.telMobile).subscribe(
