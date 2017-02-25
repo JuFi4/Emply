@@ -36,6 +36,8 @@ export class MeshorairesPage {
   inputDisabled : Boolean;    
   annneeCourrante = new Date().getFullYear(); // Année courrante
   anneeSelectionne : number; 
+  moisCourant = new Date().getMonth();
+  pasHeure : boolean;
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService, 
     public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) {    
@@ -45,8 +47,9 @@ export class MeshorairesPage {
      this.moisService.getSemaine().then(semaines => this.semaines = semaines);
      this.moisService.getMois().then(moisListe => this.moisListe = moisListe);
      this.affichageH = false;
-
+     this.pasHeure = true;
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante
+     console.log("mois :" + this.moisCourant);
     }//constructor
 
     onChange(mois): void{
@@ -144,13 +147,15 @@ export class MeshorairesPage {
     2017-02-23 : 20:00:00 à 22:00:00
     */
     detailHoraire(i){
-       console.log("detailHoraire");
+      console.log("detailHoraire");
       this.getHoraireDuJour(i);
       this.affichageH = true;
       if(this.horaireDuJour.length > 0){
+        this.pasHeure = false;
         console.log(this.horaireDuJour); // Contient un tableau des horaires du jour choisi sous le format Horaire
       } else {
         console.log("pas d'horaire pour ce jour");
+        this.pasHeure = true;
       } 
       this.selJour = i; //récupération du jour choisi
       this.inputDisabled = true; //desactivation des champs horaires
@@ -158,8 +163,6 @@ export class MeshorairesPage {
     
    }//DetailHoraire
 
-    //TOTO Lucille je t'ai créé les Fonctions pour mois précédent et mois aprés. Les boutons existe aussi dans
-    //la partie HTML
 
     goToMoisPrecedent(){
       console.log("mois d'avant");

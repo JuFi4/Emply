@@ -39,6 +39,8 @@
     <span>{{semaine.nom}}</span></li>
 </ul>
 
+
+
 <ul class="days"> 
   <li  *ngFor ="let i of jours">
    <button class="DetailJour" ion-button (click)="detailHoraire(i)"> 
@@ -46,6 +48,8 @@
    </button>
   </li>
 </ul>
+
+
 </div>
 <div *ngIf="affichageH">
   <h3 >Vos horaires du {{selJour}}</h3> 
@@ -59,5 +63,8 @@
   </ion-item>
   </li>
   </ul> 
+<div *ngIf = "pasHeure">
+  <h2> Vous n'avez pas d'heure aujourd'hui</h2>
+</div>
 </div>
 </ion-content>
