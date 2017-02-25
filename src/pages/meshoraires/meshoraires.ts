@@ -35,8 +35,14 @@ export class MeshorairesPage {
   horaireDuJour : Horaires[]; // Tableau qui contient les horaires du jour selectionné
   inputDisabled : Boolean;    
   annneeCourrante = new Date().getFullYear(); // Année courrante
+<<<<<<< HEAD
+  anneeSelectionne : number; 
+  moisCourant = new Date().getMonth();
+  pasHeure : boolean;
+=======
   anneeSelectionne : number; // TODO Vanessa : variable ou tu rangera l'année sélectionnée
   isAnneBissextile : boolean ; // Gestion des années bissextiles : "si le 1er mars est un 29 févirer XD"
+>>>>>>> origin/master
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService, 
     public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) {    
@@ -46,9 +52,13 @@ export class MeshorairesPage {
      this.moisService.getSemaine().then(semaines => this.semaines = semaines);
      this.moisService.getMois().then(moisListe => this.moisListe = moisListe);
      this.affichageH = false;
-
+     this.pasHeure = true;
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante
+<<<<<<< HEAD
+     console.log("mois :" + this.moisCourant);
+=======
      this.isAnneBissextile = new Date(this.anneeSelectionne, 2, 0).getDate() == 29
+>>>>>>> origin/master
     }//constructor
 
     onChange(mois): void{
@@ -144,22 +154,31 @@ export class MeshorairesPage {
     2017-02-23 : 20:00:00 à 22:00:00
     */
     detailHoraire(i){
+<<<<<<< HEAD
+      console.log("detailHoraire");
+=======
+>>>>>>> origin/master
       this.getHoraireDuJour(i);
       this.affichageH = true;
       if(this.horaireDuJour.length > 0){
+        this.pasHeure = false;
         console.log(this.horaireDuJour); // Contient un tableau des horaires du jour choisi sous le format Horaire
       } else {
         console.log("pas d'horaire pour ce jour");
+        this.pasHeure = true;
       } 
       this.selJour = i; //récupération du jour choisi
       this.inputDisabled = true; //desactivation des champs horaires
     //  if(this.horaires.jour == i){
 
+<<<<<<< HEAD
+=======
 
     }//DetailHoraire
 
     //TO KNOW Lucille je t'ai créé les Fonctions pour mois précédent et mois aprés. Les boutons existe aussi dans
     //la partie HTML
+>>>>>>> origin/master
 
     GoToMoisPrecedent(){
       console.log("mois d'avant")
