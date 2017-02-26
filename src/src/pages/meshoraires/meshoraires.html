@@ -1,0 +1,71 @@
+
+<!--
+  Generated template for the Meshoraires page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-toolbar> <!-- Même design que la nav-bar, mais sans le back button ! -->
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon> 
+    </button>
+    <ion-title>Mes horaires</ion-title>
+   </ion-toolbar>
+</ion-header>
+<ion-content padding>
+<ion-item>
+  <ion-label>Choisir un mois</ion-label> 
+    <ion-select [(ngModel)]= "mois" (ngModelChange)= "onChange(mois)">
+       <ion-option  *ngFor = "let mois of moisListe"> {{mois.nom}}</ion-option>
+    </ion-select>  
+</ion-item>
+<div *ngIf = "annee && moisSelectionne"  (swipe)="changerMois($event)">
+<div class="month"> 
+  <ul>
+    <button  class="prev" ion-button (click)="goToMoisPrecedent()">&#10094;</button>
+    <button class="next" ion-button (click)= "goToMoisSuivant()" >&#10095;</button>
+    <li >
+     {{moisSelectionne.nom}}
+    </li>  
+    <li>
+      {{annee}}      
+    </li>  
+  </ul>
+</div>
+
+<ul class="weekdays">
+  <li *ngFor = "let semaine of semaines">
+    <span>{{semaine.nom}}</span></li>
+</ul>
+
+
+
+<ul class="days"> 
+  <li  *ngFor ="let i of jours">
+   <button class="DetailJour" ion-button (click)="detailHoraire(i)" [class = "JoursOk"]="IsColored" > 
+     {{i}}    
+   </button>
+  </li>
+</ul>
+
+
+</div>
+<div *ngIf="affichageH">
+  <h3 >Vos horaires du {{selJour}}</h3> 
+ <ul>
+ <li *ngFor = "let hjours of horaireDuJour">
+  <ion-item>
+      <ion-label>Horaire début :</ion-label> <ion-input [disabled] ="inputDisabled" required [(ngModel)]="hjours.affichageHeureDebut" name = "debut"></ion-input>
+  </ion-item>
+  <ion-item >
+      <ion-label>Horaire fin :</ion-label> <ion-input  [disabled] ="inputDisabled" required [(ngModel)]="hjours.affichageHeureFin" name = "fin"></ion-input>   
+  </ion-item>
+  </li>
+  </ul> 
+<div *ngIf = "pasHeure">
+  <h2> Vous n'avez pas d'heure aujourd'hui</h2>
+</div>
+</div>
+</ion-content>

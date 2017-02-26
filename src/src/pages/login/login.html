@@ -1,0 +1,34 @@
+<!--
+  Generated template for the Login page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+
+    <ion-title>Login</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+<form (ngSubmit)="connecter()">
+  <ion-item>
+    <ion-label color="primary" stacked>Utilisateur</ion-label>
+    <ion-input type="text" placeholder="Utilisateur" [(ngModel)]="utilisateur" required name="utilisateur"></ion-input>
+  </ion-item>
+  
+  <ion-item>
+    <ion-label color="primary" stacked>Mot de passe</ion-label>
+    <ion-input type="password" placeholder="Mot de passe" [(ngModel)]="motDePasse" required name="motDePasse"></ion-input>
+  </ion-item>
+<br>
+<button ion-button block type="submit">Connexion</button>
+<button ion-button block clear (click)="nouveauMotDePasse()">Mot de passe oublié?</button>
+
+</form>
+</ion-content>
