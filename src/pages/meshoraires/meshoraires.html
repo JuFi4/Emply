@@ -1,3 +1,4 @@
+
 <!--
   Generated template for the Meshoraires page.
 
@@ -20,13 +21,13 @@
        <ion-option  *ngFor = "let mois of moisListe"> {{mois.nom}}</ion-option>
     </ion-select>  
 </ion-item>
-<div *ngIf = "moisSelectionne && annee" >
+<div *ngIf = "annee && moisSelectionne"  (swipe)="changerMois($event)">
 <div class="month"> 
   <ul>
-    <button  class="prev" ion-button (click)="GoToMoisPrecedent()">&#10094;</button>
-    <button class="next" ion-button (click)= "GoToMoisSuivant()" >&#10095;</button>
+    <button  class="prev" ion-button (click)="goToMoisPrecedent()">&#10094;</button>
+    <button class="next" ion-button (click)= "goToMoisSuivant()" >&#10095;</button>
     <li >
-     {{moisSelectionne.nom}}     
+     {{moisSelectionne.nom}}
     </li>  
     <li>
       {{annee}}      
@@ -43,7 +44,7 @@
 
 <ul class="days"> 
   <li  *ngFor ="let i of jours">
-   <button class="DetailJour" ion-button (click)="detailHoraire(i)"> 
+   <button class="DetailJour" ion-button (click)="detailHoraire(i)" [class = "JoursOk"]="IsColored" > 
      {{i}}    
    </button>
   </li>

@@ -1,3 +1,4 @@
+
 import { Component, Input} from '@angular/core';
 import{NavController, NavParams, AlertController} from 'ionic-angular';
 
@@ -34,11 +35,12 @@ export class MeshorairesPage {
   horaires : Horaires[]; // Tableau qui contient les horaires de la periode affichée
   horaireDuJour : Horaires[]; // Tableau qui contient les horaires du jour selectionné
   inputDisabled : Boolean;    
-  annneeCourrante = new Date().getFullYear(); // Année courrante 
+  annneeCourrante = new Date().getFullYear(); // Année courrante
+  anneeSelectionne : number; 
   moisCourant = new Date().getMonth();
   pasHeure : boolean;
-  anneeSelectionne : number; // TODO Vanessa : variable ou tu rangera l'année sélectionnée
-  isAnneBissextile : boolean ; // Gestion des années bissextiles : "si le 1er mars est un 29 févirer XD"
+  isColored : boolean;
+
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService, 
     public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) {    
      // Constructeur Date(Année, mois, jour, heure, minute) -> Atention, les mois se comptent à partrir de 0: 0 = janvier, 1= février...
@@ -49,16 +51,31 @@ export class MeshorairesPage {
      this.affichageH = false;
      this.pasHeure = true;
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante
-     console.log("mois :" + this.moisCourant);
-     this.isAnneBissextile = new Date(this.anneeSelectionne, 2, 0).getDate() == 29
+     console.log("coucou");
     }//constructor
 
-    onChange(mois): void{
-     this.moisSelectionne = this.getMoisSelectionne(mois.trim());
-     this.afficherMois();
-    }//onChange
+    onChange(mois){
+          this.moisSelectionne = this.moisListe[this.moisCourant]; 
+          this.afficherMois();
+    }
 
-    afficherMois(){         
+    ionViewDidLoad() {
+      console.log('Hello MesHoraires Page');
+      this.afficherHoraireCouleur();
+    }//ionViewDidLoad
+
+    afficherHoraireCouleur(){
+      if(this.horaireDuJour.length > 0){
+        this.isColored = true;
+        console.log(this.horaireDuJour); // Contient un tableau des horaires du jour choisi sous le format Horaire
+      } else {
+        console.log("pas d'horaire pour ce jour");
+        this.isColored = false;
+      } 
+    }
+
+
+    afficherMois(){        
      this.jours.length = 0;
      let premierJoursMois = new Date(this.anneeSelectionne, this.moisSelectionne.moisId, 0).getDay(); // On défini quel est le 1er jours du mois (code de 0 à 6 qui défini quel est le jour de la semaine)
     
@@ -69,7 +86,7 @@ export class MeshorairesPage {
      // On récupére le mois précédent depuis la liste, et on calcul son nombre de jours
      let moisPrecedent = this.moisListe[idMoisPrecedent];
      let nbJoursMoisPrecedent= moisPrecedent.nbJour;
-     if(moisPrecedent.moisId == 1 && this.isAnneBissextile) { nbJoursMoisPrecedent++; } // Si c'est le mois de février et que l'année est bissextile, on ajoute 1 jours
+     if(moisPrecedent.moisId == 1 && this.isAnneeBissextile(this.anneeSelectionne)) { nbJoursMoisPrecedent++; } // Si c'est le mois de février et que l'année est bissextile, on ajoute 1 jours
      // Défini quel est le 1er jours du mois d'avant à afficher pour que le mois courrant commance au bon jours 
      let permierJourMoisPrecedentAafficher = nbJoursMoisPrecedent - premierJoursMois + 1; // On met le "+1" car les jours sont déclalés de 1 : 0 = lundi, 1 = mardi...
      
@@ -80,7 +97,7 @@ export class MeshorairesPage {
      }
 
      let nbJoursMois = this.moisSelectionne.nbJour; // On fixe le nombre de jours en fonction du mois
-     if(this.moisSelectionne.moisId == 1 && this.isAnneBissextile) { nbJoursMois++; } // Si c'est le mois de février et que l'année est bissextile, on ajoute 1 jours
+     if(this.moisSelectionne.moisId == 1 && this.isAnneeBissextile(this.anneeSelectionne)) { nbJoursMois++; } // Si c'est le mois de février et que l'année est bissextile, on ajoute 1 jours
      // On remplis les jours du mois 
      for(let i = 1; i <= nbJoursMois; i++){
         this.jours.push(i);
@@ -127,13 +144,15 @@ export class MeshorairesPage {
     getHoraireDuJour(jour){
       let dateDuJour = new Date(this.anneeSelectionne, this.moisSelectionne.moisId, jour);
       this.horaireDuJour = []; // Tableau pour les horaires du jour
-       for(let i = 0; i < this.horaires.length; i++){ // On parcour les horaires
-          if(this.horaires[i].date.getTime() === dateDuJour.getTime()){ // Si l'horaire est pour la date du jour sélectionné (on passe en getTime() sinon il ne reconnait pas 2 dates pareilles !)
-            this.horaireDuJour.push(this.horaires[i]); // On l'ajoute dans la liste
-            console.log(this.horaires[i].affichageHeureDebut);
-            console.log(this.horaires[i].affichageHeureFin);
-          }
-       }
+      if(this.horaires != null){ // Si des horaires existent
+        for(let i = 0; i < this.horaires.length; i++){ // On parcour les horaires
+            if(this.horaires[i].date.getTime() === dateDuJour.getTime()){ // Si l'horaire est pour la date du jour sélectionné (on passe en getTime() sinon il ne reconnait pas 2 dates pareilles !)
+              this.horaireDuJour.push(this.horaires[i]); // On l'ajoute dans la liste
+              console.log(this.horaires[i].affichageHeureDebut);
+              console.log(this.horaires[i].affichageHeureFin);
+            }
+        }
+      }
     }//getHoraireDuJour
   
     /* J'ai créer des horaires pour ton utilisateur, comme ça tu peux tester :
@@ -159,24 +178,54 @@ export class MeshorairesPage {
       this.selJour = i; //récupération du jour choisi
       this.inputDisabled = true; //desactivation des champs horaires
     //  if(this.horaires.jour == i){
-
-    }//DetailHoraire
-
-    //TO KNOW Lucille je t'ai créé les Fonctions pour mois précédent et mois aprés. Les boutons existe aussi dans
-    //la partie HTML
+    
+   }//DetailHoraire
 
 
-    GoToMoisPrecedent(){
-      console.log("mois d'avant")
+    goToMoisPrecedent(){
+      console.log("mois d'avant");
+      // On regarde quel est le mois précédent (par rapport au moisId)
+      let idMois = this.moisSelectionne.moisId - 1;
+      // Si on est en janvier, c'est décembre (ID 11), et on change également d'année (décrément)
+      if(idMois === -1) { 
+        idMois = 11;
+        this.anneeSelectionne--;
+      };
+      // On défini ce mois comme moisSelectionne, et on appelle l'affichage.
+      this.moisSelectionne = this.moisListe[idMois];
+      this.afficherMois();
+    }//goToMoisPrecedent
 
-    }
+    goToMoisSuivant(){
+      console.log("mois d'après");
+      // On regarde quel est le mois suivante (par rapport au moisId)
+      let idMois = this.moisSelectionne.moisId +1;
+      // Si on est en décembre, c'est janvier (ID 0), et on change également d'année (incrément)
+      if(idMois === 12) { 
+        idMois = 0;
+        this.anneeSelectionne++;
+      };
+      // On définicele mois comme moisSelectionne, et on appelle l'affichage.
+      this.moisSelectionne = this.moisListe[idMois];
+      this.afficherMois();
+    }//goToMoisSuivant
 
-    GoToMoisSuivant(){
-      console.log("mois d'après")
+    changerMois(e){
+      console.log("changerMois");
+      if (e.direction == 2) { // Vers la gauche
+          console.log("gauche");
+          this.goToMoisSuivant();          
+      } else if (e.direction == 4) { // Vers la droite
+        console.log("droite");
+        this.goToMoisPrecedent();
+      }
+    }//changerMois
 
-    }
 
-  ionViewDidLoad() {
-      console.log('Hello MesHoraires Page');
-  }//ionViewDidLoad
+   isAnneeBissextile(annee){
+      return new Date(annee, 2, 0).getDate() == 29
+    }//isAnneeBissextile
+
+  
 }//MeshorairesPage
+
