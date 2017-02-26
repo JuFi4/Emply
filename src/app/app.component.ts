@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Platform, MenuController, Nav, AlertController} from 'ionic-angular';
+import { Platform, MenuController, Nav, AlertController, NavController} from 'ionic-angular';
 import { StatusBar } from 'ionic-native';
 
 // Pages
@@ -22,7 +22,7 @@ export class MyApp {
   rootPage = LoginPage;
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, public menu: MenuController, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) {
+  constructor( public platform: Platform, public menu: MenuController, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) {
     this.initializeApp();
 
     this.pages = [
@@ -76,8 +76,8 @@ export class MyApp {
           console.log("Mot de passe: " + window.localStorage.getItem('motDePasse'));
           console.log("Id: " + window.localStorage.getItem('id'));
           console.log("Token bdd: " + window.localStorage.getItem('tokenBDD'));
-          this.nav.setRoot(LoginPage);
-          this.nav.popToRoot();
+          this.nav.push(LoginPage); //charge la page login
+          //this.nav.popToRoot();
         }
       }
     ]
