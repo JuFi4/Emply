@@ -6,6 +6,9 @@ import { SaisiedemandePage } from '../saisiedemande/saisiedemande';
 
 // Providers
 import { ApiBddService } from '../../providers/api-bdd-service';
+
+//models
+import {Demande} from '../../models/demande';
 /*
   Generated class for the Demandes page.
 
@@ -19,10 +22,11 @@ import { ApiBddService } from '../../providers/api-bdd-service';
 export class DemandesPage {
   radioOpen: boolean;
   radioResult;
+  demandes : Demande[]; // Tableau qui contient toutes les demandes
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) { 
     // POUR CELINE : exemple d'appel de la fonction enregsitrerDemande (tu peux effacer tout ça quant tu n'en a plus besoin)
-    /* demId : l’id de la demande:
+    /* typeDemId : l’id du type de la demande:
         1: Vacances/Férié
         2: Congé de formation
         3: Congé paternité
@@ -48,8 +52,14 @@ export class DemandesPage {
     // Autre demande
     // this.enregsitrerDemande(6, "2017-08-10", "2017-08-20", "Je suis fatigué");
 
-    
-  }
+    // POUR CELINE : exemple d'appel de la fonction modifierDemande
+    // Attention: il faut récupérer l'ID de la demande !
+    //  this.modifierDemande(1, "2017-03-10", "2017-03-20", "Salut");
+
+    // POUR CELINE 
+    // Récupère les demandes et les range dans this.demandes
+     this.getDemandes();
+  }//constructor
 
   ionViewDidLoad() {
     console.log('Hello Demandes Page');
@@ -285,9 +295,9 @@ export class DemandesPage {
         5: Récupération
         6: Autre demande
    */
-  enregsitrerDemande(demId, dateDebut:string, dateFin:string, motif:string){  
+  enregsitrerDemande(typeDemId, dateDebut:string, dateFin:string, motif:string){  
     // setDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, motif:string
-    this.abiBddCtrl.setDemande(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'), demId, dateDebut, dateFin, motif).subscribe(        
+    this.abiBddCtrl.setDemande(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'), typeDemId, dateDebut, dateFin, motif).subscribe(        
       data => {
            if(data) {  // OK         
               console.log("Demande enregsitrée"); // Traiter le cas où c'est ok : un toast par exemple
@@ -296,4 +306,40 @@ export class DemandesPage {
              }
         });
   }//enregsitrerDemande
+
+  modifierDemande(demId, dateDebut:string, dateFin:string, motif:string){  
+    // setDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, motif:string
+    this.abiBddCtrl.modDemande(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'), demId, dateDebut, dateFin, motif).subscribe(        
+      data => {
+           if(data) {  // OK         
+              console.log("Modification enregsitrée"); // Traiter le cas où c'est ok : un toast par exemple
+             } else { // Erreur
+                 console.log("Enregsitrement échoue : token ou ID"); // Traiter le cas oû c'est pas OK : une alerte...
+             }
+        });
+  }//enregsitrerDemande
+
+  //Récupère la liste des demandes
+  getDemandes(){
+      this.abiBddCtrl.getDemandes(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
+        data => {  
+           if(data) { // Si les données sont bien chargées    
+                this.demandes = [];
+                for(let i = 0; i < data.length; i++){ //Remplissage du tableau demandes avec les données formatées
+                    let demande =  new Demande(data[i].id, 
+                      new Date(data[i].dateDebut), 
+                      new Date(data[i].dateFin), 
+                      data[i].motif, 
+                      data[i].statut, 
+                      data[i].id_typeDemande, 
+                      data[i].nom_typeDemande
+                    );                    
+                    this.demandes.push(demande); // On ajoute l'horaire au tableau
+                }
+                console.log(this.demandes);
+             } else { // Erreur
+                 console.log("Aucune demande à afficher");
+             }
+        }); 
+    }//getDemandes
 }
