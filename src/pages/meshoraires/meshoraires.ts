@@ -47,7 +47,7 @@ export class MeshorairesPage {
      // notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017, 0, 15, 0, 9));
      // notificationsLocalesCtrl.scheduleNotificationValidationMensuelle(new Date(2017, 0, 15, 0, 10));
      this.moisService.getSemaine().then(semaines => this.semaines = semaines);
-     this.moisService.getMois().then(moisListe => this.moisListe = moisListe);
+     this.moisService.getMois().then(moisListe => this.moisListe = moisListe).then(result => this.selectionnerMois());
      this.affichageH = false;
      this.pasHeure = true;
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante
@@ -55,8 +55,8 @@ export class MeshorairesPage {
     }//constructor
 
     onChange(mois){
-          this.moisSelectionne = this.moisListe[this.moisCourant]; 
-          this.afficherMois();
+         this.moisSelectionne = this.moisListe[this.moisCourant]; 
+         this.afficherMois();
     }
 
     ionViewDidLoad() {
@@ -64,18 +64,35 @@ export class MeshorairesPage {
       this.afficherHoraireCouleur();
     }//ionViewDidLoad
 
+    /* VANESSA: j'ai trouvé comment selectionner le mois courrant: ligne 50, j'ai rajouter un "then()" qui lance la fonction selectionnerMois() lorsque 
+      la liste des mois a bien été récuprée.
+      Pour le moment l'affichage ne marche pas car le code que tu as mis dans l'HTML " [class = "JoursOk"]="IsColored"" a l'air de bloquer l'affichage
+      mais j'ai tester en l'enlevant et ça affiche bien le calendrier du avec le bon mois.
+      J'ai mis ton formulaire pour selectionner le mois en commentaire dans l'html pour pas le perdre, mais du coup est est désactivé
+      Du coup je pense qu'il n'y a pas besoin de passer par le ionViewDidLoad, tu peux tout mettre soit dans le constructeur, soit dans
+      selectionnerMois()
+    */
+    selectionnerMois(){
+        this.moisSelectionne = this.moisListe[this.moisCourant]; 
+        console.log("this.moisSelectionne " + this.moisSelectionne.nom);
+        this.afficherMois();
+    }//selectionnerMois
+    
+
     afficherHoraireCouleur(){
-      if(this.horaireDuJour.length > 0){
-        this.isColored = true;
-        console.log(this.horaireDuJour); // Contient un tableau des horaires du jour choisi sous le format Horaire
-      } else {
-        console.log("pas d'horaire pour ce jour");
-        this.isColored = false;
-      } 
-    }
+      if(this.horaireDuJour != null){
+        if(this.horaireDuJour.length > 0){
+          this.isColored = true;
+          console.log(this.horaireDuJour); // Contient un tableau des horaires du jour choisi sous le format Horaire
+        } else {
+          console.log("pas d'horaire pour ce jour");
+          this.isColored = false;
+        } 
+      }
+    }//afficherHoraireCouleur
 
 
-    afficherMois(){        
+    afficherMois(){   
      this.jours.length = 0;
      let premierJoursMois = new Date(this.anneeSelectionne, this.moisSelectionne.moisId, 0).getDay(); // On défini quel est le 1er jours du mois (code de 0 à 6 qui défini quel est le jour de la semaine)
     
