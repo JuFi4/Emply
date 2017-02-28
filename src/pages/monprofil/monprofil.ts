@@ -109,9 +109,12 @@ export class MonprofilPage {
         {
           text: 'Confirmer',
           handler: data => {
-            this.faireCheck(data.mdpNew, data.mdpNew2);
-            this. modifierMotDePasse(data.mdpActuel, data.mdpNew);
-            console.log('Changement ok');
+            if (this.faireCheck(data.mdpNew, data.mdpNew2)== true){
+              this. modifierMotDePasse(data.mdpActuel, data.mdpNew);
+              console.log('Changement ok');
+            }else{
+              this.faireAlertEchoue();
+            }
           }
         }
       ]
