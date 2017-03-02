@@ -11,6 +11,7 @@ import { ApiBddService } from '../../providers/api-bdd-service';
 import {Mois} from '../../models/mois';
 import {Semaine} from '../../models/semaine';
 import {Horaires} from '../../models/horaires';
+import {Jour} from '../../models/jour';
 
 /*
   Generated class for the Meshoraires page.
@@ -29,6 +30,7 @@ export class MeshorairesPage {
   semaines : Semaine[]
   semaine : Semaine;
   jours : any[] = [];
+  jour : Jour;
   selJour : any = [];
   annee : any = []; 
   affichageH : Boolean;
@@ -39,7 +41,7 @@ export class MeshorairesPage {
   anneeSelectionne : number; 
   moisCourant = new Date().getMonth();
   pasHeure : boolean;
-  isColored : boolean;
+  isDisabledDay : boolean;
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService, 
     public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) {    
@@ -51,17 +53,12 @@ export class MeshorairesPage {
      this.affichageH = false;
      this.pasHeure = true;
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante
-     console.log("coucou");
+     this.afficherHoraireCouleur();
     }//constructor
 
-    onChange(mois){
-         this.moisSelectionne = this.moisListe[this.moisCourant]; 
-         this.afficherMois();
-    }
 
     ionViewDidLoad() {
       console.log('Hello MesHoraires Page');
-      this.afficherHoraireCouleur();
     }//ionViewDidLoad
 
     /* VANESSA: j'ai trouvé comment selectionner le mois courrant: ligne 50, j'ai rajouter un "then()" qui lance la fonction selectionnerMois() lorsque 
@@ -80,13 +77,14 @@ export class MeshorairesPage {
     
 
     afficherHoraireCouleur(){
+      console.log("coucouCouleur")
       if(this.horaireDuJour != null){
         if(this.horaireDuJour.length > 0){
-          this.isColored = true;
+          this.isDisabledDay = true;
           console.log(this.horaireDuJour); // Contient un tableau des horaires du jour choisi sous le format Horaire
         } else {
           console.log("pas d'horaire pour ce jour");
-          this.isColored = false;
+          this.isDisabledDay = false;
         } 
       }
     }//afficherHoraireCouleur
@@ -117,7 +115,9 @@ export class MeshorairesPage {
      if(this.moisSelectionne.moisId == 1 && this.isAnneeBissextile(this.anneeSelectionne)) { nbJoursMois++; } // Si c'est le mois de février et que l'année est bissextile, on ajoute 1 jours
      // On remplis les jours du mois 
      for(let i = 1; i <= nbJoursMois; i++){
-        this.jours.push(i);
+        this.jour = new Jour(i);
+        this.jours.push(this.jour);
+        console.log(this.jour)
      }
 
      //afficher l'année
@@ -125,7 +125,22 @@ export class MeshorairesPage {
      console.log(this.annee)
 
      this.getHoraires(this.annee, this.moisSelectionne.moisId+1);
+
+     this.addHoraireJour();
     }//afficherMois
+
+
+     //remplir les horaires du jour en paramètre
+     addHoraireJour(){
+      console.log(this.jours.length)
+      if(this.jours != null){ // Si des jours existent
+        for(let i = 0; i < this.jours.length; i++){
+            console.log(i);
+            this.getHoraireDuJour(this.jours[i].jour);
+        }
+      }
+      this.disabledHoraire();
+     }
 
     //Récupère la liste des horaires pour l'année et le mois passés en paramètre
     getHoraires(annee, mois){
@@ -158,19 +173,32 @@ export class MeshorairesPage {
     }//getMoisSelectionne
 
     //Récupère la liste des horaires pour le jour passé en paramètre
-    getHoraireDuJour(jour){
-      let dateDuJour = new Date(this.anneeSelectionne, this.moisSelectionne.moisId, jour);
-      this.horaireDuJour = []; // Tableau pour les horaires du jour
-      if(this.horaires != null){ // Si des horaires existent
-        for(let i = 0; i < this.horaires.length; i++){ // On parcour les horaires
-            if(this.horaires[i].date.getTime() === dateDuJour.getTime()){ // Si l'horaire est pour la date du jour sélectionné (on passe en getTime() sinon il ne reconnait pas 2 dates pareilles !)
-              this.horaireDuJour.push(this.horaires[i]); // On l'ajoute dans la liste
-              console.log(this.horaires[i].affichageHeureDebut);
-              console.log(this.horaires[i].affichageHeureFin);
-            }
+    getHoraireDuJour(jour : Jour){
+        let dateDuJour = new Date(this.anneeSelectionne, this.moisSelectionne.moisId, jour.jour);
+        this.horaireDuJour = []; // Tableau pour les horaires du jour
+        if(this.horaires != null){ // Si des horaires existent
+          for(let i = 0; i < this.horaires.length; i++){ // On parcour les horaires
+              if(this.horaires[i].date.getTime() === dateDuJour.getTime()){ // Si l'horaire est pour la date du jour sélectionné (on passe en getTime() sinon il ne reconnait pas 2 dates pareilles !)
+                this.horaireDuJour.push(this.horaires[i]); // On l'ajoute dans la liste 
+                this.jour.tbHoraire.push(this.horaires[i]);
+                console.log(this.jour.tbHoraire.push(this.horaires[i]))
+                console.log(this.horaires[i].affichageHeureDebut);
+                console.log(this.horaires[i].affichageHeureFin);
+              }
+          }
+        }
+    }//getHoraireDuJour
+
+    disabledHoraire(){
+      if(this.jour.tbHoraire != null){
+        console.log(this.jour.tbHoraire.length)
+        if(this.jour.tbHoraire.length > 0){
+          this.isDisabledDay = true;
+        }else{
+          this.isDisabledDay = false;
         }
       }
-    }//getHoraireDuJour
+    }
   
     /* J'ai créer des horaires pour ton utilisateur, comme ça tu peux tester :
     2017-02-16 : 11:00:00 à 14:00:00
@@ -182,20 +210,24 @@ export class MeshorairesPage {
     2017-02-23 : 20:00:00 à 22:00:00
     */
     detailHoraire(i){
-      console.log("detailHoraire");
-      this.getHoraireDuJour(i);
-      this.affichageH = true;
-      if(this.horaireDuJour.length > 0){
-        this.pasHeure = false;
-        console.log(this.horaireDuJour); // Contient un tableau des horaires du jour choisi sous le format Horaire
-      } else {
-        console.log("pas d'horaire pour ce jour");
-        this.pasHeure = true;
-      } 
-      this.selJour = i; //récupération du jour choisi
-      this.inputDisabled = true; //desactivation des champs horaires
-    //  if(this.horaires.jour == i){
-    
+      console.log(this.horaireDuJour.length);
+      console.log("joursSel "+i);
+      for(let j = 0; j < this.jours.length; j++){
+        if(this.jours[j].jour == i){
+          console.log("joursSel "+i);
+          this.affichageH = true;
+          if(this.getHoraireDuJour.length > 0){
+            this.pasHeure = false;
+            console.log(this.horaireDuJour); // Contient un tableau des horaires du jour choisi sous le format Horaire
+          } else {
+            console.log("pas d'horaire pour ce jour");
+            this.pasHeure = true;
+          } 
+          this.selJour = i; //récupération du jour choisi
+          this.inputDisabled = true; //desactivation des champs horaires
+          //  if(this.horaires.jour == i){
+        }
+      }
    }//DetailHoraire
 
 

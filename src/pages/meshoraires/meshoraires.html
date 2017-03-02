@@ -44,8 +44,8 @@
 
 <ul class="days"> 
   <li  *ngFor ="let i of jours">
-   <button class="DetailJour" ion-button (click)="detailHoraire(i)" [class = "JoursOk"]="IsColored" > 
-     {{i}}    
+   <button class="DetailJour" ion-button (click)="detailHoraire(i)" [hidden]="isDisabledDay" > 
+     {{i.jour}}    
    </button>
   </li>
 </ul>
