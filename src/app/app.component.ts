@@ -61,6 +61,7 @@ export class MyApp {
         role: 'cancel',
         handler: () => {
           console.log('Cancel clicked');
+          this.menu.close();
         }
       },
       {
@@ -76,6 +77,7 @@ export class MyApp {
           console.log("Mot de passe: " + window.localStorage.getItem('motDePasse'));
           console.log("Id: " + window.localStorage.getItem('id'));
           console.log("Token bdd: " + window.localStorage.getItem('tokenBDD'));
+          this.menu.close();
           this.nav.push(LoginPage); //charge la page login
           //this.nav.popToRoot();
         }

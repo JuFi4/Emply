@@ -42,22 +42,14 @@ export class LoginPage {
       this.navCtrl.push(AccueilPage, {utilisateur: this.utilisateur});
       console.log(window.localStorage.getItem('utilisateur'));
       console.log(window.localStorage.getItem('motDePasse'));
+      console.log(window.localStorage.getItem('deviceToken'));
+      this.abiBddCtrl.connexion(window.localStorage.getItem('utilisateur'), window.localStorage.getItem('motDePasse'), window.localStorage.getItem('deviceToken')).subscribe();
     } 
   }//constructor
 
    ionViewDidLoad() {
     console.log('Hello Login Page');
   }//ionViewDidLoad
-
-demanderNouveauMotDePasse() {
-    console.log('Bah bravo!');
-    let alert = this.alertCtrl.create({
-    title: 'Bah bravo!',
-    subTitle: 'Tu as une mémoire de moineau...',
-    buttons: ['Désolé']
-    });
-    alert.present();
-  }//demanderNouveauMotDePasse
 
   nouveauMotDePasse(){
         /* TODO JULIANA : intégration de l'api nouveau mot de passe :
@@ -89,24 +81,36 @@ demanderNouveauMotDePasse() {
                 data2 => {        
                     if(data2) { // OK    
                       console.log('Mail existant');
+                      this.confirmerDemandeNouveauMotDePasse();
                     } else { // Erreur
                       console.log("Mail inexistant");
-                      let alert2 = this.alertCtrl.create({
-                      title: 'Désolé',
-                      subTitle: 'Le mail saisi ne correspond à aucun utilisateur',
-                      buttons: ['Retour']
-                      });
-                      alert2.present();
+                      this.alerterMailInexistant();
                     }
                 }
-            );
-          
+            ); 
         }
       }
     ]
   });
   alert.present();
  }//nouveauMotDePasse
+
+confirmerDemandeNouveauMotDePasse(){
+      let alert = this.alertCtrl.create({
+      title: 'Demande exécutée',
+      subTitle: 'Votre nouveau mot de passe a été envoyé sur votre boîte mail.',
+      buttons: ['Retour']
+    });
+    alert.present();
+  }//confirmerDemandeNouveauMotDePasse
+
+ alerterMailInexistant(){
+      let alert = this.alertCtrl.create({
+      title: 'Le mail saisi ne correspond à aucun utilisateur',
+      buttons: ['Retour']
+    });
+    alert.present();
+  }//alerterMailInexistant
 
   connecter() {
       /* TODO JULIANA : traiter les données pour la connexion :
