@@ -26,9 +26,13 @@
     <ion-label color="primary" stacked>Mot de passe</ion-label>
     <ion-input type="password" placeholder="Mot de passe" [(ngModel)]="motDePasse" required name="motDePasse"></ion-input>
   </ion-item>
+  <br>
+  <ion-item>
+  <ion-label>Rester connecté(e)</ion-label>
+  <ion-checkbox ng-checked="false" ng-model="resteConnecte">Rester connecté(e)</ion-checkbox>
+  </ion-item>
 <br>
 <button ion-button block type="submit">Connexion</button>
-<button ion-button block clear (click)="nouveauMotDePasse()">Mot de passe oublié?</button>
-
 </form>
+<button ion-button block clear (click)="nouveauMotDePasse()">Mot de passe oublié?</button>
 </ion-content>

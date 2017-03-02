@@ -19,6 +19,7 @@ export class LoginPage {
    utilisateur = "";
    motDePasse = "";
    deviceToken : string;
+   resteConnecte = false;
    rootPage : any; // Permet de définir une autre page d'accueil (pour les notifications)
    isNotificationEnAttente = false;
    notificationEnAttente =  {id: '', titre: '', message:'' };  
@@ -128,16 +129,28 @@ confirmerDemandeNouveauMotDePasse(){
                     if(data) {  // OK      
                       console.log("ID : " + data.id);
                       console.log("Token : " + data.token);
-                      window.localStorage.setItem('id', data.id);
-                      window.localStorage.setItem('tokenBDD', data.token);
-                      window.localStorage.setItem('utilisateur', this.utilisateur);
-                      window.localStorage.setItem('motDePasse', this.motDePasse);
-                      window.localStorage.setItem('deviceToken', this.deviceToken);
-                      window.localStorage.setItem('utilisateurConnecte', "1");
-                      console.log("login " + window.localStorage.getItem('utilisateurConnecte'))
-                      if(this.isNotificationEnAttente) {
+                      if (this.resteConnecte) {
+                        console.log("Checkbox cochée");
+                        window.localStorage.setItem('id', data.id);
+                        window.localStorage.setItem('tokenBDD', data.token);
+                        window.localStorage.setItem('utilisateur', this.utilisateur);
+                        window.localStorage.setItem('motDePasse', this.motDePasse);
+                        window.localStorage.setItem('deviceToken', this.deviceToken);
+                        window.localStorage.setItem('utilisateurConnecte', "1");
+                        console.log("login " + window.localStorage.getItem('utilisateurConnecte'))
+                        if(this.isNotificationEnAttente) {
                           this.afficherNotificationLocale(this.notificationEnAttente.id, this.notificationEnAttente.titre, this.notificationEnAttente.message);
+                        }
+                      } else {
+                        console.log("Checkbox pas cochée");
+                        window.sessionStorage.setItem('id', data.id);
+                        window.sessionStorage.setItem('tokenBDD', data.token);
+                        window.sessionStorage.setItem('utilisateur', this.utilisateur);
+                        window.sessionStorage.setItem('motDePasse', this.motDePasse);
+                        window.sessionStorage.setItem('deviceToken', this.deviceToken);
                       }
+                      
+                      
                       this.navCtrl.push(this.rootPage, {utilisateur: this.utilisateur});
                     } else { // Erreur
                       console.log("Connexion échouée : mauvais mail ou mdp");
