@@ -10,7 +10,7 @@ import { Horaires } from '../models/horaires';
 
 @Injectable()
 export class ApiBddService {  
-  baseUrl = 'http://www.ctrl-ccnt.ch/assets/php/api/apiBdd.php?'; // URL du service web
+  baseUrl = 'https://ctrl-ccnt.ch/assets/php/api/apiBdd.php?'; // URL du service web
 
   constructor(public http: Http) {
   }//constructor

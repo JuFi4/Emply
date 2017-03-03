@@ -46,6 +46,9 @@ export class LoginPage {
 
      // Pour simuler le mode hors connexion : 
      //window.localStorage.setItem('noNetwork', '1');
+     
+     // Pour annuler la simution du mode hors connexion : 
+     window.localStorage.setItem('noNetwork', '0');
 
     if((window.localStorage.getItem('utilisateur') === "undefined" || window.localStorage.getItem('utilisateur') === null) && 
        (window.localStorage.getItem('motDePasse') === "undefined" || window.localStorage.getItem('motDePasse') === null)) {
