@@ -71,7 +71,11 @@ export class MyApp {
             data => {
               if(data) {}  // Déconnexion OK         
             });
-          window.localStorage.clear();
+          
+          // On défini à "undefined"" utilisateur et  motDePasse au lieu de faire clear -> afin de garder les données pour le mode hors connexion
+          //window.localStorage.clear();
+          window.localStorage.setItem('utilisateur', "undefined");
+          window.localStorage.setItem('motDePasse', "undefined");
           console.log('Logged out');
           console.log("Utilisateur: " + window.localStorage.getItem('utilisateur'));
           console.log("Mot de passe: " + window.localStorage.getItem('motDePasse'));

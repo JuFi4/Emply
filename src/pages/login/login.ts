@@ -10,10 +10,16 @@ import {MeshorairesPage} from "../meshoraires/meshoraires";
 
 // Providers
 import { ApiBddService } from '../../providers/api-bdd-service';
+
+// Sert pour vérifier le connexion
+declare var navigator: any;
+declare var Connection: any;
+
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html'
 })
+
 export class LoginPage {
    @ViewChild(Nav) nav: Nav;
    utilisateur = "";
@@ -24,16 +30,23 @@ export class LoginPage {
    isNotificationEnAttente = false;
    notificationEnAttente =  {id: '', titre: '', message:'' };  
 
+
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController) {      
      // Définition de la d'accueil par défaut
      this.rootPage = AccueilPage; 
     
-    // Instanciation des notifications push
+     // Instanciation des notifications push
      this.instancierNotificationsPush();    
 
-      // Instanciation des notifications locales
+     // Instanciation des notifications locales
      this.instancierNotificationsLocales();  
     
+     // Vérification des données réseau : UNIQUEMENT AVEC UN SMARTPHONE
+     //this.checkNetwork();
+
+     // Pour simuler le mode hors connexion : 
+     //window.localStorage.setItem('noNetwork', '1');
+
     if((window.localStorage.getItem('utilisateur') === "undefined" || window.localStorage.getItem('utilisateur') === null) && 
        (window.localStorage.getItem('motDePasse') === "undefined" || window.localStorage.getItem('motDePasse') === null)) {
       console.log('Pas de données sauvegardées.');
@@ -45,8 +58,31 @@ export class LoginPage {
       console.log(window.localStorage.getItem('motDePasse'));
       console.log(window.localStorage.getItem('deviceToken'));
       this.abiBddCtrl.connexion(window.localStorage.getItem('utilisateur'), window.localStorage.getItem('motDePasse'), window.localStorage.getItem('deviceToken')).subscribe();
-    } 
+    }     
   }//constructor
+
+
+  // Vérification des données mobiles pour pouvoir traiter le mode hors ligne
+  // NE FONCTIONNE PAS SI ON EST PAS AVEC UN SMARTPHONE
+  checkNetwork() {    
+    // Etats possibles de networkState : 
+    // Connection.UNKNOWN, Connection.ETHERNET, Connection.WIFI, Connection.CELL_2G, Connection.CELL_3G, Connection.CELL_4G, Connection.CELL, Connection.NONE 
+     var networkState = navigator.connection.type;
+     // Si l'état est "NONE" (=pas de connexion) ou "UNKNOWN" (=connexion inconnue : non détectée) : on met notNetwork à 1
+      if(networkState == Connection.NONE || networkState == Connection.UNKNOWN){
+           window.localStorage.setItem('noNetwork', '1');
+           let alert = this.alertCtrl.create({
+              title: 'Mode hors connexion',
+              subTitle: 'Vous êtes actuellement en mode hors connexion.\n '
+                  + 'Vous pouvez vous connecter avec le dernier compte utilisé et consulter les données chargées lors de votre dernière utilisation.\n '
+                  + ' Vous ne pourrez pas charger de nouvelles données, ni enregsitrer de modifications.',
+              buttons: ['OK']
+            });
+          alert.present();
+      } else {
+           window.localStorage.setItem('noNetwork', '0');
+     }     
+    }//checkNetwork
 
    ionViewDidLoad() {
     console.log('Hello Login Page');
@@ -114,56 +150,76 @@ confirmerDemandeNouveauMotDePasse(){
   }//alerterMailInexistant
 
   connecter() {
-      /* TODO JULIANA : traiter les données pour la connexion :
-      -1) Remplacer les données de test dans l'api de connexion par les varaibles isssues du formulaire
-      -2) Traiter le résultat de l'API : 
-          - si connexion OK (le " if(data)" dans le code), sauver les données + charger la page suivante
-          - sinon (le "else" dans le code) afficher un message d'erreur, ou ce que tu veux
+    // On passe trim() sur utilisateur et mot de passe pour enlever les éventuels espaces blancs
+    this.utilisateur = this.utilisateur.trim();
+    this.motDePasse = this.motDePasse.trim();
+    if(window.localStorage.getItem('noNetwork') === '0'){ // Mode normal : vérification de la connexion en ligne
+      this.abiBddCtrl.connexion(this.utilisateur, this.motDePasse, this.deviceToken).subscribe(
+                  data => {        
+                      if(data) {  // OK   
+                        console.log("data " + data);
+                        // Si on est en mode "normal" : on sauvergarde les données issues de l'API
+                        if(window.localStorage.getItem('noNetwork') === '0')  {
+                          console.log("ID : " + data.id);
+                          console.log("Token : " + data.token);
 
-        Note : j'ai mis le code en commentaire juste pour pas que ça me change mon token à chaque fois !!!
-        Tu peux enlever les commentaire et mettre les données de ton user  
-    */
-    // Format de la fonction: connexion(login : string, password: string, deviceToken: string)
-    this.abiBddCtrl.connexion(this.utilisateur, this.motDePasse, this.deviceToken).subscribe(
-                data => {        
-                    if(data) {  // OK      
-                      console.log("ID : " + data.id);
-                      console.log("Token : " + data.token);
-                      if (this.resteConnecte) {
-                        console.log("Checkbox cochée");
-                        window.localStorage.setItem('id', data.id);
-                        window.localStorage.setItem('tokenBDD', data.token);
-                        window.localStorage.setItem('utilisateur', this.utilisateur);
-                        window.localStorage.setItem('motDePasse', this.motDePasse);
-                        window.localStorage.setItem('deviceToken', this.deviceToken);
-                        window.localStorage.setItem('utilisateurConnecte', "1");
-                        console.log("login " + window.localStorage.getItem('utilisateurConnecte'))
-                        if(this.isNotificationEnAttente) {
-                          this.afficherNotificationLocale(this.notificationEnAttente.id, this.notificationEnAttente.titre, this.notificationEnAttente.message);
+                          // On sauvegarde les données de l'utilisateur pour la session actuelle
+                          window.localStorage.setItem('id', data.id);
+                          window.localStorage.setItem('tokenBDD', data.token);                        
+
+                          //On sauvegarde le nom d'utilisateur et le mot de passe pour pouvoir faire le login hors connexion
+                          window.localStorage.setItem('dernierUtilisateur', this.utilisateur);
+                          window.localStorage.setItem('dernierMotDePasse', this.motDePasse);
+                          
+                          if (this.resteConnecte) {
+                            console.log("Checkbox cochée");                                                 
+                          } else {
+                            console.log("Checkbox pas cochée");                       
+                          }  
                         }
-                      } else {
-                        console.log("Checkbox pas cochée");
-                        window.sessionStorage.setItem('id', data.id);
-                        window.sessionStorage.setItem('tokenBDD', data.token);
-                        window.sessionStorage.setItem('utilisateur', this.utilisateur);
-                        window.sessionStorage.setItem('motDePasse', this.motDePasse);
-                        window.sessionStorage.setItem('deviceToken', this.deviceToken);
+                        this.connexionOk();
+
+                      } else { // Erreur
+                        this.afficherErreurDeCOnnexion();                        
                       }
-                      
-                      
-                      this.navCtrl.push(this.rootPage, {utilisateur: this.utilisateur});
-                    } else { // Erreur
-                      console.log("Connexion échouée : mauvais mail ou mdp");
-                      let alert = this.alertCtrl.create({
-                      title: 'Erreur',
-                      subTitle: 'Utilisateur et/ou mot de passe incorrect(s).',
-                      buttons: ['Retour']
-                      });
-                      alert.present();
-                    }
-                }
-            );  
+                  }
+              ); 
+    } else { // Mode hors connexion
+        if(window.localStorage.getItem('dernierUtilisateur') === this.utilisateur && window.localStorage.getItem('dernierMotDePasse') === this.motDePasse){
+          this.connexionOk();
+        } else {
+          this.afficherErreurDeCOnnexion();      
+        }
+    }
   }//connecter
+
+  // Actions a faire quel que soit le mode de connexion
+  connexionOk(){
+    // Sauvegade des données de connexion et du statut connecté
+     window.localStorage.setItem('utilisateur', this.utilisateur);
+     window.localStorage.setItem('motDePasse', this.motDePasse);
+     window.localStorage.setItem('deviceToken', this.deviceToken);
+     window.localStorage.setItem('utilisateurConnecte', "1");
+
+      // Si on a une notification en attente, on l'affiche
+      if(this.isNotificationEnAttente) {
+          this.afficherNotificationLocale(this.notificationEnAttente.id, this.notificationEnAttente.titre, this.notificationEnAttente.message);
+      }                  
+                        
+     // On redirige vers la bonne page
+     this.navCtrl.push(this.rootPage, {utilisateur: this.utilisateur});
+  }//connexionOk
+
+
+  afficherErreurDeCOnnexion(){
+    console.log("Connexion échouée : mauvais mail ou mdp");
+    let alert = this.alertCtrl.create({
+      title: 'Erreur',
+      subTitle: 'Utilisateur et/ou mot de passe incorrect(s).',
+      buttons: ['Retour']
+    });
+    alert.present();
+  }//afficherErreurDeCOnnexion
 
   instancierNotificationsPush(){
    this.platform.ready().then(() => {

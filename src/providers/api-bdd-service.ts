@@ -10,18 +10,18 @@ import { Horaires } from '../models/horaires';
 
 @Injectable()
 export class ApiBddService {  
-  baseUrl = 'http://ctrl-ccnt.ch/assets/php/api/apiBdd.php?'; // URL du service web
+  baseUrl = 'http://www.ctrl-ccnt.ch/assets/php/api/apiBdd.php?'; // URL du service web
 
   constructor(public http: Http) {
   }//constructor
 
  // Connexion d'un utilisateur
  // Renvois :  un JSON avec les données utilisateurs (connexion résussi), soit False (connexion échouée)
-  connexion(login : string, password: string, deviceToken: string){
-     var url =this.baseUrl + 'type=connect&login=' + encodeURI(login) + '&password=' + encodeURI(password) + '&deviceToken=' + encodeURI(deviceToken);
-     console.log(url);
-     var response = this.http.get(url).map(res => res.json());
-     return response;
+  connexion(login : string, password: string, deviceToken: string){  
+    var url =this.baseUrl + 'type=connect&login=' + encodeURI(login) + '&password=' + encodeURI(password) + '&deviceToken=' + encodeURI(deviceToken);
+    console.log(url);
+    var response = this.http.get(url).map(res => res.json());  
+    return response;
    }//connexion
 
  // Déconnexion  d'un utilisateur
@@ -47,7 +47,9 @@ export class ApiBddService {
   getProfil(userId : string, token: string) : Observable<UserModel> {
      var url =this.baseUrl + 'type=getProfil&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
      console.log(url);
-     return this.http.get(url).map(res => <UserModel>res.json());
+     var response = this.http.get(url).map(res => <UserModel>res.json());
+     window.localStorage.setItem('getProfil', JSON.stringify(response));  // Création de la sauvegarde locale
+     return response;
    }//getProfil
 
  // Modification du profil d'un utilisateur
@@ -86,6 +88,7 @@ export class ApiBddService {
      var url =this.baseUrl + 'type=getHoraires&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&annee=' + encodeURI(annee) + '&mois=' + encodeURI(mois);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());
+     window.localStorage.setItem('getHoraires_'+mois+'_'+annee, JSON.stringify(response));  // Création de la sauvegarde locale de ces horaires (mois et annee)
      return response;
    }//getHoraires
 
@@ -115,6 +118,7 @@ export class ApiBddService {
      var url =this.baseUrl + 'type=getDemandes&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());
+     window.localStorage.setItem('getDemandes', JSON.stringify(response)); // Création de la sauvegarde locale
      return response;
    }//getDemandes
 
