@@ -29,7 +29,7 @@
   <br>
   <ion-item>
   <ion-label>Rester connecté(e)</ion-label>
-  <ion-checkbox ng-checked="false" ng-model="resteConnecte">Rester connecté(e)</ion-checkbox>
+  <ion-checkbox [checked]="resteConnecte" (click)="changeResteConnecte()">Rester connecté(e)</ion-checkbox>
   </ion-item>
 <br>
 <button ion-button block type="submit">Connexion</button>

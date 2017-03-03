@@ -42,13 +42,13 @@
    <ion-item>
       <ion-label>Telephone Mobile :</ion-label> <ion-input type = "text" [disabled] ="inputDisabled" required [(ngModel)]="user.telMobile" name = "telMobile"></ion-input>-->
    </ion-item>
-   <button ion-button type="submit" [hidden]="!inputDisabled" (click)= "modifier()" block>Modifier mes données</button>
-   <button ion-button type="submit"[hidden]="inputDisabled"   (click)= "enregistrer()" block  color="secondary">Enregistrer</button> 
+   <button ion-button type="submit" [hidden]="!inputDisabled"  [disabled] ="isHorsLigne" (click)= "modifier()" block>Modifier mes données</button>
+   <button ion-button type="submit"[hidden]="inputDisabled"  [disabled] ="isHorsLigne"  (click)= "enregistrer()" block  color="secondary">Enregistrer</button> 
    <ion-item padding-top>
       <ion-label>Adresse email :</ion-label> <ion-input type = "text" disabled ="true" required [(ngModel)]="user.mail"></ion-input>
    </ion-item>  
-   <button ion-button (click)="faireChangementMail()" block outline>Modifier mon email</button>  
-     <button ion-button (click)="faireChangementMDP()" block outline >Modifier mon mot de passe</button>   
+   <button ion-button (click)="faireChangementMail()" block outline [disabled] ="isHorsLigne" >Modifier mon email</button>  
+     <button ion-button (click)="faireChangementMDP()" block outline [disabled] ="isHorsLigne" >Modifier mon mot de passe</button>   
 </ion-content>
 
 

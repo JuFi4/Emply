@@ -30,6 +30,7 @@ export class MeshorairesPage {
   semaines : Semaine[]
   semaine : Semaine;
   jours : any[] = [];
+  joursMoisPrecedent : any[] = [];
   jour : Jour;
   selJour : any = [];
   annee : any = []; 
@@ -42,18 +43,20 @@ export class MeshorairesPage {
   moisCourant = new Date().getMonth();
   pasHeure : boolean;
   isDisabledDay : boolean;
+  isHorsLigne : boolean;
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService, 
     public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) {    
      // Constructeur Date(Année, mois, jour, heure, minute) -> Atention, les mois se comptent à partrir de 0: 0 = janvier, 1= février...
      // notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017, 0, 15, 0, 9));
      // notificationsLocalesCtrl.scheduleNotificationValidationMensuelle(new Date(2017, 0, 15, 0, 10));
+     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1';
      this.moisService.getSemaine().then(semaines => this.semaines = semaines);
      this.moisService.getMois().then(moisListe => this.moisListe = moisListe).then(result => this.selectionnerMois());
      this.affichageH = false;
      this.pasHeure = true;
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante
-     this.afficherHoraireCouleur();
+     //this.afficherHoraireCouleur();
     }//constructor
 
 
@@ -76,7 +79,7 @@ export class MeshorairesPage {
     }//selectionnerMois
     
 
-    afficherHoraireCouleur(){
+    /*afficherHoraireCouleur(){
       console.log("coucouCouleur")
       if(this.horaireDuJour != null){
         if(this.horaireDuJour.length > 0){
@@ -87,11 +90,12 @@ export class MeshorairesPage {
           this.isDisabledDay = false;
         } 
       }
-    }//afficherHoraireCouleur
+    }//afficherHoraireCouleur*/
 
 
     afficherMois(){   
      this.jours.length = 0;
+     this.joursMoisPrecedent.length = 0;
      let premierJoursMois = new Date(this.anneeSelectionne, this.moisSelectionne.moisId, 0).getDay(); // On défini quel est le 1er jours du mois (code de 0 à 6 qui défini quel est le jour de la semaine)
     
      // On regarder quel est le mois précédent (par rapport au moisId), si on est en janvier, c'est décembre (ID 11)
@@ -106,8 +110,10 @@ export class MeshorairesPage {
      let permierJourMoisPrecedentAafficher = nbJoursMoisPrecedent - premierJoursMois + 1; // On met le "+1" car les jours sont déclalés de 1 : 0 = lundi, 1 = mardi...
      
      // On remplis "des jours du mois d'avant" les permiers jours de la semaine qui ne sont pas de ce mois
+     // DOIT ETRE DANS UN TABLEAU SEPARÉ DE jours : c'est très important pour la gestion des indexes
      for(let i = 0; i < premierJoursMois; i++){
-        this.jours.push(permierJourMoisPrecedentAafficher);
+        //this.jours.push(permierJourMoisPrecedentAafficher);
+        this.joursMoisPrecedent.push(new Jour(permierJourMoisPrecedentAafficher));
         permierJourMoisPrecedentAafficher++; 
      }
 
@@ -117,63 +123,65 @@ export class MeshorairesPage {
      for(let i = 1; i <= nbJoursMois; i++){
         this.jour = new Jour(i);
         this.jours.push(this.jour);
-        console.log(this.jour)
      }
-
+     
+     // VANESSA: ON POURRAIT PAS SE CONTENTER DE this.anneeSelectionne ?????
      //afficher l'année
      this.annee = this.anneeSelectionne;
      console.log(this.annee)
 
      this.getHoraires(this.annee, this.moisSelectionne.moisId+1);
-
-     this.addHoraireJour();
+     //this.addHoraireJour();
     }//afficherMois
 
-
+      // PAS BESOIN
      //remplir les horaires du jour en paramètre
-     addHoraireJour(){
+    /* addHoraireJour(){
       console.log(this.jours.length)
       if(this.jours != null){ // Si des jours existent
         for(let i = 0; i < this.jours.length; i++){
-            console.log(i);
             this.getHoraireDuJour(this.jours[i].jour);
         }
       }
       this.disabledHoraire();
-     }
+     }*/
 
     //Récupère la liste des horaires pour l'année et le mois passés en paramètre
     getHoraires(annee, mois){
       this.abiBddCtrl.getHoraires(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe(
         data => {  
            if(data) { // Si les données sont bien chargées    
-                this.horaires = [];
+                //this.horaires = [];
                 for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données des horaires formatées
                     let horaire =  new Horaires(data[i].id, 
                       new Date(data[i].annee, data[i].mois-1, data[i].jour),
                       new Date(data[i].annee, data[i].mois-1, data[i].jour, data[i].heureDebut, data[i].minuteDebut),
                       new Date(data[i].annee, data[i].mois-1, data[i].jour, data[i].heureFin, data[i].minuteFin));                    
-                    this.horaires.push(horaire); // On ajoute l'horaire au tableau
+                    //this.horaires.push(horaire); // On ajoute l'horaire au tableau
+                    this.jours[data[i].jour-1].addHoraire(horaire);  // On ajoute l'horaire au jours auquel il y lieu
                 }
                 console.log(this.horaires);
+                console.log(this.jours);
              } else { // Erreur
                  console.log("Aucun horaire pour cette periode");
              }
         }); 
     }//getHoraires
 
+     // PAS BESOIN
     // Récupére le mois sélectionné sous format String, et retourne le mois en format Mois correspondant
-    getMoisSelectionne(mois : string) : Mois{
+    /*getMoisSelectionne(mois : string) : Mois{
       for(let i = 0; i <= this.moisListe.length; i++){
            if(this.moisListe[i].nom === mois){
               return this.moisListe[i];
            }
         }
        return this.moisListe[0];
-    }//getMoisSelectionne
+    }//getMoisSelectionne*/
 
+    // PAS BESOIN
     //Récupère la liste des horaires pour le jour passé en paramètre
-    getHoraireDuJour(jour : Jour){
+    /*getHoraireDuJour(jour){
         let dateDuJour = new Date(this.anneeSelectionne, this.moisSelectionne.moisId, jour.jour);
         this.horaireDuJour = []; // Tableau pour les horaires du jour
         if(this.horaires != null){ // Si des horaires existent
@@ -187,9 +195,11 @@ export class MeshorairesPage {
               }
           }
         }
-    }//getHoraireDuJour
+         
+    }//getHoraireDuJour*/
 
-    disabledHoraire(){
+    
+    /*disabledHoraire(){
       if(this.jour.tbHoraire != null){
         console.log(this.jour.tbHoraire.length)
         if(this.jour.tbHoraire.length > 0){
@@ -198,7 +208,7 @@ export class MeshorairesPage {
           this.isDisabledDay = false;
         }
       }
-    }
+    }*/
   
     /* J'ai créer des horaires pour ton utilisateur, comme ça tu peux tester :
     2017-02-16 : 11:00:00 à 14:00:00
@@ -209,12 +219,14 @@ export class MeshorairesPage {
     2017-02-23 : 10:00:00 à 16:00:00    
     2017-02-23 : 20:00:00 à 22:00:00
     */
-    detailHoraire(i){
-      console.log(this.horaireDuJour.length);
-      console.log("joursSel "+i);
-      for(let j = 0; j < this.jours.length; j++){
-        if(this.jours[j].jour == i){
-          console.log("joursSel "+i);
+    detailHoraire(jour : Jour){
+      console.log(jour);
+      this.horaireDuJour = jour.tbHoraire;   // CONTIENT LES HORAIRES DU JOUR MAIS L'AFFICHAGE NE MARCHE PASSSSSS :( :( :(
+      console.log(this.horaireDuJour);
+      this.inputDisabled = this.horaireDuJour.length <= 0; //Contient false si on a pas d'horaire pour ce jour
+      /*for(let j = 0; j < this.jours.length; j++){
+        if(this.jours[j].jour == jour){
+          console.log("joursSel "+jour);
           this.affichageH = true;
           if(this.getHoraireDuJour.length > 0){
             this.pasHeure = false;
@@ -227,7 +239,7 @@ export class MeshorairesPage {
           this.inputDisabled = true; //desactivation des champs horaires
           //  if(this.horaires.jour == i){
         }
-      }
+      }*/
    }//DetailHoraire
 
 

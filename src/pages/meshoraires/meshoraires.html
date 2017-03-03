@@ -30,7 +30,7 @@
      {{moisSelectionne.nom}}
     </li>  
     <li>
-      {{annee}}      
+      {{anneeSelectionne}}      
     </li>  
   </ul>
 </div>
@@ -43,8 +43,13 @@
 
 
 <ul class="days"> 
+  <li  *ngFor ="let i of joursMoisPrecedent">
+   <button class="DetailJour" ion-button disabled="true" > 
+     {{i.jour}}    
+   </button>
+  </li>
   <li  *ngFor ="let i of jours">
-   <button class="DetailJour" ion-button (click)="detailHoraire(i)" [hidden]="isDisabledDay" > 
+   <button class="DetailJour" ion-button (click)="detailHoraire(i)"> 
      {{i.jour}}    
    </button>
   </li>

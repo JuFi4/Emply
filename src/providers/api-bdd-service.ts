@@ -48,7 +48,6 @@ export class ApiBddService {
      var url =this.baseUrl + 'type=getProfil&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
      console.log(url);
      var response = this.http.get(url).map(res => <UserModel>res.json());
-     window.localStorage.setItem('getProfil', JSON.stringify(response));  // Création de la sauvegarde locale
      return response;
    }//getProfil
 

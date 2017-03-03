@@ -16,21 +16,29 @@ import { UserModel } from '../../models/user-model';
 export class MonprofilPage {
   user : any = [];
   inputDisabled : boolean;	
+  isHorsLigne : boolean;
 
   constructor(public toastCtrl : ToastController, public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService,  public alertCtrl: AlertController) {
-     abiBddCtrl.getProfil(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
-        user => {
-           if(user) { // OK     
-             this.user = user    
-             } else { // Erreur
-                  let prompt = this.alertCtrl.create({
-                    title: 'Erreur de connexion',
-                    message: "Problème de connexion",
-                    buttons:["ok"]
-                  });
-                  prompt.present();
-             }
-        }); 
+    this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1';
+    if(!this.isHorsLigne){ // Mode normal : vérification de la connexion en ligne
+      abiBddCtrl.getProfil(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
+          user => {
+            if(user) { // OK     
+                this.user = user  
+                window.localStorage.setItem('getProfil', JSON.stringify(this.user));  // Création de la sauvegarde locale
+              } else { // Erreur
+                    let prompt = this.alertCtrl.create({
+                      title: 'Erreur de connexion',
+                      message: "Problème de connexion",
+                      buttons:["ok"]
+                    });
+                    prompt.present();
+              }
+          }); 
+    } else { // Mode hors ligne
+        console.log("Mode hors ligne");
+        this.user = JSON.parse(window.localStorage.getItem('getProfil'));
+    }
    this.user.mail  = window.localStorage.getItem('utilisateur');
    this.inputDisabled = true; // On désactive les champs du formulaire
   }//constructor  

@@ -25,11 +25,10 @@ export class LoginPage {
    utilisateur = "";
    motDePasse = "";
    deviceToken : string;
-   resteConnecte = false;
+   resteConnecte = true;
    rootPage : any; // Permet de définir une autre page d'accueil (pour les notifications)
    isNotificationEnAttente = false;
    notificationEnAttente =  {id: '', titre: '', message:'' };  
-
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController) {      
      // Définition de la d'accueil par défaut
@@ -47,10 +46,28 @@ export class LoginPage {
      // Pour simuler le mode hors connexion : 
      //window.localStorage.setItem('noNetwork', '1');
      
-     // Pour annuler la simution du mode hors connexion : 
-     window.localStorage.setItem('noNetwork', '0');
+    // Pour annuler la simution du mode hors connexion : 
+    window.localStorage.setItem('noNetwork', '0');
 
-    if((window.localStorage.getItem('utilisateur') === "undefined" || window.localStorage.getItem('utilisateur') === null) && 
+    console.log("Mode hors ligne : " + window.localStorage.getItem('noNetwork'));
+
+    this.resteConnecte = (window.localStorage.getItem('resteConnecte') === '1');
+
+   // JULIANA : j'ai changer l'ordre du traitement pour être sûr qu'on ne tente pas la connexion automatique si ce n'est pas possible
+    if(this.resteConnecte && window.localStorage.getItem('utilisateur') !== "undefined" && window.localStorage.getItem('motDePasse') !== "undefined" && 
+       window.localStorage.getItem('utilisateur') !== null && window.localStorage.getItem('motDePasse') !== null){ // Connexion automatique
+      
+      this.navCtrl.push(AccueilPage, {utilisateur: this.utilisateur});   // On définie la page à charger comme AccueilPage
+      // On défini le nom d'utilisateur et mot de passer avec les données du localStorage
+      this.utilisateur = window.localStorage.getItem('utilisateur');
+      this.motDePasse = window.localStorage.getItem('motDePasse');
+      this.connecter(); // On appelle directement la fonction de connexion pour obtenir un nouveau token de BDD
+   } else { // Affichage de la page connexion normale
+      this.navCtrl.setRoot(LoginPage);
+      this.navCtrl.popToRoot(); 
+  }
+
+ /*   if((window.localStorage.getItem('utilisateur') === "undefined" || window.localStorage.getItem('utilisateur') === null) && 
        (window.localStorage.getItem('motDePasse') === "undefined" || window.localStorage.getItem('motDePasse') === null)) {
       console.log('Pas de données sauvegardées.');
       this.navCtrl.setRoot(LoginPage);
@@ -59,11 +76,19 @@ export class LoginPage {
       this.navCtrl.push(AccueilPage, {utilisateur: this.utilisateur});
       console.log(window.localStorage.getItem('utilisateur'));
       console.log(window.localStorage.getItem('motDePasse'));
-      console.log(window.localStorage.getItem('deviceToken'));
-      this.abiBddCtrl.connexion(window.localStorage.getItem('utilisateur'), window.localStorage.getItem('motDePasse'), window.localStorage.getItem('deviceToken')).subscribe();
-    }     
+      // On défini le nom d'utilisateur et mot de passer avec les données du localStorage
+      this.utilisateur = window.localStorage.getItem('utilisateur');
+      this.motDePasse = window.localStorage.getItem('motDePasse');
+      this.connecter();
+      // JULIANA : Cette manière ne sauvegarde par ne nouveau token => autant passer directement par la méthode this.connecter() qui gère tout
+      //this.abiBddCtrl.connexion(window.localStorage.getItem('utilisateur'), window.localStorage.getItem('motDePasse'), window.localStorage.getItem('deviceToken')).subscribe();
+    }     */
   }//constructor
 
+  changeResteConnecte(){
+    this.resteConnecte = !this.resteConnecte;
+    console.log(this.resteConnecte);
+  }//changeResteConnece
 
   // Vérification des données mobiles pour pouvoir traiter le mode hors ligne
   // NE FONCTIONNE PAS SI ON EST PAS AVEC UN SMARTPHONE
@@ -172,15 +197,9 @@ confirmerDemandeNouveauMotDePasse(){
 
                           //On sauvegarde le nom d'utilisateur et le mot de passe pour pouvoir faire le login hors connexion
                           window.localStorage.setItem('dernierUtilisateur', this.utilisateur);
-                          window.localStorage.setItem('dernierMotDePasse', this.motDePasse);
-                          
-                          if (this.resteConnecte) {
-                            console.log("Checkbox cochée");                                                 
-                          } else {
-                            console.log("Checkbox pas cochée");                       
-                          }  
+                          window.localStorage.setItem('dernierMotDePasse', this.motDePasse);                          
                         }
-                        this.connexionOk();
+                       this.connexionOk();
 
                       } else { // Erreur
                         this.afficherErreurDeCOnnexion();                        
@@ -203,6 +222,11 @@ confirmerDemandeNouveauMotDePasse(){
      window.localStorage.setItem('motDePasse', this.motDePasse);
      window.localStorage.setItem('deviceToken', this.deviceToken);
      window.localStorage.setItem('utilisateurConnecte', "1");
+
+      if (this.resteConnecte) {
+         console.log("Checkbox cochée");   
+         window.localStorage.setItem('resteConnecte', '1'); // On sauvegarde le fait qu'on veut rester connecter                                        
+     }
 
       // Si on a une notification en attente, on l'affiche
       if(this.isNotificationEnAttente) {
