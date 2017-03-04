@@ -41,13 +41,13 @@ export class LoginPage {
      this.instancierNotificationsLocales();  
     
      // Vérification des données réseau : UNIQUEMENT AVEC UN SMARTPHONE
-     //this.checkNetwork();
+     this.checkNetwork();
 
      // Pour simuler le mode hors connexion : 
      //window.localStorage.setItem('noNetwork', '1');
      
     // Pour annuler la simution du mode hors connexion : 
-    window.localStorage.setItem('noNetwork', '0');
+    //window.localStorage.setItem('noNetwork', '0');
 
     console.log("Mode hors ligne : " + window.localStorage.getItem('noNetwork'));
 
@@ -57,7 +57,7 @@ export class LoginPage {
     if(this.resteConnecte && window.localStorage.getItem('utilisateur') !== "undefined" && window.localStorage.getItem('motDePasse') !== "undefined" && 
        window.localStorage.getItem('utilisateur') !== null && window.localStorage.getItem('motDePasse') !== null){ // Connexion automatique
       
-      this.navCtrl.push(AccueilPage, {utilisateur: this.utilisateur});   // On définie la page à charger comme AccueilPage
+      //this.navCtrl.push(AccueilPage, {utilisateur: this.utilisateur});   // On définie la page à charger comme AccueilPage PAS BESOIN : se fait dans la fonction connecter()
       // On défini le nom d'utilisateur et mot de passer avec les données du localStorage
       this.utilisateur = window.localStorage.getItem('utilisateur');
       this.motDePasse = window.localStorage.getItem('motDePasse');

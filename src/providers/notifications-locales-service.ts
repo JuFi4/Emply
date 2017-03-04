@@ -17,14 +17,18 @@ export class NotificationsLocalesService {
   }
 
   // Gère l'envois différé de la notification locale de fin de service
-  public scheduleNotificationFinDeService(scheduleDate : Date, id : number) {
+  public scheduleNotificationFinDeService(heureDebut: Date, heureFin : Date, id : number) {
+      let scheduleDate = new Date(heureFin);
+      scheduleDate.setMinutes(scheduleDate.getMinutes() + 10); // On met la notif 10 minutes après la fin du service
       console.log('scheduleNotificationFinDeService : ' + scheduleDate);
+
        LocalNotifications.cancel(id); // On supprime la notification qui a cet id (si elle existe) -> pour ne pas avoir de doublon
+
        // On enregsitre la nouvelle notification
        LocalNotifications.schedule({
             id: id,
             title: 'Validation de fin de service',
-            text: 'Avez-vous bien travailler de telle heure à telle heure ?',
+            text: 'Avez-vous bien travailler de '+ heureDebut.getHours() + ':' + heureDebut.getMinutes() + ' à ' + heureFin.getHours() + ':' + heureFin.getMinutes() +' ?',
             at: scheduleDate,
             sound: 'res://platform_default',
             icon: 'res://icon',

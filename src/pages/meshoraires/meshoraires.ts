@@ -94,6 +94,7 @@ export class MeshorairesPage {
 
 
     afficherMois(){   
+     this.affichageH = false; // On désactive le détail du jour
      this.jours.length = 0;
      this.joursMoisPrecedent.length = 0;
      let premierJoursMois = new Date(this.anneeSelectionne, this.moisSelectionne.moisId, 0).getDay(); // On défini quel est le 1er jours du mois (code de 0 à 6 qui défini quel est le jour de la semaine)
@@ -148,33 +149,39 @@ export class MeshorairesPage {
 
     //Récupère la liste des horaires pour l'année et le mois passés en paramètre
     getHoraires(annee, mois){
-      this.abiBddCtrl.getHoraires(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe(
-        data => {  
-           if(data) { // Si les données sont bien chargées    
-                //this.horaires = [];
-                for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données des horaires formatées
-                    let horaire =  new Horaire(data[i].id, 
-                      new Date(data[i].annee, data[i].mois-1, data[i].jour),
-                      new Date(data[i].annee, data[i].mois-1, data[i].jour, data[i].heureDebut, data[i].minuteDebut),
-                      new Date(data[i].annee, data[i].mois-1, data[i].jour, data[i].heureFin, data[i].minuteFin));                    
-                    //this.horaires.push(horaire); // On ajoute l'horaire au tableau
-                    this.jours[data[i].jour-1].addHoraire(horaire);  // On ajoute l'horaire au jours auquel il y lieu
-                    this.enregistrerNotification(horaire);
-                }
-                console.log(this.horaires);
-                console.log(this.jours);
-             } else { // Erreur
-                 console.log("Aucun horaire pour cette periode");
-             }
-        }); 
+      if(!this.isHorsLigne){ // Si on a internet
+        this.abiBddCtrl.getHoraires(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe(
+          data => {  
+            if(data) { // Si les données sont bien chargées  
+               window.localStorage.setItem('getHoraires_'+mois+'_'+annee, JSON.stringify(data));  // Création de la sauvegarde locale de ces horaires (mois et annee)
+                this.traiterHoraires(data, annee, mois); // Traitement des horaires               
+              } else { // Erreur
+                  console.log("Aucun horaire pour cette periode");
+              }
+          }); 
+      } else { // Mode hors ligne
+          // Traitement des horaires à partir des données sauvegardés
+          this.traiterHoraires(JSON.parse(window.localStorage.getItem('getHoraires_'+mois+'_'+annee)), annee, mois);      
+      }
     }//getHoraires
+
+    traiterHoraires(data, mois, annee){
+      for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données des horaires formatées
+        let horaire =  new Horaire(data[i].id, 
+          new Date(data[i].annee, data[i].mois-1, data[i].jour),
+          new Date(data[i].annee, data[i].mois-1, data[i].jour, data[i].heureDebut, data[i].minuteDebut),
+          new Date(data[i].annee, data[i].mois-1, data[i].jour, data[i].heureFin, data[i].minuteFin)
+        );                    
+        this.jours[data[i].jour-1].addHoraire(horaire);  // On ajoute l'horaire au jour auquel il y lieu
+        // Si on a internet on enregsitre les notif locales pour l'horaire -> inutile si on a pas internet car la notification pour cet horaire aura forcément déja été créee
+        if(!this.isHorsLigne){ this.enregistrerNotification(horaire);} 
+      }         
+    }//traiterHoraires
 
     // Enregsitre la notification locale pour l'horaire passé en paramètre
     enregistrerNotification(horaire : Horaire){
-        if(horaire.heureFin > new Date()){ // Si l'horaire est dans le futur (on ne va pas enregistrer des notif pour un horaire passé !)
-          let dateNotif = new Date(horaire.heureFin);
-          dateNotif.setMinutes(dateNotif.getMinutes() + 10); // On met la notif 10 minutes après la fin du service
-          this.notificationsLocalesCtrl.scheduleNotificationFinDeService(dateNotif, horaire.id); // On enregsitre la notification locale
+        if(horaire.heureFin > new Date()){ // Si l'horaire est dans le futur (on ne va pas enregistrer des notif pour un horaire passé !)          
+          this.notificationsLocalesCtrl.scheduleNotificationFinDeService(horaire.heureDebut, horaire.heureFin, horaire.id); // On enregsitre la notification locale
         } else {
           console.log("On enregsitre pas de notification pour cet horaire : " + horaire.heureFin);
         }
@@ -235,7 +242,9 @@ export class MeshorairesPage {
       console.log(jour);
       this.horaireDuJour = jour.tbHoraire;   // CONTIENT LES HORAIRES DU JOUR MAIS L'AFFICHAGE NE MARCHE PASSSSSS :( :( :(
       console.log(this.horaireDuJour);
-      this.inputDisabled = this.horaireDuJour.length <= 0; //Contient false si on a pas d'horaire pour ce jour
+      this.pasHeure = this.horaireDuJour.length <= 0; //Contient false si on a pas d'horaire pour ce jour
+      this.affichageH = true;
+      this.selJour = jour.jour;
       /*for(let j = 0; j < this.jours.length; j++){
         if(this.jours[j].jour == jour){
           console.log("joursSel "+jour);

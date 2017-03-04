@@ -62,10 +62,10 @@
  <ul>
  <li *ngFor = "let hjours of horaireDuJour">
   <ion-item>
-      <ion-label>Horaire début :</ion-label> <ion-input [disabled] ="inputDisabled" required [(ngModel)]="hjours.affichageHeureDebut" name = "debut"></ion-input>
+      <ion-label>Horaire début :</ion-label> <ion-input disabled ="true" required [(ngModel)]="hjours.affichageHeureDebut" name = "debut"></ion-input>
   </ion-item>
   <ion-item >
-      <ion-label>Horaire fin :</ion-label> <ion-input  [disabled] ="inputDisabled" required [(ngModel)]="hjours.affichageHeureFin" name = "fin"></ion-input>   
+      <ion-label>Horaire fin :</ion-label> <ion-input  disabled ="true" required [(ngModel)]="hjours.affichageHeureFin" name = "fin"></ion-input>   
   </ion-item>
   </li>
   </ul> 
