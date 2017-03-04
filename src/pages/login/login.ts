@@ -41,13 +41,13 @@ export class LoginPage {
      this.instancierNotificationsLocales();  
     
      // Vérification des données réseau : UNIQUEMENT AVEC UN SMARTPHONE
-     this.checkNetwork();
+     //this.checkNetwork();
 
      // Pour simuler le mode hors connexion : 
      //window.localStorage.setItem('noNetwork', '1');
      
     // Pour annuler la simution du mode hors connexion : 
-    //window.localStorage.setItem('noNetwork', '0');
+    window.localStorage.setItem('noNetwork', '0');
 
     console.log("Mode hors ligne : " + window.localStorage.getItem('noNetwork'));
 
