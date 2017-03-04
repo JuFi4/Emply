@@ -49,7 +49,7 @@
    </button>
   </li>
   <li  *ngFor ="let i of jours">
-   <button class="DetailJour" ion-button (click)="detailHoraire(i)" [disabled] = "i.isJourDisabled"> 
+   <button class="DetailJour" ion-button (click)="detailHoraire(i)"  [ngClass]="{DetailJourHeure: i.hasHoraire}"> 
      {{i.jour}}    
    </button>
   </li>

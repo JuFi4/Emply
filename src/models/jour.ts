@@ -1,17 +1,17 @@
 
-import {Horaires} from '../models/horaires'
+import {Horaire} from '../models/horaire'
 export class Jour {
     jour: number;
-    tbHoraire : Horaires[];
-    isJourDisabled = true;  //Est à true si le tableau d'horaire est vide
+    tbHoraire : Horaire[];
+    hasHoraire = false;
     
     constructor(jour){
         this.tbHoraire = [];
         this.jour = jour;
     }//constructor
 
-    addHoraire(horaire : Horaires){
+    addHoraire(horaire : Horaire){
         this.tbHoraire.push(horaire);
-        this.isJourDisabled = false;
+        this.hasHoraire = true;
     }//addHoraire
 }//Jour

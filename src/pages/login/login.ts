@@ -325,7 +325,7 @@ confirmerDemandeNouveauMotDePasse(){
 
   afficherNotificationLocale(idNotification, titreNotification, messageNotification) {
     console.log('notification' + idNotification);
-    if(idNotification == 1){  // Si l'id est 1 = c'est la notification mensuelle de validation des heures
+    if(idNotification == 0){  // Si l'id est 1 = c'est la notification mensuelle de validation des heures
       this.afficherValidationMensuelle(titreNotification, messageNotification);
     } else  {
       this.afficherNotificationFinDeService(titreNotification, messageNotification);

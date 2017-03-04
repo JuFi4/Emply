@@ -17,10 +17,12 @@ export class NotificationsLocalesService {
   }
 
   // Gère l'envois différé de la notification locale de fin de service
-  public scheduleNotificationFinDeService(scheduleDate : Date) {
+  public scheduleNotificationFinDeService(scheduleDate : Date, id : number) {
       console.log('scheduleNotificationFinDeService : ' + scheduleDate);
+       LocalNotifications.cancel(id); // On supprime la notification qui a cet id (si elle existe) -> pour ne pas avoir de doublon
+       // On enregsitre la nouvelle notification
        LocalNotifications.schedule({
-            id: this.getNotificationNewId(),
+            id: id,
             title: 'Validation de fin de service',
             text: 'Avez-vous bien travailler de telle heure à telle heure ?',
             at: scheduleDate,
@@ -30,11 +32,12 @@ export class NotificationsLocalesService {
         });
     } //scheduleNotificationFinDeService
 
-    // Gère l'envois différé de la notification locale de validation mensuelle des heures
+  // Gère l'envois différé de la notification locale de validation mensuelle des heures
+  // L'ID de cette notification est toujours de 0 : permet de la reconnaitre par rapport aux notifications de fin de service
   public scheduleNotificationValidationMensuelle(scheduleDate : Date) {
       console.log('scheduleNotificationValidationMensuelle : ' + scheduleDate);
        LocalNotifications.schedule({
-            id: 1,
+            id: 0,
             title: 'Validation mensuelle',
             text: 'Veuillez aller valider vos heures mensuelles',
             at: scheduleDate,
@@ -44,17 +47,5 @@ export class NotificationsLocalesService {
         });
     }//scheduleNotificationValidationMensuelle 
 
-    // Retourne l'ID de la prochaine notification (incrémente de 1 l'id de plus grand)
-    public getNotificationNewId() : number {
-        var maxId = 1;
-        LocalNotifications.getAllIds().then((data) => {
-            for(let id in data){
-                if(Number(id) > maxId){
-                    maxId = Number(id);
-                }
-            }
-        });        
-        maxId++;
-        return maxId;
-    }//getNotificationNewId
+
 }//NotificationsLocalesService

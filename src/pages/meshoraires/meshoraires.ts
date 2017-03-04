@@ -10,7 +10,7 @@ import { ApiBddService } from '../../providers/api-bdd-service';
 //models
 import {Mois} from '../../models/mois';
 import {Semaine} from '../../models/semaine';
-import {Horaires} from '../../models/horaires';
+import {Horaire} from '../../models/horaire';
 import {Jour} from '../../models/jour';
 
 /*
@@ -35,8 +35,8 @@ export class MeshorairesPage {
   selJour : any = [];
   annee : any = []; 
   affichageH : Boolean;
-  horaires : Horaires[]; // Tableau qui contient les horaires de la periode affichée
-  horaireDuJour : Horaires[]; // Tableau qui contient les horaires du jour selectionné
+  horaires : Horaire[]; // Tableau qui contient les horaires de la periode affichée
+  horaireDuJour : Horaire[]; // Tableau qui contient les horaires du jour selectionné
   inputDisabled : Boolean;    
   annneeCourrante = new Date().getFullYear(); // Année courrante
   anneeSelectionne : number; 
@@ -153,12 +153,13 @@ export class MeshorairesPage {
            if(data) { // Si les données sont bien chargées    
                 //this.horaires = [];
                 for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données des horaires formatées
-                    let horaire =  new Horaires(data[i].id, 
+                    let horaire =  new Horaire(data[i].id, 
                       new Date(data[i].annee, data[i].mois-1, data[i].jour),
                       new Date(data[i].annee, data[i].mois-1, data[i].jour, data[i].heureDebut, data[i].minuteDebut),
                       new Date(data[i].annee, data[i].mois-1, data[i].jour, data[i].heureFin, data[i].minuteFin));                    
                     //this.horaires.push(horaire); // On ajoute l'horaire au tableau
                     this.jours[data[i].jour-1].addHoraire(horaire);  // On ajoute l'horaire au jours auquel il y lieu
+                    this.enregistrerNotification(horaire);
                 }
                 console.log(this.horaires);
                 console.log(this.jours);
@@ -167,6 +168,17 @@ export class MeshorairesPage {
              }
         }); 
     }//getHoraires
+
+    // Enregsitre la notification locale pour l'horaire passé en paramètre
+    enregistrerNotification(horaire : Horaire){
+        if(horaire.heureFin > new Date()){ // Si l'horaire est dans le futur (on ne va pas enregistrer des notif pour un horaire passé !)
+          let dateNotif = new Date(horaire.heureFin);
+          dateNotif.setMinutes(dateNotif.getMinutes() + 10); // On met la notif 10 minutes après la fin du service
+          this.notificationsLocalesCtrl.scheduleNotificationFinDeService(dateNotif, horaire.id); // On enregsitre la notification locale
+        } else {
+          console.log("On enregsitre pas de notification pour cet horaire : " + horaire.heureFin);
+        }
+    }//enregistrerNotification
 
      // PAS BESOIN
     // Récupére le mois sélectionné sous format String, et retourne le mois en format Mois correspondant
