@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
 
 import { SaisiedemandePage } from '../saisiedemande/saisiedemande';
 
@@ -9,6 +10,7 @@ import { ApiBddService } from '../../providers/api-bdd-service';
 
 //models
 import {Demande} from '../../models/demande';
+
 /*
   Generated class for the Demandes page.
 
@@ -24,7 +26,7 @@ export class DemandesPage {
   radioResult;
   demandes : Demande[]; // Tableau qui contient toutes les demandes
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) { 
+  constructor(public toastCtrl : ToastController, public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) { 
     // POUR CELINE : exemple d'appel de la fonction enregsitrerDemande (tu peux effacer tout ça quant tu n'en a plus besoin)
     /* typeDemId : l’id du type de la demande:
         1: Vacances/Férié
@@ -128,17 +130,19 @@ export class DemandesPage {
       handler: data => {
         this.radioOpen = false;
         this.radioResult = data;
-        if (data.id = 1){
+        console.log("HEY!!!! Je suis CONFIRMER!!!!");
+        console.log("radioResult" + this.radioResult);
+        if (data === "demandeVacances"){
           this.faireDemandeVacances();
-        }else if(data.value == 'congeFormation'){
-          this.faireDemandeCongeSuite(2);
-        }else if(data.id == "paternite"){
-          this.faireDemandeCongeSuite(3);
-        }else if(data.nosolde){
-          this.faireDemandeCongeSuite(4);
-        }else if(data.recuperation){
+        }else if(data === 'congeFormation'){
+          this.faireDemandeConge(2);
+        }else if(data === "congePaternite"){
+          this.faireDemandeConge(3);
+        }else if(data === "congeNoSolde"){
+          this.faireDemandeConge(4);
+        }else if(data === "congeRec"){
           this.faireDemandeRecuperation();
-        }else if(data.autre){
+        }else if(data === "autreDemande"){
           this.faireDemandeInconnue();
         }
         else{
@@ -157,13 +161,13 @@ export class DemandesPage {
       inputs: [
         {
           name: 'DateDebVac',
-          type: 'number',
+          type: 'Date',
           placeholder: 'Date de début : sous forme AAAA-MM-JJ',
           id: 'dateDeb',
         },
         {
           name: 'DateFinVac',
-          type: 'number',
+          type: 'Date',
           placeholder: 'Date de fin : sous forme AAAA-MM-JJ',
           id: 'dateFin'
         },
@@ -184,7 +188,8 @@ export class DemandesPage {
           text: 'Confirmer',
           handler: data => {
             console.log('Confirmer');
-            //this.enregsitrerDemande(1, data.DateDebVac, data.DateFinVac, data.Motif);
+            this.enregsitrerDemande(1, data.DateDebVac, data.DateFinVac, data.Motif);
+            console.log(1, data.DateDebVac, data.DateFinVac, data.Motif);
           }
         }
       ]
@@ -192,58 +197,20 @@ export class DemandesPage {
     prompt.present();
   }//faireDemandeVacances
 
-  /*faireDemandeConge() {
-    let alert = this.alertCtrl.create();
-    alert.setTitle('Demande de Congé');
-
-    alert.addInput({
-      type: 'radio',
-      label: 'Congé de formation',
-      id : 'type',
-      value: 'congeFormation',
-      checked: true
-    });
-    alert.addInput({
-      type: 'radio',
-      label: 'Congé paternité',
-      id : 'type',
-      value: 'congePat',
-      checked: false
-    });
-    alert.addInput({
-      type: 'radio',
-      label: 'Congé sans solde',
-      id : 'type',
-      value: 'congeNoSolde',
-      checked: false
-    });
-    alert.addButton('Annuler');
-    alert.addButton({
-      text: 'Confirmer',
-      handler: data => {
-        this.radioOpen = false;
-        this.radioResult = data;
-        //this.faireDemandeCongeSuite();
-      }
-    });
-    alert.present();
-  }//faireDemandeConge
-  */
-
-  faireDemandeCongeSuite(id) {
+  faireDemandeConge(id) {
     let prompt = this.alertCtrl.create({
       title: 'Demande de Congé',
       message: "Entrez vos dates de la demande de congé que vous avez séléctionnée : ",
       inputs: [
         {
           name: 'DateDebRec',
-          type: 'number',
+          type: 'Date',
           placeholder: 'Date de début : sous forme AAAA-MM-JJ',
           id: 'dateDeb'
         },
         {
           name: 'DateFinRec',
-          type: 'number',
+          type: 'Date',
           placeholder: 'Date de fin : sous forme AAAA-MM-JJ',
           id: 'dateFin'
         },
@@ -259,7 +226,8 @@ export class DemandesPage {
           text: 'Confirmer',
           handler: data => {
             console.log('Confirmer');
-            //this.enregsitrerDemande(id, data.DateDebRec, data.DateFinRec, "");
+            this.enregsitrerDemande(id, data.DateDebRec, data.DateFinRec, "");
+            console.log(id, data.DateDebRec, data.DateFinRec);
           }
         }
       ]
@@ -274,13 +242,13 @@ export class DemandesPage {
       inputs: [
         {
           name: 'DateDebRec',
-          type: 'number',
+          type: 'Date',
           placeholder: 'Date de début : sous forme AAAA-MM-JJ',
           id: 'dateDeb'
         },
         {
           name: 'DateFinRec',
-          type: 'number',
+          type: 'Date',
           placeholder: 'Date de fin : sous forme AAAA-MM-JJ',
           id: 'dateFin'
         },
@@ -296,7 +264,8 @@ export class DemandesPage {
           text: 'Confirmer',
           handler: data => {
             console.log('Confirmer');
-              // this.enregsitrerDemande(5, data.DateDebRec, data.DateFinRec, "");
+            this.enregsitrerDemande(5, data.DateDebRec, data.DateFinRec, "");
+            console.log(5, data.DateDebRec, data.DateFinRec);
             
           }
         }
@@ -312,13 +281,13 @@ export class DemandesPage {
       inputs: [
         {
           name: 'DateDebInconnue',
-          type: 'number',
+          type: 'Date',
           placeholder: 'Date de début : sous forme AAAA-MM-JJ',
           id: 'dateDeb'
         },
         {
           name: 'DateFinRecInconne',
-          type: 'number',
+          type: 'Date',
           placeholder: 'Date de fin : sous forme AAAA-MM-JJ',
           id: 'dateFin'
         },
@@ -332,14 +301,15 @@ export class DemandesPage {
         {
           text: 'Annuler',
           handler: data => {
-            console.log('Annuler');
+          console.log('Annuler');
           }
         },
         {
           text: 'Confirmer',
           handler: data => {
-            console.log('Confirmer');
-         // this.enregsitrerDemande(6, data.DateDebInconnue, data.DateFinRecInconne, data.MotifInconnue);
+         console.log('Confirmer');
+         this.enregsitrerDemande(6, data.DateDebInconnue, data.DateFinRecInconne, data.MotifInconnue);
+         console.log(6, data.DateDebInconnue, data.DateFinRecInconne, data.MotifInconnue);
           }
         }
       ]
@@ -368,14 +338,35 @@ export class DemandesPage {
         5: Récupération
         6: Autre demande
    */
+
+    faireToastOk(){
+    let toast = this.toastCtrl.create({
+      message: `Demande enregistrée`,
+      duration: 2000,
+      cssClass: "yourCssClassName",
+    });
+    toast.present();
+  }
+
+  faireAlertePasOk(){
+  let alert = this.alertCtrl.create({
+    title: 'Demande non enregistrée',
+    subTitle: 'Recommencez votre demande.',
+    buttons: ['Fermer']
+  });
+  alert.present();
+  }
+  
   enregsitrerDemande(typeDemId, dateDebut:string, dateFin:string, motif:string){  
     // setDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, motif:string
     this.abiBddCtrl.setDemande(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'), typeDemId, dateDebut, dateFin, motif).subscribe(        
       data => {
            if(data) {  // OK         
               console.log("Demande enregsitrée"); // Traiter le cas où c'est ok : un toast par exemple
+              this.faireToastOk();
              } else { // Erreur
                  console.log("Enregsitrement échoue : token ou ID"); // Traiter le cas oû c'est pas OK : une alerte...
+                 this.faireAlertePasOk();
              }
         });
   }//enregsitrerDemande
