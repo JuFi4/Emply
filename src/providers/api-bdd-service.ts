@@ -6,6 +6,7 @@ import 'rxjs/add/operator/map';
 
 //Models
 import { UserModel } from '../models/user-model';
+import { Notification } from '../models/notification';
 
 @Injectable()
 export class ApiBddService {  
@@ -115,8 +116,16 @@ export class ApiBddService {
      var url =this.baseUrl + 'type=getDemandes&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());
-     window.localStorage.setItem('getDemandes', JSON.stringify(response)); // Création de la sauvegarde locale
      return response;
    }//getDemandes
+
+  // Récupération du texte des notifications locales
+  // Renvois :  un JSON avec les demandes non passées (requête réussie), soit False (requête réussie)
+  getTextNotifications(userId:string, token:string) : Observable<Notification> {
+     var url =this.baseUrl + 'type=getTextNotifications&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
+     console.log(url);
+     var response = this.http.get(url).map(res => <Notification>res.json());
+     return response;
+   }//getTextNotifications
 
 }//ApiBddService
