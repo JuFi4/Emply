@@ -13,8 +13,8 @@
     <ion-title>Demandes</ion-title>
 
     <ion-buttons end>
-      <button ion-button icon-only>
-        <ion-icon name="add-circle" (click)="saisirDemande()"></ion-icon>
+      <button ion-button icon-only (click)="saisirDemande()">
+        <ion-icon name="add-circle"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -24,11 +24,13 @@
 
 <ion-content padding>
     <h3>Vue des demandes</h3>
+    <!--
        <form><button ion-button (click)="faireDemandeVacances()">Faire une demande de vacances/férié</button>
        <button ion-button (click)="faireDemandeConge()">Faire une demande de congé</button></form>
        <form><button ion-button (click)="faireDemandeRecuperation()">Faire une demande de récupération</button>
        <button ion-button (click)="faireDemandeInconnue()">Faire une demande spéciale</button></form>
+    -->
        
-      <form><button ion-button (click)="AfficherDemandes()" block outline>Voir toutes mes demandes</button></form>
+      <form><button ion-button (click)="  getDemandes()" block outline>Voir toutes mes demandes</button></form>
       
 </ion-content>

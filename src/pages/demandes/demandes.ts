@@ -31,7 +31,7 @@ export class DemandesPage {
         2: Congé de formation
         3: Congé paternité
         4: Congé sans solde
-        5: Congé sans solde
+        5: Récupération
         6: Autre demande
    */
     // Demande Vacances/Férié
@@ -46,7 +46,7 @@ export class DemandesPage {
      // Demande Congé sans solde
      // this.enregsitrerDemande(4, "2017-06-10", "2017-06-20", "");
 
-     // Demande Congé sans solde
+     // Demande Récupération
     // this.enregsitrerDemande(5, "2017-07-10", "2017-07-20", "");
 
     // Autre demande
@@ -66,10 +66,91 @@ export class DemandesPage {
   }
 
   saisirDemande() {
-    this.navCtrl.push(SaisiedemandePage, null);
+    this.faireChoixDemande();
+    //this.navCtrl.push(SaisiedemandePage, null);
+    //console.log('saisir demande');
   }
 
+  faireChoixDemande(){
+    let alert = this.alertCtrl.create();
+    alert.setTitle('Choix de la Demande');
+    alert.addInput({
+      type: 'radio',
+      label: 'Demande de vacances/férié',
+      id : '1',
+      value: 'demandeVacances',
+      name:'vacances',
+      checked: true
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Congé de formation',
+      id : '2',
+      value: 'congeFormation',
+      name:'formation',
+      checked: false
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Congé paternité',
+      id : '3',
+      value: 'congePaternite',
+      name:'paternite',
+      checked: false
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Congé sans solde',
+      id : '4',
+      value: 'congeNoSolde',
+      name:'nosolde',
+      checked: false
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Demande de Récupération',
+      id : '5',
+      value: 'congeRec',
+      name:'recuperation',
+      checked: false
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Autre demande',
+      id : '6',
+      value: 'autreDemande',
+      name:'autre',
+      checked: false
+    });
+    alert.addButton('Annuler');
+    alert.addButton({
+      text: 'Confirmer',
+      handler: data => {
+        this.radioOpen = false;
+        this.radioResult = data;
+        if (data.id = 1){
+          this.faireDemandeVacances();
+        }else if(data.value == 'congeFormation'){
+          this.faireDemandeCongeSuite(2);
+        }else if(data.id == "paternite"){
+          this.faireDemandeCongeSuite(3);
+        }else if(data.nosolde){
+          this.faireDemandeCongeSuite(4);
+        }else if(data.recuperation){
+          this.faireDemandeRecuperation();
+        }else if(data.autre){
+          this.faireDemandeInconnue();
+        }
+        else{
+          console.log("RIEN!!!!!");
+        }
+      }
+    });
+    alert.present();    
+  }//faireChoixDemande
+
   faireDemandeVacances() {
+   console.log('fairedemande');
     let prompt = this.alertCtrl.create({
       title: 'Demande de vacances et/ou férié',
       message: "Entrez vos dates et votre motif de demande de vacances/férié : ",
@@ -77,13 +158,13 @@ export class DemandesPage {
         {
           name: 'DateDebVac',
           type: 'number',
-          placeholder: 'Date de début : sous forme JJ.MM.YYYY',
-          id: 'dateDeb'
+          placeholder: 'Date de début : sous forme AAAA-MM-JJ',
+          id: 'dateDeb',
         },
         {
           name: 'DateFinVac',
           type: 'number',
-          placeholder: 'Date de fin : sous forme JJ.MM.YYYY',
+          placeholder: 'Date de fin : sous forme AAAA-MM-JJ',
           id: 'dateFin'
         },
         {
@@ -102,8 +183,8 @@ export class DemandesPage {
         {
           text: 'Confirmer',
           handler: data => {
-            this.RecuperationDonnes();
             console.log('Confirmer');
+            //this.enregsitrerDemande(1, data.DateDebVac, data.DateFinVac, data.Motif);
           }
         }
       ]
@@ -111,7 +192,7 @@ export class DemandesPage {
     prompt.present();
   }//faireDemandeVacances
 
-  faireDemandeConge() {
+  /*faireDemandeConge() {
     let alert = this.alertCtrl.create();
     alert.setTitle('Demande de Congé');
 
@@ -142,13 +223,14 @@ export class DemandesPage {
       handler: data => {
         this.radioOpen = false;
         this.radioResult = data;
-        this.faireDemandeCongeSuite();
+        //this.faireDemandeCongeSuite();
       }
     });
     alert.present();
   }//faireDemandeConge
+  */
 
-  faireDemandeCongeSuite() {
+  faireDemandeCongeSuite(id) {
     let prompt = this.alertCtrl.create({
       title: 'Demande de Congé',
       message: "Entrez vos dates de la demande de congé que vous avez séléctionnée : ",
@@ -156,13 +238,13 @@ export class DemandesPage {
         {
           name: 'DateDebRec',
           type: 'number',
-          placeholder: 'Date de début : sous forme JJ.MM.YYYY',
+          placeholder: 'Date de début : sous forme AAAA-MM-JJ',
           id: 'dateDeb'
         },
         {
           name: 'DateFinRec',
           type: 'number',
-          placeholder: 'Date de fin : sous forme JJ.MM.YYYY',
+          placeholder: 'Date de fin : sous forme AAAA-MM-JJ',
           id: 'dateFin'
         },
       ],
@@ -176,8 +258,8 @@ export class DemandesPage {
         {
           text: 'Confirmer',
           handler: data => {
-            this.RecuperationDonnes();
             console.log('Confirmer');
+            //this.enregsitrerDemande(id, data.DateDebRec, data.DateFinRec, "");
           }
         }
       ]
@@ -193,13 +275,13 @@ export class DemandesPage {
         {
           name: 'DateDebRec',
           type: 'number',
-          placeholder: 'Date de début : sous forme JJ.MM.YYYY',
+          placeholder: 'Date de début : sous forme AAAA-MM-JJ',
           id: 'dateDeb'
         },
         {
           name: 'DateFinRec',
           type: 'number',
-          placeholder: 'Date de fin : sous forme JJ.MM.YYYY',
+          placeholder: 'Date de fin : sous forme AAAA-MM-JJ',
           id: 'dateFin'
         },
       ],
@@ -213,8 +295,9 @@ export class DemandesPage {
         {
           text: 'Confirmer',
           handler: data => {
-            this.RecuperationDonnes();
             console.log('Confirmer');
+              // this.enregsitrerDemande(5, data.DateDebRec, data.DateFinRec, "");
+            
           }
         }
       ]
@@ -230,13 +313,13 @@ export class DemandesPage {
         {
           name: 'DateDebInconnue',
           type: 'number',
-          placeholder: 'Date de début : sous forme JJ.MM.YYYY',
+          placeholder: 'Date de début : sous forme AAAA-MM-JJ',
           id: 'dateDeb'
         },
         {
           name: 'DateFinRecInconne',
           type: 'number',
-          placeholder: 'Date de fin : sous forme JJ.MM.YYYY',
+          placeholder: 'Date de fin : sous forme AAAA-MM-JJ',
           id: 'dateFin'
         },
        {
@@ -255,24 +338,14 @@ export class DemandesPage {
         {
           text: 'Confirmer',
           handler: data => {
-            this.RecuperationDonnes();
             console.log('Confirmer');
+         // this.enregsitrerDemande(6, data.DateDebInconnue, data.DateFinRecInconne, data.MotifInconnue);
           }
         }
       ]
     });
     prompt.present();
   }//faireDemandeInconnue
-
-  // TODO Céline : les noms de fonction commencent par une lettre minuscule
-  RecuperationDonnes(){
-    var type = document.getElementById("type");
-    var dateDebut = document.getElementById("dateDeb");
-    var dateFin = document.getElementById("dateFin");
-    var motif = document.getElementById("motif");
-  }
-
-
 
   /* TODO CELINE : : traiter l'enregistrement de la semande :
      - 1)  Appeller la fonction enregsitrerDemande() avec les bons paramètres 
