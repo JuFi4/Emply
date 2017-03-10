@@ -181,7 +181,7 @@ export class MeshorairesPage {
     // Enregsitre la notification locale pour l'horaire passé en paramètre
     enregistrerNotification(horaire : Horaire){
         if(horaire.heureFin > new Date()){ // Si l'horaire est dans le futur (on ne va pas enregistrer des notif pour un horaire passé !)          
-          this.notificationsLocalesCtrl.scheduleNotificationFinDeService(horaire.heureDebut, horaire.heureFin, horaire.id); // On enregsitre la notification locale
+          this.notificationsLocalesCtrl.scheduleNotificationFinDeService(horaire.heureFin, horaire.affichageHeureDebut, horaire.affichageHeureFin, horaire.id); // On enregsitre la notification locale
         } else {
           console.log("On enregsitre pas de notification pour cet horaire : " + horaire.heureFin);
         }
