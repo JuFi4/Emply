@@ -182,7 +182,7 @@ confirmerDemandeNouveauMotDePasse(){
     this.utilisateur = this.utilisateur.trim();
     this.motDePasse = this.motDePasse.trim();
     if(window.localStorage.getItem('noNetwork') === '0'){ // Mode normal : vérification de la connexion en ligne
-      this.abiBddCtrl.connexion(this.utilisateur, this.motDePasse, this.deviceToken).subscribe(
+      this.abiBddCtrl.connexion(this.utilisateur, this.motDePasse, (this.deviceToken != null) ? this.deviceToken : "").subscribe(
                   data => {        
                       if(data) {  // OK   
                         console.log("data " + data);
@@ -249,6 +249,7 @@ confirmerDemandeNouveauMotDePasse(){
   }//afficherErreurDeCOnnexion
 
   instancierNotificationsPush(){
+   this.deviceToken = null;
    this.platform.ready().then(() => {
       StatusBar.styleDefault();
       Splashscreen.hide();
