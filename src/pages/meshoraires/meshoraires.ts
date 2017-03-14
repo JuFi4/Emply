@@ -57,12 +57,14 @@ export class MeshorairesPage {
      this.pasHeure = true;
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante
      //this.afficherHoraireCouleur();
+     this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,13,14,34),"12h00","14h30",1);
     }//constructor
 
 
     ionViewDidLoad() {
       console.log('Hello MesHoraires Page');
     }//ionViewDidLoad
+
 
     /* VANESSA: j'ai trouvé comment selectionner le mois courrant: ligne 50, j'ai rajouter un "then()" qui lance la fonction selectionnerMois() lorsque 
       la liste des mois a bien été récuprée.

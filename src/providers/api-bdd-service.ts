@@ -130,7 +130,7 @@ export class ApiBddService {
 
       //Validation des heures et modification de ces dernières
    //Renvois : un JSON avec les horaires modifier et mets à true pour la validation 
-   gatModHoraire(userId:string, token:string, hopId:string, dateDebut:string, dateFin:string) {
+   getModHoraire(userId:string, token:string, hopId:string, dateDebut:string, dateFin:string) {
      var url =this.baseUrl + 'type=valHoraire&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + 
      '&hopId=' + encodeURI(hopId) + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin);
      console.log(url);
@@ -138,5 +138,17 @@ export class ApiBddService {
      window.localStorage.setItem('valHoraire', JSON.stringify(response)); 
      return response;
    }//getModHoraire
+
+         //Validation des heures du mois
+   //Renvois : true or false
+   getValHoraire(userId:string, token:string, mois:string) {
+     var url =this.baseUrl + 'type=valMensuelle&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + 
+     '&mois=' + encodeURI(mois);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());
+     window.localStorage.setItem('valMensuelle', JSON.stringify(response)); 
+     return response;
+   }//getModHoraire
+
 
 }//ApiBddService

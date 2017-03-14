@@ -342,7 +342,8 @@ confirmerDemandeNouveauMotDePasse(){
             text: 'Non',
             role: 'cancel',
             handler: () => {
-              console.log('Non clicked'); // TODO:  envoyer sur une page pour modifier les heures, qui enregsitrera dans la BDD via API
+              console.log('Non clicked');
+              
             }
           },
           {
