@@ -36,28 +36,6 @@ export class DemandesPage {
         5: Récupération
         6: Autre demande
    */
-    // Demande Vacances/Férié
-    // this.enregsitrerDemande(1, "2017-03-10", "2017-03-20", "");
-
-     // Demande Congé de formation
-     // this.enregsitrerDemande(2, "2017-04-10", "2017-04-20", "");
-
-     // Demande Congé paternité
-    // this.enregsitrerDemande(3, "2017-05-10", "2017-05-20", "");
-
-     // Demande Congé sans solde
-     // this.enregsitrerDemande(4, "2017-06-10", "2017-06-20", "");
-
-     // Demande Récupération
-    // this.enregsitrerDemande(5, "2017-07-10", "2017-07-20", "");
-
-    // Autre demande
-    // this.enregsitrerDemande(6, "2017-08-10", "2017-08-20", "Je suis fatigué");
-
-    // POUR CELINE : exemple d'appel de la fonction modifierDemande
-    // Attention: il faut récupérer l'ID de la demande !
-    //  this.modifierDemande(1, "2017-03-10", "2017-03-20", "Salut");
-
     // POUR CELINE 
     // Récupère les demandes et les range dans this.demandes
      this.getDemandes();
