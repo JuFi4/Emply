@@ -343,7 +343,7 @@ confirmerDemandeNouveauMotDePasse(){
             role: 'cancel',
             handler: () => {
               console.log('Non clicked');
-              
+              this.afficherModificationHoraires(titreNotification,messageNotification);
             }
           },
           {
@@ -356,6 +356,49 @@ confirmerDemandeNouveauMotDePasse(){
       });
       alert.present();
    }//afficherNotificationFinDeService
+
+   afficherModificationHoraires(titreNotification, messageNotification){
+        let alert = this.alertCtrl.create({
+        title: titreNotification,
+        message: messageNotification,
+        inputs: [
+        {
+          id: 'heureDebut',
+          type: 'input',
+          name: 'heureDebut',
+          placeholder: 'Heure de début de service'
+        },
+        {
+          id: 'heureFin',
+          type: 'input',
+          name: 'heureFin',
+          placeholder: 'Heure de fin de service'
+        },
+      ],
+        buttons: [
+          {
+            text: 'Valider',
+            handler: () => {
+               console.log('Oui clicked');
+               //this.modificationHoraire(heureDebut, heureFin);
+            }
+          }
+        ]
+      });
+      alert.present();
+   }
+
+modificationHoraire(hopId, dateDebut, DateFin){   
+  
+    this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),hopId, dateDebut, DateFin).subscribe(        
+      data => {
+           if(data) {  // OK         
+              console.log("Modifications mot de passe enregsitrées");
+             } else { // Erreur
+                 console.log("Connexion échouée : mauvais mot de passe, token ou ID");
+             }
+        });
+  }//modificationHoraire
 
    afficherValidationMensuelle(titreNotification, messageNotification){
         let alert = this.alertCtrl.create({

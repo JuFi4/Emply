@@ -130,7 +130,7 @@ export class ApiBddService {
 
       //Validation des heures et modification de ces dernières
    //Renvois : un JSON avec les horaires modifier et mets à true pour la validation 
-   getModHoraire(userId:string, token:string, hopId:string, dateDebut:string, dateFin:string) {
+   setModHoraire(userId:string, token:string, hopId:string, dateDebut:string, dateFin:string) {
      var url =this.baseUrl + 'type=valHoraire&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + 
      '&hopId=' + encodeURI(hopId) + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin);
      console.log(url);
