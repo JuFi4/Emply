@@ -57,7 +57,7 @@ export class MeshorairesPage {
      this.pasHeure = true;
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante
      //this.afficherHoraireCouleur();
-     this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,13,14,34),"12h00","14h30",1);
+     this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,15,17,0),"12h00","17h00",1);
     }//constructor
 
 
