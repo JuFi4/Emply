@@ -7,6 +7,7 @@ import { LocalNotifications, Push, Splashscreen, StatusBar } from 'ionic-native'
 // Pages
 import { AccueilPage } from '../accueil/accueil';
 import {MeshorairesPage} from "../meshoraires/meshoraires";
+import {ControlePage} from "../controle/controle";
 
 // Providers
 import { ApiBddService } from '../../providers/api-bdd-service';
@@ -409,10 +410,11 @@ modificationHoraire(hopId, dateDebut, DateFin){
         message: messageNotification,
         buttons: [         
           {
-            text: 'OK',
+            text: 'Afficher contrôle',
             handler: () => {
                console.log('OK clicked'); // TODO: envoyer sur une page pour vérifier les heures mensuelles, qui aura un bouton valider, qui enregsitrera dans la BDD via API
-            }
+               this.navCtrl.push(ControlePage, {utilisateur: this.utilisateur});
+          }
           }
         ]
       });

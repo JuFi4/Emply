@@ -38,13 +38,18 @@ export class NotificationsLocalesService {
 
   // Gère l'envois différé de la notification locale de validation mensuelle des heures
   // L'ID de cette notification est toujours de 0 : permet de la reconnaitre par rapport aux notifications de fin de service
-  public scheduleNotificationValidationMensuelle(scheduleDate : Date) {
-      console.log('scheduleNotificationValidationMensuelle : ' + scheduleDate);
+  public scheduleNotificationValidationMensuelle() {
+      let scheduleDate = new Date();
+      let firstDay = 1;
+      let nextMonth = (scheduleDate.getMonth()) + 1;
+      let actualYear = scheduleDate.getFullYear();
+      LocalNotifications.cancel(0); // Supprime la notification mensuelle si elle est existante
        LocalNotifications.schedule({
             id: 0,
             title: 'Validation mensuelle',
-            text: 'Veuillez aller valider vos heures mensuelles',
-            at: scheduleDate,
+            text: 'Veuillez valider vos heures mensuelles!',
+            firstAt: actualYear + '-' + nextMonth + '-' + firstDay,
+            every: 'month',
             sound: 'res://platform_default',
             icon: 'res://icon',
             led: 'FFFFFF'

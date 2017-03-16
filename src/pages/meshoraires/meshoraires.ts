@@ -156,7 +156,8 @@ export class MeshorairesPage {
           data => {  
             if(data) { // Si les données sont bien chargées  
                window.localStorage.setItem('getHoraires_'+mois+'_'+annee, JSON.stringify(data));  // Création de la sauvegarde locale de ces horaires (mois et annee)
-                this.traiterHoraires(data, annee, mois); // Traitement des horaires               
+                this.traiterHoraires(data, annee, mois); // Traitement des horaires
+                this.enregistrerNotificationMensuelle(); // On a internet et on a des horaires chargés, on peut donc programmer une notification locale pour la validation mensuelle              
               } else { // Erreur
                   console.log("Aucun horaire pour cette periode");
               }
@@ -176,7 +177,9 @@ export class MeshorairesPage {
         );                    
         this.jours[data[i].jour-1].addHoraire(horaire);  // On ajoute l'horaire au jour auquel il y lieu
         // Si on a internet on enregsitre les notif locales pour l'horaire -> inutile si on a pas internet car la notification pour cet horaire aura forcément déja été créee
-        if(!this.isHorsLigne){ this.enregistrerNotification(horaire);} 
+        if(!this.isHorsLigne){
+          this.enregistrerNotification(horaire);
+        } 
       }         
     }//traiterHoraires
 
@@ -187,6 +190,13 @@ export class MeshorairesPage {
         } else {
           console.log("On enregsitre pas de notification pour cet horaire : " + horaire.heureFin);
         }
+    }//enregistrerNotification
+
+    // Enregsitre la notification locale mensuelle pour la date passée en paramètre
+    enregistrerNotificationMensuelle(){
+        this.notificationsLocalesCtrl.scheduleNotificationValidationMensuelle(); // On enregsitre la notification locale de fin de mois
+        
+        
     }//enregistrerNotification
 
      // PAS BESOIN
