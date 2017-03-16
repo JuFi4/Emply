@@ -25,7 +25,7 @@ export class LoginPage {
    utilisateur = "";
    motDePasse = "";
    deviceToken : string;
-   resteConnecte = true;
+   resteConnecte = false;
    rootPage : any; // Permet de définir une autre page d'accueil (pour les notifications)
    isNotificationEnAttente = false;
    notificationEnAttente =  {id: '', titre: '', message:'' };  
@@ -63,8 +63,8 @@ export class LoginPage {
       this.motDePasse = window.localStorage.getItem('motDePasse');
       this.connecter(); // On appelle directement la fonction de connexion pour obtenir un nouveau token de BDD
    } else { // Affichage de la page connexion normale
-      this.navCtrl.setRoot(LoginPage);
-      this.navCtrl.popToRoot(); 
+      //this.navCtrl.setRoot(LoginPage); //Il ne faut pas rediriger vers la page dans son propre constructeur
+      //this.navCtrl.popToRoot();        // C'était ça qui faisait charger trois fois la page après le logout
   }
 
  /*   if((window.localStorage.getItem('utilisateur') === "undefined" || window.localStorage.getItem('utilisateur') === null) && 
@@ -226,6 +226,9 @@ confirmerDemandeNouveauMotDePasse(){
       if (this.resteConnecte) {
          console.log("Checkbox cochée");   
          window.localStorage.setItem('resteConnecte', '1'); // On sauvegarde le fait qu'on veut rester connecter                                        
+     } else {
+        console.log("Checkbox pas cochée");
+        window.localStorage.setItem('resteConnecte', '0'); // On sauvegarde le fait qu'on ne veut pas rester connecter
      }
 
       // Si on a une notification en attente, on l'affiche
@@ -239,7 +242,7 @@ confirmerDemandeNouveauMotDePasse(){
 
 
   afficherErreurDeCOnnexion(){
-    console.log("Connexion échouée : mauvais mail ou mdp");
+    console.log("Connexion échouée : mauvais mail ou mot de passe");
     let alert = this.alertCtrl.create({
       title: 'Erreur',
       subTitle: 'Utilisateur et/ou mot de passe incorrect(s).',
