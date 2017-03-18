@@ -1,6 +1,7 @@
 
 import { Component, Input} from '@angular/core';
 import{NavController, NavParams, AlertController} from 'ionic-angular';
+import {Calendar} from 'ionic-native';
 
 // Providers
 import { NotificationsLocalesService } from '../../providers/notifications-locales-service';
@@ -12,6 +13,8 @@ import {Mois} from '../../models/mois';
 import {Semaine} from '../../models/semaine';
 import {Horaire} from '../../models/horaire';
 import {Jour} from '../../models/jour';
+import {CalendrierEvent} from '../../models/calendrierEvent';
+
 
 /*
   Generated class for the Meshoraires page.
@@ -38,12 +41,15 @@ export class MeshorairesPage {
   horaires : Horaire[]; // Tableau qui contient les horaires de la periode affichée
   horaireDuJour : Horaire[]; // Tableau qui contient les horaires du jour selectionné
   inputDisabled : Boolean;    
+  dateCourrante = new Date();
   annneeCourrante = new Date().getFullYear(); // Année courrante
   anneeSelectionne : number; 
   moisCourant = new Date().getMonth();
   pasHeure : boolean;
   isDisabledDay : boolean;
   isHorsLigne : boolean;
+  autoImport = true;
+  calendrierEvents : CalendrierEvent[]
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService, 
     public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) {    
@@ -57,43 +63,30 @@ export class MeshorairesPage {
      this.pasHeure = true;
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante
      //this.afficherHoraireCouleur();
-     this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,15,17,0),"12h00","17h00",1);
+     //this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,15,17,0),"12h00","17h00",1);
+     this.supprimerAnciennesSauvegares();//Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone     
+     this.autoImport = this.setAutoImport();
+     this.gererCalendrierSmartphone();
     }//constructor
 
+   saveAutoImportChange(){
+     window.localStorage.setItem('autoImport', this.autoImport.toString());  // Création de la sauvegarde locale de ces horaires (mois et annee) 
+   }//saveAutoImportChange
+
+    setAutoImport(){
+      if(window.localStorage.getItem('autoImport') == "true"){ return true;}
+      return false;
+    }//setAutoImport
 
     ionViewDidLoad() {
       console.log('Hello MesHoraires Page');
     }//ionViewDidLoad
 
-
-    /* VANESSA: j'ai trouvé comment selectionner le mois courrant: ligne 50, j'ai rajouter un "then()" qui lance la fonction selectionnerMois() lorsque 
-      la liste des mois a bien été récuprée.
-      Pour le moment l'affichage ne marche pas car le code que tu as mis dans l'HTML " [class = "JoursOk"]="IsColored"" a l'air de bloquer l'affichage
-      mais j'ai tester en l'enlevant et ça affiche bien le calendrier du avec le bon mois.
-      J'ai mis ton formulaire pour selectionner le mois en commentaire dans l'html pour pas le perdre, mais du coup est est désactivé
-      Du coup je pense qu'il n'y a pas besoin de passer par le ionViewDidLoad, tu peux tout mettre soit dans le constructeur, soit dans
-      selectionnerMois()
-    */
     selectionnerMois(){
         this.moisSelectionne = this.moisListe[this.moisCourant]; 
         console.log("this.moisSelectionne " + this.moisSelectionne.nom);
         this.afficherMois();
     }//selectionnerMois
-    
-
-    /*afficherHoraireCouleur(){
-      console.log("coucouCouleur")
-      if(this.horaireDuJour != null){
-        if(this.horaireDuJour.length > 0){
-          this.isDisabledDay = true;
-          console.log(this.horaireDuJour); // Contient un tableau des horaires du jour choisi sous le format Horaire
-        } else {
-          console.log("pas d'horaire pour ce jour");
-          this.isDisabledDay = false;
-        } 
-      }
-    }//afficherHoraireCouleur*/
-
 
     afficherMois(){   
      this.affichageH = false; // On désactive le détail du jour
@@ -127,35 +120,16 @@ export class MeshorairesPage {
         this.jour = new Jour(i);
         this.jours.push(this.jour);
      }
-     
-     // VANESSA: ON POURRAIT PAS SE CONTENTER DE this.anneeSelectionne ?????
-     //afficher l'année
-     this.annee = this.anneeSelectionne;
-     console.log(this.annee)
-
-     this.getHoraires(this.annee, this.moisSelectionne.moisId+1);
-     //this.addHoraireJour();
+     this.getHoraires(this.anneeSelectionne, this.moisSelectionne.moisId+1);
     }//afficherMois
-
-      // PAS BESOIN
-     //remplir les horaires du jour en paramètre
-    /* addHoraireJour(){
-      console.log(this.jours.length)
-      if(this.jours != null){ // Si des jours existent
-        for(let i = 0; i < this.jours.length; i++){
-            this.getHoraireDuJour(this.jours[i].jour);
-        }
-      }
-      this.disabledHoraire();
-     }*/
-
+     
     //Récupère la liste des horaires pour l'année et le mois passés en paramètre
     getHoraires(annee, mois){
       if(!this.isHorsLigne){ // Si on a internet
         this.abiBddCtrl.getHoraires(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe(
           data => {  
-            if(data) { // Si les données sont bien chargées  
-               window.localStorage.setItem('getHoraires_'+mois+'_'+annee, JSON.stringify(data));  // Création de la sauvegarde locale de ces horaires (mois et annee)
+            if(data) { // Si les données sont bien chargées 
+                window.localStorage.setItem('getHoraires_'+mois+'_'+annee, JSON.stringify(data));  // Création de la sauvegarde locale de ces horaires (mois et annee)                
                 this.traiterHoraires(data, annee, mois); // Traitement des horaires
                 this.enregistrerNotificationMensuelle(); // On a internet et on a des horaires chargés, on peut donc programmer une notification locale pour la validation mensuelle              
               } else { // Erreur
@@ -168,7 +142,7 @@ export class MeshorairesPage {
       }
     }//getHoraires
 
-    traiterHoraires(data, mois, annee){
+    traiterHoraires(data, mois, annee){      
       for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données des horaires formatées
         let horaire =  new Horaire(data[i].id, 
           new Date(data[i].annee, data[i].mois-1, data[i].jour),
@@ -176,12 +150,89 @@ export class MeshorairesPage {
           new Date(data[i].annee, data[i].mois-1, data[i].jour, data[i].heureFin, data[i].minuteFin)
         );                    
         this.jours[data[i].jour-1].addHoraire(horaire);  // On ajoute l'horaire au jour auquel il y lieu
+        if(this.autoImport && horaire.heureDebut >= this.dateCourrante){ // Si l'auto-import est activé et que l'évenement est dans le futur
+          this.enregsitrerDansCalendrierSmartphone(horaire); // On enregsitrer dans le calendrier du smartphone
+        }
         // Si on a internet on enregsitre les notif locales pour l'horaire -> inutile si on a pas internet car la notification pour cet horaire aura forcément déja été créee
         if(!this.isHorsLigne){
           this.enregistrerNotification(horaire);
         } 
-      }         
+      }      
+      if(this.autoImport){
+        window.localStorage.setItem('calendrierEvents', JSON.stringify(this.calendrierEvents));
+      }
     }//traiterHoraires
+
+    enregsitrerDansCalendrierSmartphone(horaire: Horaire){
+       let event = new CalendrierEvent("Travail", "", null, horaire.heureDebut, horaire.heureFin, horaire.id);       
+       let state = this.eventStateInList(event);
+       console.log("event : " + event.startDate +" --- Sate : " + state);
+       if(state === -1){ //L'event existe et il est similaire : on se barre
+         return;
+        }
+        
+       if(state === -2){// L'event n'existe pas : on le créer
+         Calendar.createEvent(event.title, event.location, event.notes, event.startDate, event.endDate).then(
+                (msg) => { }, // On enregsitre l'évenement dans le calendrier
+                (err) => { }
+          );
+          this.calendrierEvents.push(event);  // On enregsitre l'évenement dans le calendrier
+
+       }  else if(state >= 0){ // L'event existe, mais à des dates différentes, dans ce cas, state correspond à son index (cas le moins probable, donc testé en dernier)
+        Calendar.modifyEvent( // On modifie l'event du calendrier
+          this.calendrierEvents[state].title,
+          this.calendrierEvents[state].location,
+          this.calendrierEvents[state].notes,
+          this.calendrierEvents[state].startDate,
+          this.calendrierEvents[state].endDate,
+          event.title,
+          event.title,
+          event.notes,
+          event.startDate,
+          event.endDate);
+       }   
+       console.log(this.calendrierEvents);   
+    }//enregsitrerDansCalendrierSmartphone
+
+    // Prépare les éléments nécéssaires pour la gestion du calendrier smartphone
+     gererCalendrierSmartphone(){     
+        this.calendrierEvents = []; // Instanciation de l'array qui stock les events
+        try{
+              let data = JSON.parse(window.localStorage.getItem('calendrierEvents')); // On récupère les events précédement crées depuis la mémoire locale
+              console.log(data);
+              for(let i = 0; i < data.length; i++){
+                  let event = new CalendrierEvent(data[i].title, data[i].location, data[i].notes, new Date(data[i].startDate), new Date(data[i].endDate), data[i].id);
+                  if(event.startDate >= this.dateCourrante){ // Si l'event à lieux aujourd'hui ou dans le futur
+                      this.calendrierEvents.push(event)//On le prend dans la liste d'events
+                  }
+              }
+        } catch(Exception){}       
+    }//gererCalendrier
+
+    eventStateInList(event : CalendrierEvent){
+      for(let i = 0; i < this.calendrierEvents.length; i++){
+          if(this.calendrierEvents[i].id === event.id){
+              if(this.calendrierEvents[i].startDate.getTime() === event.startDate.getTime() 
+                  && this.calendrierEvents[i].endDate.getTime() === event.endDate.getTime()){
+                return -1; // L'event existe, avec les mêmes dates
+              } else {
+                return i; // L'event existe, à des dates différents : on retourne son index
+              }
+          }
+      }
+      return -2; // L'event n'existe pas
+    }//eventStateInList
+
+    // Supprime les sauvegardes locales trop anciennes pour ne pas surcharger le téléphone
+    supprimerAnciennesSauvegares(){
+      let dateMax = new Date();
+      dateMax.setMonth(dateMax.getMonth()-6); // On enlève 6 mois
+      for(let a = (dateMax.getFullYear()-1); a < (dateMax.getFullYear()); a++){
+        for(let m = 1; m <=12; m++){
+             window.localStorage.removeItem('getHoraires_'+m+'_'+a);
+        }
+      }     
+    }//supprimerAnciennesSauvegares   
 
     // Enregsitre la notification locale pour l'horaire passé en paramètre
     enregistrerNotification(horaire : Horaire){
@@ -194,85 +245,17 @@ export class MeshorairesPage {
 
     // Enregsitre la notification locale mensuelle pour la date passée en paramètre
     enregistrerNotificationMensuelle(){
-        this.notificationsLocalesCtrl.scheduleNotificationValidationMensuelle(); // On enregsitre la notification locale de fin de mois
-        
-        
+        this.notificationsLocalesCtrl.scheduleNotificationValidationMensuelle(); // On enregsitre la notification locale de fin de mois        
     }//enregistrerNotification
 
-     // PAS BESOIN
-    // Récupére le mois sélectionné sous format String, et retourne le mois en format Mois correspondant
-    /*getMoisSelectionne(mois : string) : Mois{
-      for(let i = 0; i <= this.moisListe.length; i++){
-           if(this.moisListe[i].nom === mois){
-              return this.moisListe[i];
-           }
-        }
-       return this.moisListe[0];
-    }//getMoisSelectionne*/
-
-    // PAS BESOIN
-    //Récupère la liste des horaires pour le jour passé en paramètre
-    /*getHoraireDuJour(jour){
-        let dateDuJour = new Date(this.anneeSelectionne, this.moisSelectionne.moisId, jour.jour);
-        this.horaireDuJour = []; // Tableau pour les horaires du jour
-        if(this.horaires != null){ // Si des horaires existent
-          for(let i = 0; i < this.horaires.length; i++){ // On parcour les horaires
-              if(this.horaires[i].date.getTime() === dateDuJour.getTime()){ // Si l'horaire est pour la date du jour sélectionné (on passe en getTime() sinon il ne reconnait pas 2 dates pareilles !)
-                this.horaireDuJour.push(this.horaires[i]); // On l'ajoute dans la liste 
-                this.jour.tbHoraire.push(this.horaires[i]);
-                console.log(this.jour.tbHoraire.push(this.horaires[i]))
-                console.log(this.horaires[i].affichageHeureDebut);
-                console.log(this.horaires[i].affichageHeureFin);
-              }
-          }
-        }
-         
-    }//getHoraireDuJour*/
-
     
-    /*disabledHoraire(){
-      if(this.jour.tbHoraire != null){
-        console.log(this.jour.tbHoraire.length)
-        if(this.jour.tbHoraire.length > 0){
-          this.isDisabledDay = true;
-        }else{
-          this.isDisabledDay = false;
-        }
-      }
-    }*/
-  
-    /* J'ai créer des horaires pour ton utilisateur, comme ça tu peux tester :
-    2017-02-16 : 11:00:00 à 14:00:00
-    2017-02-16 : 18:00:00 à 22:00:00
-    2017-02-17 : 17:00:00 à 23:00:00
-    2017-02-19 : 11:00:00 à 13:00:00
-    2017-02-21 : 11:00:00 à 21:00:00
-    2017-02-23 : 10:00:00 à 16:00:00    
-    2017-02-23 : 20:00:00 à 22:00:00
-    */
     detailHoraire(jour : Jour){
       console.log(jour);
-      this.horaireDuJour = jour.tbHoraire;   // CONTIENT LES HORAIRES DU JOUR MAIS L'AFFICHAGE NE MARCHE PASSSSSS :( :( :(
+      this.horaireDuJour = jour.tbHoraire;  
       console.log(this.horaireDuJour);
       this.pasHeure = this.horaireDuJour.length <= 0; //Contient false si on a pas d'horaire pour ce jour
       this.affichageH = true;
-      this.selJour = jour.jour;
-      /*for(let j = 0; j < this.jours.length; j++){
-        if(this.jours[j].jour == jour){
-          console.log("joursSel "+jour);
-          this.affichageH = true;
-          if(this.getHoraireDuJour.length > 0){
-            this.pasHeure = false;
-            console.log(this.horaireDuJour); // Contient un tableau des horaires du jour choisi sous le format Horaire
-          } else {
-            console.log("pas d'horaire pour ce jour");
-            this.pasHeure = true;
-          } 
-          this.selJour = i; //récupération du jour choisi
-          this.inputDisabled = true; //desactivation des champs horaires
-          //  if(this.horaires.jour == i){
-        }
-      }*/
+      this.selJour = jour.jour;      
    }//DetailHoraire
 
 

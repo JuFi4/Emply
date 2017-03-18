@@ -21,6 +21,10 @@
        <ion-option  *ngFor = "let mois of moisListe"> {{mois.nom}}</ion-option>
     </ion-select>  
 </ion-item>-->
+<ion-item>
+    <ion-label>Synchroniser dans le calendrier</ion-label>
+    <ion-checkbox [(ngModel)]="autoImport"  (click)="saveAutoImportChange()"></ion-checkbox>
+  </ion-item>
 <div *ngIf = "annee && moisSelectionne"  (swipe)="changerMois($event)">
 <div class="month"> 
   <ul>

@@ -23,7 +23,22 @@
 
 
 <ion-content padding>
-  <h3>Vue des demandes</h3>
+ <!-- <h3>Vue des demandes</h3>-->
+  <ion-list>
+      <ion-item *ngFor="let demandes of demandes" text-wrap>
+           <ion-label> {{demandes.nom_typeDemande}} </ion-label>
+            <ion-label style="float: left; width: 500px;">
+              Du {{demandes.dateDebut.getDate()}}.{{demandes.dateDebut.getMonth()}}.{{demandes.dateDebut.getFullYear()}} 
+              au {{demandes.dateFin.getDate()}}.{{demandes.dateFin.getMonth()}}.{{demandes.dateFin.getFullYear()}}   
+            </ion-label> 
+            <ion-label style="text-align: right">
+              <button ion-button icon-only color="light">
+                 <ion-icon name="create"></ion-icon>
+              </button>
+      </ion-label>
+      </ion-item>
+  </ion-list>
+  <!--
   <div>
     <ul>
       <ol>
@@ -35,5 +50,5 @@
       </li>
       </ol>
     </ul>
-  </div>
+  </div>-->
 </ion-content>
