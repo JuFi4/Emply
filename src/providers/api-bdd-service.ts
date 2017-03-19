@@ -138,25 +138,23 @@ export class ApiBddService {
      return response;
    }//getDemandes
 
-    //Validation des heures et modification de ces dernières
-   //Renvois : un JSON avec les horaires modifier et mets à true pour la validation 
-   setModHoraire(userId:string, token:string, hopId:string, dateDebut:string, dateFin:string) {
+   // Validation des heures et modification de ces dernières
+   //Renvois : true ou false
+   setModHoraire(userId:string, token:string, hopId:string, dateTimeDebut:string, dateTimeFin:string) {
      var url =this.baseUrl + 'type=valHoraire&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + 
-     '&hopId=' + encodeURI(hopId) + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin);
+     '&hopId=' + encodeURI(hopId) + '&dateTimeDebut=' + encodeURI(dateTimeFin) + '&dateTimeFin=' + encodeURI(dateTimeFin);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());
-     window.localStorage.setItem('valHoraire', JSON.stringify(response)); 
      return response;
    }//getModHoraire
 
-         //Validation des heures du mois
+   //Validation des heures du mois
    //Renvois : true or false
    getValHoraire(userId:string, token:string, mois:string) {
      var url =this.baseUrl + 'type=valMensuelle&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + 
      '&mois=' + encodeURI(mois);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());
-     window.localStorage.setItem('valMensuelle', JSON.stringify(response)); 
      return response;
    }//getModHoraire
 

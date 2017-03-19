@@ -99,7 +99,8 @@ export class MeshorairesPage {
             {
               text: 'OK',
               handler: data => {
-                window.localStorage.setItem('autoImportNomEvent', data.nomEvent);//On enregsitre
+                 this.nomCalendrierEvent = data.nomEvent;//On defini ce nom comme nom pour les event
+                 window.localStorage.setItem('autoImportNomEvent', data.nomEvent);//On enregsitre
                  this.gethorairesFuturs();//On relance le chargement des horaires futurs pour qu'ils se synchronisent
               }
             }
@@ -334,7 +335,10 @@ export class MeshorairesPage {
                       this.calendrierEvents.push(event)//On le prend dans la liste d'events
                   }
               }
-        } catch(Exception){}                
+        } catch(Exception){}           
+        if(window.localStorage.getItem('autoImportNomEvent') != "undefined" && window.localStorage.getItem('autoImportNomEvent') != null){
+          this.nomCalendrierEvent = window.localStorage.getItem('autoImportNomEvent');
+      }
     }//gererCalendrier
 
     eventStateInList(event : CalendrierEvent, liste : CalendrierEvent[]) : number{
