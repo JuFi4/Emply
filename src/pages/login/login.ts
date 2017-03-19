@@ -11,6 +11,7 @@ import {ControlePage} from "../controle/controle";
 
 // Providers
 import { ApiBddService } from '../../providers/api-bdd-service';
+import { ConnectivityService } from '../../providers/connectivity-service';
 
 // Sert pour vérifier le connexion
 declare var navigator: any;
@@ -31,7 +32,8 @@ export class LoginPage {
    isNotificationEnAttente = false;
    notificationEnAttente =  {id: '', titre: '', message:'' };  
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController) {      
+  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, 
+        private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, private connectivityService: ConnectivityService) {      
      // Définition de la d'accueil par défaut
      this.rootPage = AccueilPage; 
     
@@ -41,20 +43,14 @@ export class LoginPage {
      // Instanciation des notifications locales
      this.instancierNotificationsLocales();  
     
-     // Vérification des données réseau : UNIQUEMENT AVEC UN SMARTPHONE
-     //this.checkNetwork();
-
-     // Pour simuler le mode hors connexion : 
-     //window.localStorage.setItem('noNetwork', '1');
-     
-    // Pour annuler la simution du mode hors connexion : 
-    window.localStorage.setItem('noNetwork', '0');
+     // Vérification des données réseau
+     this.checkNetwork();
 
     console.log("Mode hors ligne : " + window.localStorage.getItem('noNetwork'));
 
     this.resteConnecte = (window.localStorage.getItem('resteConnecte') === '1');
 
-   // JULIANA : j'ai changer l'ordre du traitement pour être sûr qu'on ne tente pas la connexion automatique si ce n'est pas possible
+   // JULIANA : j'ai changé l'ordre du traitement pour être sûr qu'on ne tente pas la connexion automatique si ce n'est pas possible
     if(this.resteConnecte && window.localStorage.getItem('utilisateur') !== "undefined" && window.localStorage.getItem('motDePasse') !== "undefined" && 
        window.localStorage.getItem('utilisateur') !== null && window.localStorage.getItem('motDePasse') !== null){ // Connexion automatique
       
@@ -92,26 +88,21 @@ export class LoginPage {
   }//changeResteConnece
 
   // Vérification des données mobiles pour pouvoir traiter le mode hors ligne
-  // NE FONCTIONNE PAS SI ON EST PAS AVEC UN SMARTPHONE
-  checkNetwork() {    
-    // Etats possibles de networkState : 
-    // Connection.UNKNOWN, Connection.ETHERNET, Connection.WIFI, Connection.CELL_2G, Connection.CELL_3G, Connection.CELL_4G, Connection.CELL, Connection.NONE 
-     var networkState = navigator.connection.type;
-     // Si l'état est "NONE" (=pas de connexion) ou "UNKNOWN" (=connexion inconnue : non détectée) : on met notNetwork à 1
-      if(networkState == Connection.NONE || networkState == Connection.UNKNOWN){
-           window.localStorage.setItem('noNetwork', '1');
-           let alert = this.alertCtrl.create({
-              title: 'Mode hors connexion',
-              subTitle: 'Vous êtes actuellement en mode hors connexion.\n '
+  checkNetwork() {   
+    if(this.connectivityService.isOffline()){
+       window.localStorage.setItem('noNetwork', '1');
+       let alert = this.alertCtrl.create({
+          title: 'Mode hors connexion',
+          subTitle: 'Vous êtes actuellement en mode hors connexion.\n '
                   + 'Vous pouvez vous connecter avec le dernier compte utilisé et consulter les données chargées lors de votre dernière utilisation.\n '
                   + ' Vous ne pourrez pas charger de nouvelles données, ni enregsitrer de modifications.',
               buttons: ['OK']
             });
-          alert.present();
-      } else {
-           window.localStorage.setItem('noNetwork', '0');
-     }     
-    }//checkNetwork
+      alert.present();
+    } else {
+      window.localStorage.setItem('noNetwork', '0');
+    }
+  }//checkNetwork
 
    ionViewDidLoad() {
     console.log('Hello Login Page');
@@ -186,22 +177,19 @@ confirmerDemandeNouveauMotDePasse(){
       this.abiBddCtrl.connexion(this.utilisateur, this.motDePasse, (this.deviceToken != null) ? this.deviceToken : "").subscribe(
                   data => {        
                       if(data) {  // OK   
-                        console.log("data " + data);
-                        // Si on est en mode "normal" : on sauvergarde les données issues de l'API
-                        if(window.localStorage.getItem('noNetwork') === '0')  {
-                          console.log("ID : " + data.id);
-                          console.log("Token : " + data.token);
+                        console.log("data " + data);                      
+                        console.log("ID : " + data.id);
+                        console.log("Token : " + data.token);
 
-                          // On sauvegarde les données de l'utilisateur pour la session actuelle
-                          window.localStorage.setItem('id', data.id);
-                          window.localStorage.setItem('tokenBDD', data.token);                        
+                        // On sauvegarde les données de l'utilisateur pour la session actuelle
+                        window.localStorage.setItem('id', data.id);
+                        window.localStorage.setItem('tokenBDD', data.token);                        
 
-                          //On sauvegarde le nom d'utilisateur et le mot de passe pour pouvoir faire le login hors connexion
-                          window.localStorage.setItem('dernierUtilisateur', this.utilisateur);
-                          window.localStorage.setItem('dernierMotDePasse', this.motDePasse);                          
-                        }
-                       this.connexionOk();
-
+                        //On sauvegarde le nom d'utilisateur et le mot de passe pour pouvoir faire le login hors connexion
+                        window.localStorage.setItem('dernierUtilisateur', this.utilisateur);
+                        window.localStorage.setItem('dernierMotDePasse', this.motDePasse);                          
+                        
+                        this.connexionOk();
                       } else { // Erreur
                         this.afficherErreurDeCOnnexion();                        
                       }

@@ -5,7 +5,8 @@ import 'rxjs/add/operator/map';
 
 
 //Models
-import { UserModel } from '../models/user-model';
+import { Utilisateur } from '../models/utilisateur';
+import { Etablissement } from '../models/etablissement';
 import { Notification } from '../models/notification';
 
 @Injectable()
@@ -44,12 +45,21 @@ export class ApiBddService {
 
  // Récupération du profil d'un utilisateur
  // Renvois :  un JSON avec les données du profil utilisateurs (requête réussie), soit False (requête réussie)
-  getProfil(userId : string, token: string) : Observable<UserModel> {
+  getProfil(userId : string, token: string) : Observable<Utilisateur> {
      var url =this.baseUrl + 'type=getProfil&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
      console.log(url);
-     var response = this.http.get(url).map(res => <UserModel>res.json());
+     var response = this.http.get(url).map(res => <Utilisateur>res.json());
      return response;
    }//getProfil
+
+  // Récupération de l'établissement d'un utilisateur
+ // Renvois : un JSON avec les données du profil utilisateurs (requête réussie), soit False (requête réussie)
+  getEtablissement(userId : string, token: string) : Observable<Etablissement> {
+     var url =this.baseUrl + 'type=getEtablissement&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
+     console.log(url);
+     var response = this.http.get(url).map(res => <Etablissement>res.json());
+     return response;
+   }//getEtablissement
 
  // Modification du profil d'un utilisateur
  // Renvois : true ou false. TRUE = modification enregsitrée, FALSE = erreur (mauvais userId ou Token)
@@ -119,16 +129,8 @@ export class ApiBddService {
      return response;
    }//getDemandes
 
-  // Récupération du texte des notifications locales
-  // Renvois :  un JSON avec les demandes non passées (requête réussie), soit False (requête réussie)
-  getTextNotifications(userId:string, token:string) : Observable<Notification> {
-     var url =this.baseUrl + 'type=getTextNotifications&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
-     console.log(url);
-     var response = this.http.get(url).map(res => <Notification>res.json());
-     return response;
-   }//getTextNotifications
 
-      //Validation des heures et modification de ces dernières
+    //Validation des heures et modification de ces dernières
    //Renvois : un JSON avec les horaires modifier et mets à true pour la validation 
    setModHoraire(userId:string, token:string, hopId:string, dateDebut:string, dateFin:string) {
      var url =this.baseUrl + 'type=valHoraire&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + 

@@ -7,6 +7,7 @@ import { SaisiedemandePage } from '../saisiedemande/saisiedemande';
 
 // Providers
 import { ApiBddService } from '../../providers/api-bdd-service';
+import { ConnectivityService } from '../../providers/connectivity-service';
 
 //models
 import {Demande} from '../../models/demande';
@@ -25,8 +26,10 @@ export class DemandesPage {
   radioOpen: boolean;
   radioResult;
   demandes : Demande[]; // Tableau qui contient toutes les demandes
-
-  constructor(public toastCtrl : ToastController, public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) { 
+  isHorsLigne : boolean;
+  
+  constructor(public toastCtrl : ToastController, public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) { 
+    this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     // POUR CELINE : exemple d'appel de la fonction enregsitrerDemande (tu peux effacer tout ça quant tu n'en a plus besoin)
     /* typeDemId : l’id du type de la demande:
         1: Vacances/Férié

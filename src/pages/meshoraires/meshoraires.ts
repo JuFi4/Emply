@@ -7,6 +7,7 @@ import {Calendar} from 'ionic-native';
 import { NotificationsLocalesService } from '../../providers/notifications-locales-service';
 import {MoisService} from '../../providers/mois-service';
 import { ApiBddService } from '../../providers/api-bdd-service';
+import { ConnectivityService } from '../../providers/connectivity-service';
 
 //models
 import {Mois} from '../../models/mois';
@@ -14,7 +15,7 @@ import {Semaine} from '../../models/semaine';
 import {Horaire} from '../../models/horaire';
 import {Jour} from '../../models/jour';
 import {CalendrierEvent} from '../../models/calendrierEvent';
-
+import {Etablissement} from '../../models/etablissement';
 
 /*
   Generated class for the Meshoraires page.
@@ -49,28 +50,67 @@ export class MeshorairesPage {
   isDisabledDay : boolean;
   isHorsLigne : boolean;
   autoImport = true;
-  calendrierEvents : CalendrierEvent[]
+  calendrierEvents : CalendrierEvent[];
+  calendrierNewEvents : CalendrierEvent[]
+  calendrierUpadateEvents : CalendrierEvent[]
+  etablissement : Etablissement;
+  nomCalendrierEvent = "Travail";
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService, 
-    public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) {    
-     // Constructeur Date(Année, mois, jour, heure, minute) -> Atention, les mois se comptent à partrir de 0: 0 = janvier, 1= février...
-     // notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017, 0, 15, 0, 9));
-     // notificationsLocalesCtrl.scheduleNotificationValidationMensuelle(new Date(2017, 0, 15, 0, 10));
-     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1';
+    public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) {   
+     //this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,15,17,0),"12h00","17h00",1);
+    // window.localStorage.removeItem('autoImportNomEvent');
+    // window.localStorage.removeItem('calendrierEvents');
+     // Instanciation des valeurs par défaut
+     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' ||connectivityService.isOffline();
      this.moisService.getSemaine().then(semaines => this.semaines = semaines);
      this.moisService.getMois().then(moisListe => this.moisListe = moisListe).then(result => this.selectionnerMois());
      this.affichageH = false;
      this.pasHeure = true;
-     this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante
-     //this.afficherHoraireCouleur();
-     //this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,15,17,0),"12h00","17h00",1);
-     this.supprimerAnciennesSauvegares();//Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone     
+     this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante    
      this.autoImport = this.setAutoImport();
-     this.gererCalendrierSmartphone();
+
+     this.notificationsLocalesCtrl.resetNotificationFinDeService();//Remise à zéro des notifications de fin de service : elles vont être re-crées
+     // Méthodes à lancer au chargement de la page
+     this.supprimerAnciennesSauvegares(); //Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone    
+     this.gererCalendrierSmartphone();    //Prépare les éléments nécéssaires pour la gestion du calendrier smartphone    
     }//constructor
+
+    ionViewDidLoad() {
+      console.log('Hello MesHoraires Page');      
+    }//ionViewDidLoad
+
+    ionViewDidLeave(){
+        console.log("T'en vas pas, si tu m'aimes t'en vas pas...");        
+    }//ionViewDidLeave
 
    saveAutoImportChange(){
      window.localStorage.setItem('autoImport', this.autoImport.toString());  // Création de la sauvegarde locale de ces horaires (mois et annee) 
+     if(this.autoImport){ // Si on a coché "oui"
+      if(window.localStorage.getItem('autoImportNomEvent') != "undefined" && window.localStorage.getItem('autoImportNomEvent') != null){
+          this.nomCalendrierEvent = window.localStorage.getItem('autoImportNomEvent');
+      }
+      let alert = this.alertCtrl.create({
+          title: "Nom de l'évenement",
+          message: "Entrez le nom par lequel vous souhaitez appeller vos heures de travail dans votre calendrier : ",
+          inputs: [
+            {
+              name: 'nomEvent',         
+              value : this.nomCalendrierEvent,
+            }          
+          ],
+          buttons: [   
+            {
+              text: 'OK',
+              handler: data => {
+                window.localStorage.setItem('autoImportNomEvent', data.nomEvent);//On enregsitre
+                 this.getHoraires(this.anneeSelectionne, this.moisSelectionne.moisId+1);//On relance le chargement des horaires pour qu'ils se synchronisent
+              }
+            }
+          ]
+        });
+        alert.present();
+     }
    }//saveAutoImportChange
 
     setAutoImport(){
@@ -78,17 +118,14 @@ export class MeshorairesPage {
       return false;
     }//setAutoImport
 
-    ionViewDidLoad() {
-      console.log('Hello MesHoraires Page');
-    }//ionViewDidLoad
-
     selectionnerMois(){
         this.moisSelectionne = this.moisListe[this.moisCourant]; 
         console.log("this.moisSelectionne " + this.moisSelectionne.nom);
         this.afficherMois();
     }//selectionnerMois
 
-    afficherMois(){   
+    afficherMois(){          
+     console.log(this.calendrierEvents);     
      this.affichageH = false; // On désactive le détail du jour
      this.jours.length = 0;
      this.joursMoisPrecedent.length = 0;
@@ -142,7 +179,8 @@ export class MeshorairesPage {
       }
     }//getHoraires
 
-    traiterHoraires(data, mois, annee){      
+    traiterHoraires(data, mois, annee){    
+      let verifierCalendrierEvents = false  
       for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données des horaires formatées
         let horaire =  new Horaire(data[i].id, 
           new Date(data[i].annee, data[i].mois-1, data[i].jour),
@@ -150,34 +188,62 @@ export class MeshorairesPage {
           new Date(data[i].annee, data[i].mois-1, data[i].jour, data[i].heureFin, data[i].minuteFin)
         );                    
         this.jours[data[i].jour-1].addHoraire(horaire);  // On ajoute l'horaire au jour auquel il y lieu
-        if(this.autoImport && horaire.heureDebut >= this.dateCourrante){ // Si l'auto-import est activé et que l'évenement est dans le futur
-          this.enregsitrerDansCalendrierSmartphone(horaire); // On enregsitrer dans le calendrier du smartphone
-        }
-        // Si on a internet on enregsitre les notif locales pour l'horaire -> inutile si on a pas internet car la notification pour cet horaire aura forcément déja été créee
+
+        // Si on a internet on enregsitre les notif locales pour l'horaire et on enregsitre l'horaire dans le calendrier du smartphone si besoin
+        // -> inutile si on a pas internet car la notification et l'event dans le calendrier pour cet horaire auront forcément déja été crées
         if(!this.isHorsLigne){
           this.enregistrerNotification(horaire);
+          if(this.autoImport && horaire.heureDebut >= this.dateCourrante){ //Si l'auto-import est activé et que l'évenement est dans le futur                
+               this.enregsitrerDansCalendrierSmartphone(horaire); // On enregsitrer dans le calendrier du smartphone
+               verifierCalendrierEvents = true;
+          }
         } 
       }      
-      if(this.autoImport){
-        window.localStorage.setItem('calendrierEvents', JSON.stringify(this.calendrierEvents));
+      if(verifierCalendrierEvents){ // Si on est dans un cas où le calendrier à pu être modifié
+          this.gererSauvegardeCalendrierEvents(); // Vérifie si certains anciens events ont disparus et sauve la liste actuallisée 
       }
     }//traiterHoraires
 
+    gererSauvegardeCalendrierEvents(){
+      for(let i = 0; i < this.calendrierEvents.length; i++){ //On boucle sur les anciens events
+         if(this.calendrierEventStateInList(this.calendrierEvents[i], this.calendrierUpadateEvents) == -2){  // Si l'ancien even n'est pas dans la liste mise à jour
+          console.log("On supprime : " + this.calendrierEvents[i].id + " : " + this.calendrierEvents[i].startDate);  
+           Calendar.deleteEvent( // On supprime l'event du calendrier
+              this.calendrierEvents[i].title,
+              this.calendrierEvents[i].location,
+              this.calendrierEvents[i].notes,
+              this.calendrierEvents[i].startDate,
+              this.calendrierEvents[i].endDate);
+              this.calendrierEvents.splice(i); //On supprime l'event de la liste
+         }
+      }
+      for(let i = 0; i < this.calendrierNewEvents.length; i++){ this.calendrierEvents.push(this.calendrierNewEvents[i]);} // On ajoute les nouveaux events à la liste 
+      this.calendrierNewEvents = []; // On vide la liste des new events
+      console.log("gererSauvegardeCalendrierEvents - this.calendrierEvents");     
+      console.log(this.calendrierEvents);   
+      window.localStorage.setItem('calendrierEvents', JSON.stringify(this.calendrierEvents));// On enregsitre la liste en local storage  
+    }//gererSauvegardeCalendrierEvents
+
     enregsitrerDansCalendrierSmartphone(horaire: Horaire){
-       let event = new CalendrierEvent("Travail", "", null, horaire.heureDebut, horaire.heureFin, horaire.id);       
-       let state = this.eventStateInList(event);
+       let event = new CalendrierEvent(this.nomCalendrierEvent, 
+          (this.etablissement.nom+", "+this.etablissement.adresse + (this.etablissement.adresseInfo != null ? ", "+this.etablissement.adresseInfo : "") 
+          + ", " + this.etablissement.codePostal+", "+this.etablissement.localite),
+           "Téléphone direction: "+this.etablissement.telDirection + "\nEmail: "+this.etablissement.email,
+           horaire.heureDebut, 
+           horaire.heureFin, 
+           horaire.id
+       );       
+       let state = this.calendrierEventStateInList(event, this.calendrierEvents); // On regarde l'état de cet event dans l'ancienne liste
        console.log("event : " + event.startDate +" --- Sate : " + state);
-       if(state === -1){ //L'event existe et il est similaire : on se barre
-         return;
-        }
-        
-       if(state === -2){// L'event n'existe pas : on le créer
-         Calendar.createEvent(event.title, event.location, event.notes, event.startDate, event.endDate).then(
+       if(state === -1){
+          //L'event existe et il est similaire : on se barre
+        } else if(state === -2){// L'event n'existe pas : on le créer
+          console.log("On créer l'event : " + event.startDate);
+          Calendar.createEvent(event.title, event.location, event.notes, event.startDate, event.endDate).then(
                 (msg) => { }, // On enregsitre l'évenement dans le calendrier
                 (err) => { }
-          );
-          this.calendrierEvents.push(event);  // On enregsitre l'évenement dans le calendrier
-
+          );        
+          this.calendrierNewEvents.push(event); // On enregsitre l'event dans la liste des nouveaux
        }  else if(state >= 0){ // L'event existe, mais à des dates différentes, dans ce cas, state correspond à son index (cas le moins probable, donc testé en dernier)
         Calendar.modifyEvent( // On modifie l'event du calendrier
           this.calendrierEvents[state].title,
@@ -191,12 +257,13 @@ export class MeshorairesPage {
           event.startDate,
           event.endDate);
        }   
-       console.log(this.calendrierEvents);   
+      this.calendrierUpadateEvents.push(event); // Dans tous les cas:  enregsitre l'event dans la liste mise à jour
     }//enregsitrerDansCalendrierSmartphone
 
     // Prépare les éléments nécéssaires pour la gestion du calendrier smartphone
      gererCalendrierSmartphone(){     
-        this.calendrierEvents = []; // Instanciation de l'array qui stock les events
+        this.calendrierEvents = []; // Instanciation de l'array qui contient les events déja enregsitrés
+        this.calendrierNewEvents = []; // Instanciation de l'array qui stock les nouveau events
         try{
               let data = JSON.parse(window.localStorage.getItem('calendrierEvents')); // On récupère les events précédement crées depuis la mémoire locale
               console.log(data);
@@ -206,14 +273,15 @@ export class MeshorairesPage {
                       this.calendrierEvents.push(event)//On le prend dans la liste d'events
                   }
               }
-        } catch(Exception){}       
+        } catch(Exception){}   
+         this.getEtablissement();//Récupère les données de l'établissement de l'utilisateur pour pouvoir l'indiquer dans le calendrier     
     }//gererCalendrier
 
-    eventStateInList(event : CalendrierEvent){
-      for(let i = 0; i < this.calendrierEvents.length; i++){
-          if(this.calendrierEvents[i].id === event.id){
-              if(this.calendrierEvents[i].startDate.getTime() === event.startDate.getTime() 
-                  && this.calendrierEvents[i].endDate.getTime() === event.endDate.getTime()){
+    calendrierEventStateInList(event : CalendrierEvent, liste : CalendrierEvent[]){
+      for(let i = 0; i < liste.length; i++){
+          if(liste[i].id === event.id){
+              if(liste[i].startDate.getTime() === event.startDate.getTime() 
+                  && liste[i].endDate.getTime() === event.endDate.getTime()){
                 return -1; // L'event existe, avec les mêmes dates
               } else {
                 return i; // L'event existe, à des dates différents : on retourne son index
@@ -221,7 +289,23 @@ export class MeshorairesPage {
           }
       }
       return -2; // L'event n'existe pas
-    }//eventStateInList
+    }//CalendrierEventStateInList
+
+    // Récupère les infomations de l'établissement dans lequel travail la personne
+    getEtablissement(){
+      if(!this.isHorsLigne){ // Mode normal : vérification de la connexion en ligne
+          this.abiBddCtrl.getEtablissement(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
+            etablissement => {
+              if(etablissement) { // OK                     
+                  this.etablissement = <Etablissement>etablissement[0];  
+                  window.localStorage.setItem('getEtablissement', JSON.stringify(this.etablissement));  // Création de la sauvegarde locale
+                } else { console.log("Erreur");} // On ne fait rien
+            }); 
+      } else { // Mode hors ligne
+          this.etablissement = JSON.parse(window.localStorage.getItem('getEtablissement'));
+      }
+      
+    }//getEtablissement
 
     // Supprime les sauvegardes locales trop anciennes pour ne pas surcharger le téléphone
     supprimerAnciennesSauvegares(){

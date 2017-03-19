@@ -4,9 +4,10 @@ import { AlertController } from 'ionic-angular';
 
 // Providers
 import { ApiBddService } from '../../providers/api-bdd-service';
+import { ConnectivityService } from '../../providers/connectivity-service';
 
 //Models
-import { UserModel } from '../../models/user-model';
+import { Utilisateur } from '../../models/utilisateur';
 
 @Component({
   selector: 'page-monprofil',
@@ -18,8 +19,8 @@ export class MonprofilPage {
   inputDisabled : boolean;	
   isHorsLigne : boolean;
 
-  constructor(public toastCtrl : ToastController, public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService,  public alertCtrl: AlertController) {
-    this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1';
+  constructor(public toastCtrl : ToastController, public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService,  public alertCtrl: AlertController, private connectivityService: ConnectivityService) {
+    this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     if(!this.isHorsLigne){ // Mode normal : vérification de la connexion en ligne
       abiBddCtrl.getProfil(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
           user => {

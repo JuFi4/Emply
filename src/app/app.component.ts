@@ -22,7 +22,7 @@ export class MyApp {
   rootPage = LoginPage;
   pages: Array<{title: string, component: any}>;
 
-  constructor( public platform: Platform, public menu: MenuController, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService) {
+  constructor( public platform: Platform, public menu: MenuController, public alertCtrl: AlertController, public abiBddCtrl: ApiBddService) {
     this.initializeApp();
 
     this.pages = [
