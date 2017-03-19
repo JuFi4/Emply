@@ -91,14 +91,23 @@ export class ApiBddService {
      return response;
    }//setEmail
 
- // Récupération des horaires d'un utilisateur
+ // Récupération des horaires d'un utilisateur pour l'année et le mois passé en paramètre
  // Renvois :  un JSON avec les horaires pour la periode demandée (requête réussie), soit False (requête réussie)
-  getHoraires(userId : string, token: string, annee : string, mois: string) {
+  getHorairesMensuels(userId : string, token: string, annee : string, mois: string) {
      var url =this.baseUrl + 'type=getHoraires&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&annee=' + encodeURI(annee) + '&mois=' + encodeURI(mois);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());     
      return response;
-   }//getHoraires
+   }//getHorairesMensuels
+
+   // Récupération des horaires futiirsd'un utilisateur
+  // Renvois :  un JSON avec les horaires pour la periode demandée (requête réussie), soit False (requête réussie)
+  getHorairesFuturs(userId : string, token: string) {
+     var url =this.baseUrl + 'type=getHorairesFuturs&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());     
+     return response;
+   }//getHorairesFuturs
 
   // Enregsitrement d'une demande
  // Renvois :  True (requête réussie), ou False (mauvais userId, demId, ou Token)
@@ -128,7 +137,6 @@ export class ApiBddService {
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//getDemandes
-
 
     //Validation des heures et modification de ces dernières
    //Renvois : un JSON avec les horaires modifier et mets à true pour la validation 
