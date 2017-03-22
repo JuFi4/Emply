@@ -16,7 +16,8 @@ import {Horaire} from '../../models/horaire';
 import {Jour} from '../../models/jour';
 import {CalendrierEvent} from '../../models/calendrierEvent';
 import {Etablissement} from '../../models/etablissement';
-
+import {Demande} from '../../models/demande';
+import {Maladie} from '../../models/maladie';
 /*
   Generated class for the Meshoraires page.
 
@@ -33,8 +34,11 @@ export class MeshorairesPage {
   moisSelectionne : Mois;
   semaines : Semaine[]
   semaine : Semaine;
-  jours : any[] = [];
-  joursMoisPrecedent : any[] = [];
+  jours : Jour[] = [];
+  demandesDuMois : Demande[] = [];
+  maladiesDuMois : Maladie[] = [];
+  horairesDuMois : Horaire[] = [];
+  joursMoisPrecedent : Jour[] = [];
   jour : Jour;
   selJour : any = [];
   annee : any = []; 
@@ -142,7 +146,7 @@ export class MeshorairesPage {
      // DOIT ETRE DANS UN TABLEAU SEPARÉ DE jours : c'est très important pour la gestion des indexes
      for(let i = 0; i < premierJoursMois; i++){
         //this.jours.push(permierJourMoisPrecedentAafficher);
-        this.joursMoisPrecedent.push(new Jour(permierJourMoisPrecedentAafficher));
+        this.joursMoisPrecedent.push(new Jour(permierJourMoisPrecedentAafficher, null));
         permierJourMoisPrecedentAafficher++; 
      }
 
@@ -150,46 +154,125 @@ export class MeshorairesPage {
      if(this.moisSelectionne.moisId == 1 && this.isAnneeBissextile(this.anneeSelectionne)) { nbJoursMois++; } // Si c'est le mois de février et que l'année est bissextile, on ajoute 1 jours
      // On remplis les jours du mois 
      for(let i = 1; i <= nbJoursMois; i++){
-        this.jour = new Jour(i);
+        this.jour = new Jour(i, new Date(this.anneeSelectionne, this.moisSelectionne.moisId, i));
         this.jours.push(this.jour);
      }
-     this.getHorairesMensuels(this.anneeSelectionne, this.moisSelectionne.moisId+1);
+     this.getControleMensuel(this.anneeSelectionne, this.moisSelectionne.moisId+1);
     }//afficherMois
      
     //Récupère la liste des horaires pour l'année et le mois passés en paramètre
-    getHorairesMensuels(annee, mois){
+    getControleMensuel(annee, mois){
       if(!this.isHorsLigne){ // Si on a internet
+        this.horairesDuMois = []; // On récupère les horaires pour ce mois
         this.abiBddCtrl.getHorairesMensuels(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe(
           data => {  
             if(data) { // Si les données sont bien chargées 
-                let dataToString = JSON.stringify(data);           
-                let isNewData =   dataToString != window.localStorage.getItem('getHorairesMensuels'+mois+'_'+annee); // On compare les horaires stockés aux horaires chargés
-                if(isNewData){ // Si il y a des changement, on enregsitre les horaires chargés en mémoire
-                    window.localStorage.setItem('getHorairesMensuels'+mois+'_'+annee, dataToString);  // Création de la sauvegarde locale de ces horaires (mois et annee)           
-                }                     
-                this.traiterHorairesMensuels(data, annee, mois); // Traitement des horaires avec indicateur de nouvelles données
-              } else { // Erreur
-                  console.log("Aucun horaire pour cette periode");
+                for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données des horaires formatées
+                      let dateHoraire = new Date(data[i].date);
+                      let horaire =  new Horaire(data[i].id, 
+                        dateHoraire,         
+                        new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[i].heureDebut, data[i].minuteDebut),
+                        new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[i].heureFin, data[i].minuteFin)
+                      );                    
+                       this.jours[dateHoraire.getDate()-1].addHoraire(horaire);//On ajoute l'horaire au jours auquel il a lieu
+                  }//for
+                  this.maladiesDuMois = []; // On récupère les maladies pour ce mois
+                  this.abiBddCtrl.getMaladiesParMois(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe(
+                    data => {  
+                      if(data) { // Si les données sont bien chargées 
+                          for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données demandes formatées
+                              this.maladiesDuMois.push(new Maladie(data[i].id, new Date(data[i].dateDebut), new Date(data[i].dateFin), (data[i].isAccident === "1" ? true : false)));                              
+                          }//for
+                          this.demandesDuMois = []; // On récupére les demandes pour ce mois
+                          this.abiBddCtrl.getDemandesParMois(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe(
+                            data => {   
+                              if(data) { // Si les données sont bien chargées 
+                                  for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données demandes formatées
+                                      this.demandesDuMois.push(new Demande(data[i].id, new Date(data[i].dateDebut), new Date(data[i].dateFin), data[i].motif, "", data[i].id_typeDemande, data[i].nom_typeDemande));
+                                  }//for    
+                                  this.traiterControleMensuel(annee, mois, false);  
+                                  return;//On sort
+                                } else { // Erreur: Si on a pas pu charger, on affiche quand même les horaires et maladies chargés
+                                    this.traiterControleMensuel(annee, mois, false);  
+                                }            
+                            });
+                        } else { // Erreur: Si on a pas pu charger, on affiche quand même les horaires chargés
+                           this.traiterControleMensuel(annee, mois, false);  
+                        }               
+                    });
+              } else { // Erreur: Si on a pas pu charger les horaires, les affiche comme en mode hors ligne
+                 this.traiterControleMensuel(annee, mois, true);
               }              
           }); 
-      } else { // Mode hors ligne
-          // Traitement des horaires à partir des données sauvegardés
-          this.traiterHorairesMensuels(JSON.parse(window.localStorage.getItem('getHorairesMensuels'+mois+'_'+annee)), annee, mois);      
-      }      
+      } else {//Mode hors ligne : traitement des données avec l'indicateur hors ligne
+         this.traiterControleMensuel(annee, mois, true);
+      }         
     }//getHorairesMensuels
 
-  // Traitement des horaires avec indicateur de nouvelles données 
-  traiterHorairesMensuels(data, mois, annee){    
-      for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données des horaires formatées
-        let dateHoraire = new Date(data[i].date);
-        let horaire =  new Horaire(data[i].id, 
-          dateHoraire,         
-          new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[i].heureDebut, data[i].minuteDebut),
-          new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[i].heureFin, data[i].minuteFin)
-        );                    
-        this.jours[dateHoraire.getDate()-1].addHoraire(horaire);  // On ajoute l'horaire au jour auquel il y lieu
+  // Traitement des données du controle mensuel 
+  traiterControleMensuel(annee, mois, isHorsLigne){   
+    if(!isHorsLigne){//Si on est pas hors ligne : on va utiliser les données récupéres précédemment
+      for(let i = 0; i < this.jours.length; i++){
+          if(!this.setMaladieOnJour(this.jours[i])){ // On regarde si on était on maladie/accident 
+              this.setDemandeOnJour(this.jours[i]);//Si ce n'est pas le cas: on regarde si on était en "congé"
+          }
+      }//for
+      window.localStorage.setItem("getControleMensuel_"+ annee +"_"+ mois, JSON.stringify(this.jours));//On enregsitre
+    } else{ //Si on est hors-ligne: on récupère les jours enregistrés en local*/
+      let savedJours : Jour[];
+      savedJours= JSON.parse(window.localStorage.getItem("getControleMensuel_"+ annee +"_"+ mois));//On récuèr les jours sauvegardés      
+      if(savedJours != null && savedJours.length > 0) {//Si ces jours existement 
+        this.jours = savedJours;//On remplace this.jours par les jours sauvegardés
+                                // -> Ce qui veut dire que son on a pas ces jours sauvés, ça va afficher le calendrier avec aucune info dans les jours
+      } else {
+        console.log("On garde les jours vides ");
       }
-    }//traiterHorairesMensuels
+    }
+  }//traiterControleMensuel
+
+
+    setMaladieOnJour(jour : Jour) : boolean {
+      for(let i = 0; i < this.maladiesDuMois.length; i++){
+        if(jour.date.setHours(0) >= this.maladiesDuMois[i].dateDebut.setHours(0) && jour.date.setHours(0) <= this.maladiesDuMois[i].dateFin.setHours(0)){ // Si on était malade ce jours là
+            jour.hasHoraire = false; //On annule l'horaire
+            if(this.maladiesDuMois[i].isAccident){
+              jour.setIsAccident();
+            } else {
+              jour.setIsMaladie();
+            }
+        }
+      }
+      return false;
+    }//setMaladieOnJour
+
+    setDemandeOnJour(jour : Jour) : boolean {
+      for(let i = 0; i < this.demandesDuMois.length; i++){
+        if(jour.date.setHours(0) >= this.demandesDuMois[i].dateDebut.setHours(0) && jour.date.setHours(0) <= this.demandesDuMois[i].dateFin.setHours(0)){ // Si on avais une demande pour ce jours là
+            jour.hasHoraire = false; //On annule l'horaire pour ce jour
+            switch(parseInt(this.demandesDuMois[i].id_typeDemande)) {
+              case 1:
+                  jour.setIsVacance();
+                  break;
+              case 2:
+                  jour.setIsFormation();
+                  break;
+              case 3:
+                  jour.setIsPaternite();
+                  break;
+              case 4:
+                  jour.setIsCongeSansSolde();
+                  break;
+              case 5:
+                  jour.setIsRecuperation();
+                  break;
+              case 6:
+                  jour.setIsAutreDemande();
+          }
+          return true;
+        }
+      }
+      return false;
+    }//setDemandeOnJour
 
   gethorairesFuturs(){
       if(!this.isHorsLigne){ // Si on a internet
@@ -361,7 +444,7 @@ export class MeshorairesPage {
       dateMax.setMonth(dateMax.getMonth()-6); // On enlève 6 mois
       for(let a = (dateMax.getFullYear()-1); a < (dateMax.getFullYear()); a++){
         for(let m = 1; m <=12; m++){
-             window.localStorage.removeItem('getHoraires_'+m+'_'+a);
+             window.localStorage.removeItem('getControleMensuel_'+a+'_'+m);
         }
       }     
     }//supprimerAnciennesSauvegares   

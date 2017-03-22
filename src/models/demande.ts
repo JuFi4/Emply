@@ -16,4 +16,4 @@ export class Demande {
         this.id_typeDemande = id_typeDemande; 
         this.nom_typeDemande = nom_typeDemande;
     }//constructor
-}
+}//Demande

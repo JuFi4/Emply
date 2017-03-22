@@ -158,5 +158,22 @@ export class ApiBddService {
      return response;
    }//getModHoraire
 
+  // Récupération des demandes pour le mois et l'année passés en paramètres
+  // Renvois :  un JSON avec les demandes demandées (requête réussie), soit False (requête réussie)
+  getDemandesParMois(userId:string, token:string,  annee : string, mois: string) {
+     var url =this.baseUrl + 'type=getDemandesParMois&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&annee=' + encodeURI(annee) + '&mois=' + encodeURI(mois);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());
+     return response;
+   }//getDemandesParMois
+
+     // Récupération des maladies/accidents pour le mois et l'année passés en paramètres
+  // Renvois :  un JSON avec les demandes demandées (requête réussie), soit False (requête réussie)
+  getMaladiesParMois(userId:string, token:string,  annee : string, mois: string) {
+     var url =this.baseUrl + 'type=getMaladiesParMois&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&annee=' + encodeURI(annee) + '&mois=' + encodeURI(mois);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());
+     return response;
+   }//getMaladiesParMois
 
 }//ApiBddService

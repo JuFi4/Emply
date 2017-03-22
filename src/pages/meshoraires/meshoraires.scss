@@ -80,19 +80,6 @@ body {font-family: Verdana, sans-serif;}
     color:#777;
 }
 
-.DetailJour{
-    color:#777;
-    background:#eee;
-    border-color: #eee;
-	width: 35px;
-}
-
-.DetailJourHeure{   
-    color:#777;
-    background:seagreen;
-    border-color: #eee
-}
-
 .days li {
     list-style-type: none;
     display: inline-block;
@@ -191,16 +178,47 @@ body {font-family: Verdana, sans-serif;}
     color:#777;
 }
 
-.DetailJour{
+.detailJour{
     color:#777;
     background:#eee;
-    border-color: #eee
+    border-color: #eee;
+    width:38px;//Largeur fixe aux cases des jours
 }
 
-.DetailJourHeure{
-    color:#777;
+.hasHoraire{
     background: powderblue;
-    border-color: #eee
+}
+
+.isMaladie{   
+    background:yellow;
+}
+
+.isAccident{   
+    background:salmon;
+}
+
+.isVacance{   
+    background:palegreen;
+}
+
+.isPaternite{   
+    background:violet;
+}
+
+.isFormation{   
+    background:aquamarine;
+}
+
+.isCongeSansSolde{   
+    background:darkseagreen;
+}
+
+.isRecuperation{   
+    background:lightpink;
+}
+
+.isAutreDemande{   
+    background:silver;
 }
 
 .days li {
@@ -212,6 +230,7 @@ body {font-family: Verdana, sans-serif;}
     font-size:20px;
     color:#777;
     border : 1px;
+    
 }
 
 /* Highlight the "current" day */

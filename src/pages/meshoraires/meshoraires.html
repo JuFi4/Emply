@@ -48,12 +48,21 @@
 
 <ul class="days"> 
   <li  *ngFor ="let i of joursMoisPrecedent">
-   <button class="DetailJour" ion-button disabled="true" > 
+   <button class="detailJour" ion-button disabled="true" > 
      {{i.jour}}    
    </button>
   </li>
   <li  *ngFor ="let i of jours">
-   <button class="DetailJour" ion-button (click)="detailHoraire(i)"  [ngClass]="{DetailJourHeure: i.hasHoraire}"> 
+   <button class="detailJour" ion-button (click)="detailHoraire(i)"         
+        [class.hasHoraire]="i.hasHoraire"
+        [class.isMaladie]="i.isMaladie"
+        [class.isAccident]="i.isAccident"
+        [class.isVacance]="i.isVacance"
+        [class.isFormation]="i.isFormation"
+        [class.isPaternite]="i.isPaternite"
+        [class.isCongeSansSolde]="i.isCongeSansSolde"
+        [class.isRecuperation]="i.isRecuperation"
+        [class.isAutreDemande]="i.isAutreDemande"> 
      {{i.jour}}    
    </button>
   </li>
