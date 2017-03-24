@@ -316,11 +316,13 @@ export class DemandesPage {
   }//enregsitrerDemande
 
   modifierDemandeAlert(demande){
-    if(demande.statut === 'new'){
+    var moisdebut = demande.dateDebut.getMonth()+1;
+    var moisfin = demande.dateFin.getMonth()+1;
+    if(demande.statut === 'new' || demande.statut==='modify'){ // Traiter la modification lorsque la demande est "new" ou "modify"
       let prompt = this.alertCtrl.create({
       title: 'Modification des dates la demande',
       subTitle: 'Type de demande :' +  demande.nom_typeDemande,
-      message : 'Du ' + demande.dateDebut.getDate() + '.' + demande.dateDebut.getMonth() + '.' + demande.dateDebut.getFullYear() + ' au ' + demande.dateFin.getDate() + '.' + demande.dateFin.getMonth() + '.' + demande.dateFin.getFullYear(),
+      message : 'Du ' + demande.dateDebut.getDate() + '.' + moisdebut + '.' + demande.dateDebut.getFullYear() + ' au ' + demande.dateFin.getDate() + '.' + moisfin + '.' + demande.dateFin.getFullYear(),
       inputs: [
         {
           name: 'NewDebut',
@@ -336,7 +338,7 @@ export class DemandesPage {
         },
        {
           name: 'MotifNew',
-          placeholder: 'Motif de la demande/modification',
+          placeholder: 'Motif de la modification',
           id: 'motif'
         },
       ],
@@ -353,13 +355,13 @@ export class DemandesPage {
          console.log('Confirmer');
          console.log(demande.id, data.NewDebut, data.DateFinNew, data.MotifNew);
          this.modifierDemande(demande.id, data.NewDebut, data.DateFinNew, data.MotifNew);
-         this.ionViewDidLoad();
+         this.getDemandes();
           }
         }
       ]
       });
       prompt.present();
-    } else{
+    } else{ // Traiter le cas ou la demande a déjà été validée par le gérant
       let alert = this.alertCtrl.create({
       title: 'Votre demande a déjà été traité, vous ne pouvez pas la modifier',
       buttons: ['Fermer']

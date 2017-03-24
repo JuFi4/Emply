@@ -27,8 +27,8 @@
       <ion-item *ngFor="let demande of demandes" text-wrap>
            <ion-label> {{demande.nom_typeDemande}}</ion-label>
             <ion-label style="float: left; width: 500px;">
-              Du {{demande.dateDebut.getDate()}}.{{demande.dateDebut.getMonth()}}.{{demande.dateDebut.getFullYear()}}    
-              au {{demande.dateFin.getDate()}}.{{demande.dateFin.getMonth()}}.{{demande.dateFin.getFullYear()}}     
+              Du {{demande.dateDebut.getDate()}}.{{demande.dateDebut.getMonth()+1}}.{{demande.dateDebut.getFullYear()}}    
+              au {{demande.dateFin.getDate()}}.{{demande.dateFin.getMonth()+1}}.{{demande.dateFin.getFullYear()}}     
             </ion-label> 
             <ion-label style="text-align: right">
               <button ion-button icon-only color="light" ion-button type="submit" [disabled] ="isHorsLigne" (click)="modifierDemandeAlert(demande)" >
