@@ -30,33 +30,20 @@ export class DemandesPage {
   
   constructor(public toastCtrl : ToastController, public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) { 
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
-    // POUR CELINE : exemple d'appel de la fonction enregsitrerDemande (tu peux effacer tout ça quant tu n'en a plus besoin)
-    /* typeDemId : l’id du type de la demande:
-        1: Vacances/Férié
-        2: Congé de formation
-        3: Congé paternité
-        4: Congé sans solde
-        5: Récupération
-        6: Autre demande
-   */
-    // POUR CELINE 
-    // Récupère les demandes et les range dans this.demandes
      this.getDemandes();
   }//constructor
 
   ionViewDidLoad() {
     console.log('Hello Demandes Page');
-  }
+  }//ionViewDidLoad
 
   saisirDemande() {
     this.faireChoixDemande();
-    //this.navCtrl.push(SaisiedemandePage, null);
-    //console.log('saisir demande');
-  }
+  }//saisirDemande
 
   faireChoixDemande(){
     let alert = this.alertCtrl.create();
-    alert.setTitle('Choix de la Demande');
+    alert.setTitle('Choix de la demande');
     alert.addInput({
       type: 'radio',
       label: 'Demande de vacances/férié',
@@ -91,7 +78,7 @@ export class DemandesPage {
     });
     alert.addInput({
       type: 'radio',
-      label: 'Demande de Récupération',
+      label: 'Demande de récupération',
       id : '5',
       value: 'congeRec',
       name:'recuperation',
@@ -111,8 +98,6 @@ export class DemandesPage {
       handler: data => {
         this.radioOpen = false;
         this.radioResult = data;
-        console.log("HEY!!!! Je suis CONFIRMER!!!!");
-        console.log("radioResult" + this.radioResult);
         if (data === "demandeVacances"){
           this.faireDemandeVacances();
         }else if(data === 'congeFormation'){
@@ -180,7 +165,7 @@ export class DemandesPage {
 
   faireDemandeConge(id) {
     let prompt = this.alertCtrl.create({
-      title: 'Demande de Congé',
+      title: 'Demande de congé',
       message: "Entrez vos dates de la demande de congé que vous avez séléctionnée : ",
       inputs: [
         {
@@ -218,7 +203,7 @@ export class DemandesPage {
 
   faireDemandeRecuperation() {
     let prompt = this.alertCtrl.create({
-      title: 'Demande de Récupération',
+      title: 'Demande de récupération',
       message: "Entrez vos dates de la demande de récupération : ",
       inputs: [
         {
@@ -257,7 +242,7 @@ export class DemandesPage {
 
   faireDemandeInconnue() {
     let prompt = this.alertCtrl.create({
-      title: 'Demande Spéciale',
+      title: 'Demande spéciale',
       message: "Entrez vos dates et le motif de la demande : ",
       inputs: [
         {
@@ -298,28 +283,6 @@ export class DemandesPage {
     prompt.present();
   }//faireDemandeInconnue
 
-  /* TODO CELINE : : traiter l'enregistrement de la semande :
-     - 1)  Appeller la fonction enregsitrerDemande() avec les bons paramètres 
-                -(demId) selon le type de demande
-                - dateDebut
-                - dateFin
-                - motif (si il n'y a pas de motif, tu peux mettre une chaine vide)
-    
-      -2) Traiter le résultat de l'API : 
-          - Si la demande est bien enregsitrée (le "if(data)"" dans le code) : trouver comment traiter cela : l'idéal serait eu toast
-          - sinon (le "else" dans le code) cela signifie que l'enregsitrement n'a pas fonctionné 
-                -> Trouver comment traiter cela : message d'erreur... 
-      */   
-
-  /* demId : l’id de la demande:
-        1: Vacances/Férié
-        2: Congé de formation
-        3: Congé paternité
-        4: Congé sans solde
-        5: Récupération
-        6: Autre demande
-   */
-
     faireToastOk(){
     let toast = this.toastCtrl.create({
       message: `Demande enregistrée`,
@@ -327,7 +290,7 @@ export class DemandesPage {
       cssClass: "yourCssClassName",
     });
     toast.present();
-  }
+  }//faireToastOk
 
   faireAlertePasOk(){
   let alert = this.alertCtrl.create({
@@ -336,7 +299,7 @@ export class DemandesPage {
     buttons: ['Fermer']
   });
   alert.present();
-  }
+  }//faireAlertePasOk
   
   enregsitrerDemande(typeDemId, dateDebut:string, dateFin:string, motif:string){  
     // setDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, motif:string
@@ -352,14 +315,69 @@ export class DemandesPage {
         });
   }//enregsitrerDemande
 
+  modifierDemandeAlert(demande){
+    if(demande.statut === 'new'){
+      let prompt = this.alertCtrl.create({
+      title: 'Modification des dates la demande',
+      subTitle: 'Type de demande :' +  demande.nom_typeDemande,
+      message : 'Du ' + demande.dateDebut.getDate() + '.' + demande.dateDebut.getMonth() + '.' + demande.dateDebut.getFullYear() + ' au ' + demande.dateFin.getDate() + '.' + demande.dateFin.getMonth() + '.' + demande.dateFin.getFullYear(),
+      inputs: [
+        {
+          name: 'DateDebutNew',
+          type: 'Date',
+          placeholder: 'Date de début : sous forme AAAA-MM-JJ',
+          id: 'dateDebNew'
+        },
+        {
+          name: 'DateFinNew',
+          type: 'Date',
+          placeholder: 'Date de fin : sous forme AAAA-MM-JJ',
+          id: 'dateFinNew'
+        },
+       {
+          name: 'MotifNew',
+          placeholder: 'Motif de la demande/modification',
+          id: 'motif'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          handler: data => {
+          console.log('Annuler');
+          }
+        },
+        {
+          text: 'Confirmer',
+          handler: data => {
+         console.log('Confirmer');
+         console.log(demande.id, data.DateDebutNew, data.DateFinNew, data.MotifNew);
+         this.modifierDemande(demande.id, data.dateDebutNew, data.DateFinNew, data.MotifNew);
+         this.ionViewDidLoad();
+          }
+        }
+      ]
+      });
+      prompt.present();
+    } else{
+      let alert = this.alertCtrl.create({
+      title: 'Votre demande a déjà été traité, vous ne pouvez pas la modifier',
+      buttons: ['Fermer']
+      });
+      alert.present();
+    }
+  }//modifierDemandeAlert
+
   modifierDemande(demId, dateDebut:string, dateFin:string, motif:string){  
     // setDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, motif:string
     this.abiBddCtrl.modDemande(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'), demId, dateDebut, dateFin, motif).subscribe(        
       data => {
            if(data) {  // OK         
               console.log("Modification enregsitrée"); // Traiter le cas où c'est ok : un toast par exemple
+              this.faireToastOk();
              } else { // Erreur
                  console.log("Enregsitrement échoue : token ou ID"); // Traiter le cas oû c'est pas OK : une alerte...
+                 this.faireAlertePasOk();
              }
         });
   }//enregsitrerDemande

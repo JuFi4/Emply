@@ -23,32 +23,18 @@
 
 
 <ion-content padding>
- <!-- <h3>Vue des demandes</h3>-->
   <ion-list>
-      <ion-item *ngFor="let demandes of demandes" text-wrap>
-           <ion-label> {{demandes.nom_typeDemande}} </ion-label>
+      <ion-item *ngFor="let demande of demandes" text-wrap>
+           <ion-label> {{demande.nom_typeDemande}}</ion-label>
             <ion-label style="float: left; width: 500px;">
-              Du {{demandes.dateDebut.getDate()}}.{{demandes.dateDebut.getMonth()}}.{{demandes.dateDebut.getFullYear()}} 
-              au {{demandes.dateFin.getDate()}}.{{demandes.dateFin.getMonth()}}.{{demandes.dateFin.getFullYear()}}   
+              Du {{demande.dateDebut.getDate()}}.{{demande.dateDebut.getMonth()}}.{{demande.dateDebut.getFullYear()}}    
+              au {{demande.dateFin.getDate()}}.{{demande.dateFin.getMonth()}}.{{demande.dateFin.getFullYear()}}     
             </ion-label> 
             <ion-label style="text-align: right">
-              <button ion-button icon-only color="light">
+              <button ion-button icon-only color="light" ion-button type="submit" [disabled] ="isHorsLigne" (click)="modifierDemandeAlert(demande)" >
                  <ion-icon name="create"></ion-icon>
-              </button>
+              </button>             
       </ion-label>
       </ion-item>
   </ion-list>
-  <!--
-  <div>
-    <ul>
-      <ol>
-      <li *ngFor="let demandes of demandes">
-        <span>{{demandes.nom_typeDemande}}, </span>
-        <span>Date de début : {{demandes.dateDebut.getDate()}}.{{demandes.dateDebut.getMonth()}}.{{demandes.dateDebut.getFullYear()}}, </span>
-        <span>Date de fin : {{demandes.dateFin.getDate()}}.{{demandes.dateFin.getMonth()}}.{{demandes.dateFin.getFullYear()}}, </span>
-        <span>Motif : {{demandes.motif}}</span>
-      </li>
-      </ol>
-    </ul>
-  </div>-->
 </ion-content>
