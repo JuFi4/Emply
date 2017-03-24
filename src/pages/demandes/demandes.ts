@@ -323,7 +323,7 @@ export class DemandesPage {
       message : 'Du ' + demande.dateDebut.getDate() + '.' + demande.dateDebut.getMonth() + '.' + demande.dateDebut.getFullYear() + ' au ' + demande.dateFin.getDate() + '.' + demande.dateFin.getMonth() + '.' + demande.dateFin.getFullYear(),
       inputs: [
         {
-          name: 'DateDebutNew',
+          name: 'NewDebut',
           type: 'Date',
           placeholder: 'Date de début : sous forme AAAA-MM-JJ',
           id: 'dateDebNew'
@@ -351,8 +351,8 @@ export class DemandesPage {
           text: 'Confirmer',
           handler: data => {
          console.log('Confirmer');
-         console.log(demande.id, data.DateDebutNew, data.DateFinNew, data.MotifNew);
-         this.modifierDemande(demande.id, data.dateDebutNew, data.DateFinNew, data.MotifNew);
+         console.log(demande.id, data.NewDebut, data.DateFinNew, data.MotifNew);
+         this.modifierDemande(demande.id, data.NewDebut, data.DateFinNew, data.MotifNew);
          this.ionViewDidLoad();
           }
         }
