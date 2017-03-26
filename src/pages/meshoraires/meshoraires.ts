@@ -78,7 +78,8 @@ export class MeshorairesPage {
      this.supprimerAnciennesSauvegares(); //Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone    
      this.gererCalendrierSmartphone();    //Prépare les éléments nécéssaires pour la gestion du calendrier smartphone   
      this.gethorairesFuturs(); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier
-    }//constructor
+     this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,26,21,0),"21h00","23h00",1);  
+  }//constructor
 
     ionViewDidLoad() {
       console.log('Hello MesHoraires Page');      

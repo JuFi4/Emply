@@ -31,6 +31,9 @@ export class LoginPage {
    rootPage : any; // Permet de définir une autre page d'accueil (pour les notifications)
    isNotificationEnAttente = false;
    notificationEnAttente =  {id: '', titre: '', message:'' };  
+   radioOpen: boolean;
+   radioResult;  
+
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, 
         private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, private connectivityService: ConnectivityService) {      
@@ -321,11 +324,11 @@ confirmerDemandeNouveauMotDePasse(){
     if(idNotification == 0){  // Si l'id est 1 = c'est la notification mensuelle de validation des heures
       this.afficherValidationMensuelle(titreNotification, messageNotification);
     } else  {
-      this.afficherNotificationFinDeService(titreNotification, messageNotification);
+      this.afficherNotificationFinDeService(titreNotification, messageNotification, idNotification);
     }    
   }//afficherNotificationLocale  
 
-  afficherNotificationFinDeService(titreNotification, messageNotification){
+  afficherNotificationFinDeService(titreNotification, messageNotification, idNotification){
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,
@@ -335,7 +338,7 @@ confirmerDemandeNouveauMotDePasse(){
             role: 'cancel',
             handler: () => {
               console.log('Non clicked');
-              this.afficherModificationHoraires(titreNotification,messageNotification);
+              this.afficherModificationHoraires(titreNotification,messageNotification, idNotification);
             }
           },
           {
@@ -343,26 +346,34 @@ confirmerDemandeNouveauMotDePasse(){
             handler: () => {
                console.log('Oui clicked'); // TODO: enregsitrer que c'est OK dans la BDD via API
             }
+          },
+          {
+            text: 'Maladie/Accident',
+            handler: () =>{
+               console.log("maladieAccident click")
+               this.faireChoixMaladieAccident(titreNotification, messageNotification, idNotification);
+
+            } 
           }
         ]
       });
       alert.present();
    }//afficherNotificationFinDeService
 
-   afficherModificationHoraires(titreNotification, messageNotification){
+   afficherModificationHoraires(titreNotification, messageNotification, idNotification){
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,
         inputs: [
         {
           id: 'heureDebut',
-          type: 'input',
+          type: 'time',
           name: 'heureDebut',
           placeholder: 'Heure de début de service'
         },
         {
           id: 'heureFin',
-          type: 'input',
+          type: 'time',
           name: 'heureFin',
           placeholder: 'Heure de fin de service'
         },
@@ -370,9 +381,13 @@ confirmerDemandeNouveauMotDePasse(){
         buttons: [
           {
             text: 'Valider',
-            handler: () => {
+            handler: data => {
                console.log('Oui clicked');
-               //this.modificationHoraire(heureDebut, heureFin);
+               if(data.heureFin > 0){
+                this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), idNotification, data.heureDebut, data.heureFin);
+              }else{
+                this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), idNotification, data.heureDebut, data.heureFin);
+              } 
             }
           }
         ]
@@ -380,8 +395,108 @@ confirmerDemandeNouveauMotDePasse(){
       alert.present();
    }
 
+   faireChoixMaladieAccident(titreNotification, messageNotification, idNotification){
+    let alert = this.alertCtrl.create();
+    alert.setTitle('Maladie ou accident');
+    alert.addInput({
+      type: 'radio',
+      label: 'Maladie',
+      id : '1',
+      value: 'maladie',
+      name:'maladie',
+      checked: true
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Accident',
+      id : '2',
+      value: 'accident',
+      name:'accident',
+      checked: false
+    });
+    alert.addButton({
+      text: 'Confirmer',
+      handler: data => {
+        this.radioOpen = false;
+        this.radioResult = data;
+        console.log("HEY!!!! Je suis CONFIRMER!!!!");
+        console.log("radioResult" + this.radioResult);
+        if (data === "maladie"){ 
+          this.afficherDateMaladie(titreNotification, messageNotification, idNotification);
+        }else if(data === 'accident'){
+          this.afficherDateAccident(titreNotification, messageNotification, idNotification)
+        }
+        else{
+          console.log("RIEN!!!!!");
+        }
+      }
+    });
+    alert.present(); 
+   }
+
+afficherDateMaladie(titreNotification, messageNotification, idNotification){
+  let alert = this.alertCtrl.create({
+      title: titreNotification,
+      message: messageNotification,
+        inputs: [
+        {
+          id: 'dateDebut',
+          type: 'date',
+          name: 'dateDebut',
+          placeholder: 'Date de début'
+        },
+        {
+          id: 'dateFin',
+          type: 'date',
+          name: 'dateFin',
+          placeholder: 'Date de fin'
+        },
+      ],
+        buttons: [
+          {
+            text: 'Valider',
+            handler: data => {
+               console.log('Oui clicked');
+               this.abiBddCtrl.getMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "0");
+            }
+          }
+        ]
+      });
+      alert.present();
+}
+
+afficherDateAccident(titreNotification, messageNotification, idNotification){
+  let alert = this.alertCtrl.create({
+      title: titreNotification,
+      message: messageNotification,
+        inputs: [
+        {
+          id: 'dateDebut',
+          type: 'date',
+          name: 'dateDebut',
+          placeholder: 'Date de début'
+        },
+        {
+          id: 'dateFin',
+          type: 'date',
+          name: 'dateFin',
+          placeholder: 'Date de fin'
+        },
+      ],
+        buttons: [
+          {
+            text: 'Valider',
+            handler: data => {
+               console.log('Oui clicked');
+               this.abiBddCtrl.getMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "1");
+            }
+          }
+        ]
+      });
+      alert.present();
+}
+
 modificationHoraire(hopId, dateDebut, DateFin){   
-  
     this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),hopId, dateDebut, DateFin).subscribe(        
       data => {
            if(data) {  // OK         
@@ -391,6 +506,8 @@ modificationHoraire(hopId, dateDebut, DateFin){
              }
         });
   }//modificationHoraire
+
+
 
    afficherValidationMensuelle(titreNotification, messageNotification){
         let alert = this.alertCtrl.create({

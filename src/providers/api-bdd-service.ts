@@ -176,4 +176,12 @@ export class ApiBddService {
      return response;
    }//getMaladiesParMois
 
+   //Ajoute les date congé maladie ou accident dans la table maladieAccident 
+   getMaladieAccident(userId : string, token : string, dateDebut : string, dateFin: string, isAccdient : string){ 
+     var url =this.baseUrl + 'type=dateMaladieAccident&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin)+ '&isAccident=' + encodeURI(isAccdient);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());
+     return response; 
+   }
+
 }//ApiBddService

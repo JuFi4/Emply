@@ -33,6 +33,7 @@ body {font-family: Verdana, sans-serif;}
     float: left;
     padding-top: 10px;
     background: lightseagreen;
+    box-shadow:none;
 }
 
 /* Next button */
@@ -40,6 +41,7 @@ body {font-family: Verdana, sans-serif;}
     float: right;
     padding-top: 10px;
     background: lightseagreen;
+    box-shadow:none;
 }
 
 
@@ -181,7 +183,8 @@ body {font-family: Verdana, sans-serif;}
 .detailJour{
     color:#777;
     background:#eee;
-    border-color: #eee;
+    box-shadow:none;
+    //border-color: #eee;
     width:38px;//Largeur fixe aux cases des jours
 }
 
