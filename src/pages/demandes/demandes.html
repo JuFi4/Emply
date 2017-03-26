@@ -24,14 +24,14 @@
 
 <ion-content padding>
   <ion-list>
-      <ion-item *ngFor="let demande of demandes" text-wrap>
-           <ion-label> {{demande.nom_typeDemande}}</ion-label>
+      <ion-item *ngFor="let demande of demandes" text-wrap [class.isNew]="demande.isNew" [class.isAccept]="demande.isAccept" [class.isRefuse]="demande.isRefuse">
+            <ion-label> {{demande.nom_typeDemande}}</ion-label>
             <ion-label style="float: left; width: 500px;">
-              Du {{demande.dateDebut.getDate()}}.{{demande.dateDebut.getMonth()+1}}.{{demande.dateDebut.getFullYear()}}    
-              au {{demande.dateFin.getDate()}}.{{demande.dateFin.getMonth()+1}}.{{demande.dateFin.getFullYear()}}     
+              Du {{demande.affichageDateDebut}}    
+              au {{demande.affichageDateFin}}     
             </ion-label> 
             <ion-label style="text-align: right">
-              <button ion-button icon-only color="light" ion-button type="submit" [disabled] ="isHorsLigne" (click)="modifierDemandeAlert(demande)" >
+              <button ion-button icon-only ion-button type="submit" [disabled] ="isHorsLigne" [disabled] ="!demande.isNew" (click)="modifierDemandeAlert(demande)" >
                  <ion-icon name="create"></ion-icon>
               </button>             
       </ion-label>

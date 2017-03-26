@@ -248,13 +248,13 @@ export class DemandesPage {
         {
           name: 'DateDebInconnue',
           type: 'Date',
-          placeholder: 'Date de début : sous forme AAAA-MM-JJ',
+          placeholder: 'Date de début',
           id: 'dateDeb'
         },
         {
           name: 'DateFinRecInconne',
           type: 'Date',
-          placeholder: 'Date de fin : sous forme AAAA-MM-JJ',
+          placeholder: 'Date de fin',
           id: 'dateFin'
         },
        {
@@ -316,30 +316,29 @@ export class DemandesPage {
   }//enregsitrerDemande
 
   modifierDemandeAlert(demande){
-    var moisdebut = demande.dateDebut.getMonth()+1;
-    var moisfin = demande.dateFin.getMonth()+1;
     if(demande.statut === 'new' || demande.statut==='modify'){ // Traiter la modification lorsque la demande est "new" ou "modify"
       let prompt = this.alertCtrl.create({
       title: 'Modification des dates la demande',
       subTitle: 'Type de demande :' +  demande.nom_typeDemande,
-      message : 'Du ' + demande.dateDebut.getDate() + '.' + moisdebut + '.' + demande.dateDebut.getFullYear() + ' au ' + demande.dateFin.getDate() + '.' + moisfin + '.' + demande.dateFin.getFullYear(),
+      message : 'Du ' + demande.affichageDateDebut + ' au ' + demande.affichageDateFin,
       inputs: [
         {
           name: 'NewDebut',
           type: 'Date',
-          placeholder: 'Date de début : sous forme AAAA-MM-JJ',
+          placeholder: 'Date de début',
           id: 'dateDebNew'
         },
         {
           name: 'DateFinNew',
           type: 'Date',
-          placeholder: 'Date de fin : sous forme AAAA-MM-JJ',
+          placeholder: 'Date de fin',
           id: 'dateFinNew'
         },
        {
           name: 'MotifNew',
           placeholder: 'Motif de la modification',
-          id: 'motif'
+          id: 'motif',
+          value: demande.motif,
         },
       ],
       buttons: [
