@@ -385,6 +385,7 @@ export class DemandesPage {
 
   //Récupère la liste des demandes
   getDemandes(){
+    if(!this.isHorsLigne){
       this.abiBddCtrl.getDemandes(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
         data => {  
            if(data) { // Si les données sont bien chargées    
@@ -399,11 +400,16 @@ export class DemandesPage {
                       data[i].nom_typeDemande
                     );                    
                     this.demandes.push(demande); // On ajoute l'horaire au tableau
+                    window.localStorage.setItem('getDemandes', JSON.stringify(this.demandes));  // Création de la sauvegarde locale
                 }
                 console.log(this.demandes);
              } else { // Erreur
                  console.log("Aucune demande à afficher");
              }
-        }); 
+        });
+    } else {
+      console.log("Mode hors ligne");
+        this.demandes = JSON.parse(window.localStorage.getItem('getDemandes'));
+    } 
     }//getDemandes
 }

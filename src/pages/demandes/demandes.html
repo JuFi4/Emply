@@ -13,7 +13,7 @@
     <ion-title>Demandes</ion-title>
 
     <ion-buttons end>
-      <button ion-button icon-only (click)="saisirDemande()">
+      <button ion-button icon-only [disabled] ="isHorsLigne" (click)="saisirDemande()">
         <ion-icon name="add-circle"></ion-icon>
       </button>
     </ion-buttons>
@@ -31,7 +31,7 @@
               au {{demande.affichageDateFin}}     
             </ion-label> 
             <ion-label style="text-align: right">
-              <button ion-button icon-only ion-button type="submit" [disabled] ="isHorsLigne" [disabled] ="!demande.isNew" (click)="modifierDemandeAlert(demande)" >
+              <button ion-button icon-only ion-button type="submit" [disabled] ="!demande.isNew" [disabled] ="isHorsLigne" (click)="modifierDemandeAlert(demande)" >
                  <ion-icon name="create"></ion-icon>
               </button>             
       </ion-label>
