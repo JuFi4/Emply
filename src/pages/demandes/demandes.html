@@ -31,7 +31,7 @@
               au {{demande.affichageDateFin}}     
             </ion-label> 
             <ion-label style="text-align: right">
-              <button ion-button icon-only ion-button type="submit" [disabled] ="!demande.isNew" [disabled] ="isHorsLigne" (click)="modifierDemandeAlert(demande)" >
+              <button ion-button icon-only ion-button type="submit" [disabled] ="!demande.isNew || isHorsLigne" (click)="modifierDemandeAlert(demande)" >
                  <ion-icon name="create"></ion-icon>
               </button>             
       </ion-label>

@@ -30,7 +30,7 @@ export class DemandesPage {
   isCheckDate : boolean;
   
   constructor(public toastCtrl : ToastController, public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) { 
-    this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
+    this.isHorsLigne =  window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     this.isCheckDate = true;
     this.getDemandes();
   }//constructor
