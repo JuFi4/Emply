@@ -27,10 +27,12 @@ export class DemandesPage {
   radioResult;
   demandes : Demande[]; // Tableau qui contient toutes les demandes
   isHorsLigne : boolean;
+  isCheckDate : boolean;
   
   constructor(public toastCtrl : ToastController, public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) { 
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
-     this.getDemandes();
+    this.isCheckDate = true;
+    this.getDemandes();
   }//constructor
 
   ionViewDidLoad() {
@@ -153,9 +155,14 @@ export class DemandesPage {
         {
           text: 'Confirmer',
           handler: data => {
-            console.log('Confirmer');
-            this.enregsitrerDemande(1, data.DateDebVac, data.DateFinVac, data.Motif);
-            console.log(1, data.DateDebVac, data.DateFinVac, data.Motif);
+            this.faireCheckDate(data.DateDebVac, data.DateFinVac); //Vérifier que les dates ne soient pas incohérentes
+            if (this.isCheckDate === true){ 
+              this.enregsitrerDemande(1, data.DateDebVac, data.DateFinVac, data.Motif);
+              console.log(1, data.DateDebVac, data.DateFinVac, data.Motif);
+              this.getDemandes();
+            }else{
+              this.faireAlertePasOk();
+            }
           }
         }
       ]
@@ -191,9 +198,15 @@ export class DemandesPage {
         {
           text: 'Confirmer',
           handler: data => {
-            console.log('Confirmer');
-            this.enregsitrerDemande(id, data.DateDebRec, data.DateFinRec, "");
-            console.log(id, data.DateDebRec, data.DateFinRec);
+          this.faireCheckDate(data.DateDebRec, data.DateFinRec); //Vérifier que les dates ne soient pas incohérentes
+          if ( this.isCheckDate === true){ 
+             console.log('Confirmer');
+             this.enregsitrerDemande(id, data.DateDebRec, data.DateFinRec, "");
+             console.log(id, data.DateDebRec, data.DateFinRec);
+             this.getDemandes();
+          }else{
+              this.faireAlertePasOk();
+          }
           }
         }
       ]
@@ -229,9 +242,15 @@ export class DemandesPage {
         {
           text: 'Confirmer',
           handler: data => {
-            console.log('Confirmer');
-            this.enregsitrerDemande(5, data.DateDebRec, data.DateFinRec, "");
-            console.log(5, data.DateDebRec, data.DateFinRec);
+          this.faireCheckDate(data.DateDebRec, data.DateFinRec); //Vérifier que les dates ne soient pas incohérentes
+          if ( this.isCheckDate === true){ 
+              console.log('Confirmer');
+              this.enregsitrerDemande(5, data.DateDebRec, data.DateFinRec, "");
+              console.log(5, data.DateDebRec, data.DateFinRec);
+              this.getDemandes();
+          }else {
+              this.faireAlertePasOk();
+          }
             
           }
         }
@@ -273,33 +292,21 @@ export class DemandesPage {
         {
           text: 'Confirmer',
           handler: data => {
-         console.log('Confirmer');
-         this.enregsitrerDemande(6, data.DateDebInconnue, data.DateFinRecInconne, data.MotifInconnue);
-         console.log(6, data.DateDebInconnue, data.DateFinRecInconne, data.MotifInconnue);
+            this.faireCheckDate(data.DateDebInconnue, data.DateFinRecInconne); //Vérifier que les dates ne soient pas incohérentes
+            if ( this.isCheckDate === true){ 
+              console.log('Confirmer');
+              this.enregsitrerDemande(6, data.DateDebInconnue, data.DateFinRecInconne, data.MotifInconnue);
+              console.log(6, data.DateDebInconnue, data.DateFinRecInconne, data.MotifInconnue);
+              this.getDemandes();
+            }else{
+              this.faireAlertePasOk();
+            }
           }
         }
       ]
     });
     prompt.present();
   }//faireDemandeInconnue
-
-    faireToastOk(){
-    let toast = this.toastCtrl.create({
-      message: `Demande enregistrée`,
-      duration: 2000,
-      cssClass: "yourCssClassName",
-    });
-    toast.present();
-  }//faireToastOk
-
-  faireAlertePasOk(){
-  let alert = this.alertCtrl.create({
-    title: 'Demande non enregistrée',
-    subTitle: 'Recommencez votre demande.',
-    buttons: ['Fermer']
-  });
-  alert.present();
-  }//faireAlertePasOk
   
   enregsitrerDemande(typeDemId, dateDebut:string, dateFin:string, motif:string){  
     // setDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, motif:string
@@ -351,10 +358,15 @@ export class DemandesPage {
         {
           text: 'Confirmer',
           handler: data => {
-         console.log('Confirmer');
-         console.log(demande.id, data.NewDebut, data.DateFinNew, data.MotifNew);
-         this.modifierDemande(demande.id, data.NewDebut, data.DateFinNew, data.MotifNew);
-         this.getDemandes();
+          console.log('Confirmer');
+          this.faireCheckDate(data.NewDebut, data.DateFinNew); //Vérifier que les dates ne soient pas incohérentes
+          if ( this.isCheckDate === true){ 
+            console.log(demande.id, data.NewDebut, data.DateFinNew, data.MotifNew);
+            this.modifierDemande(demande.id, data.NewDebut, data.DateFinNew, data.MotifNew);
+            this.getDemandes();
+            }else{
+              this.faireAlertePasOk();
+            }
           }
         }
       ]
@@ -412,4 +424,33 @@ export class DemandesPage {
         this.demandes = JSON.parse(window.localStorage.getItem('getDemandes'));
     } 
     }//getDemandes
+
+//Alertes pour les checks
+
+  faireToastOk(){
+    let toast = this.toastCtrl.create({
+      message: `Demande enregistrée`,
+      duration: 2000,
+      cssClass: "yourCssClassName",
+    });
+    toast.present();
+  }//faireToastOk
+
+  faireAlertePasOk(){
+  let alert = this.alertCtrl.create({
+    title: 'Demande non enregistrée',
+    subTitle: 'Recommencez votre demande.',
+    buttons: ['Fermer']
+  });
+  alert.present();
+  }//faireAlertePasOk
+
+  faireCheckDate(dateDebutCheck, dateFinCheck){ //Vérifier que les dates ne soient pas incohérentes
+    console.log("je me fait check");
+    if(dateDebutCheck <= dateFinCheck){
+      this.isCheckDate = true;
+    } else {
+      this.isCheckDate = false;
+    }
+  }//faireCheckDate
 }
