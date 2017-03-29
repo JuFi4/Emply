@@ -7,6 +7,7 @@ import { LocalNotifications, Push, Splashscreen, StatusBar } from 'ionic-native'
 // Pages
 import { AccueilPage } from '../accueil/accueil';
 import {MeshorairesPage} from "../meshoraires/meshoraires";
+import {DemandesPage} from "../demandes/demandes";
 import {ControlePage} from "../controle/controle";
 
 // Providers
@@ -268,7 +269,9 @@ confirmerDemandeNouveauMotDePasse(){
 
       // Action en cas de récéption de Push
       push.on('notification', (data) => {
-        this.afficherNotificationPush(data.title, data.message, data.additionalData.foreground);      
+        let addData = <any>data.additionalData; // On transforme les additionnalData en un objet quelconque
+        let id = addData.payload.id;// On peut ainsi récupérer l'id du push
+        this.afficherNotificationPush(id, data.title, data.message, data.additionalData.foreground);      
       });
 
       // Gestion des erreurs
@@ -278,7 +281,7 @@ confirmerDemandeNouveauMotDePasse(){
     }); 
   }//instancierNotificationsPush
 
-  afficherNotificationPush(titreNotification, messageNotification, isApplicationOpen){
+  afficherNotificationPush(idNoficiation, titreNotification, messageNotification, isApplicationOpen){
        let confirmAlert = this.alertCtrl.create({ // Création d'une alerte "confirm"
             title: titreNotification,
             message: messageNotification,
@@ -290,10 +293,19 @@ confirmerDemandeNouveauMotDePasse(){
               handler: () => { // Si la personne est connectée ça ouvre la page des horaires
                 console.log("login " + window.localStorage.getItem('utilisateurConnecte'))
                 if(window.localStorage.getItem('utilisateurConnecte') === "1"){  
-                    this.navCtrl.push(MeshorairesPage);
+                    if(idNoficiation == 1 || idNoficiation == 2){ // Le push concerne les horaires
+                        this.navCtrl.push(MeshorairesPage);
+                    } else { // Le push concerne les demandes
+                      this.navCtrl.push(DemandesPage);
+                    }
                 } else { // Sinon : on lui demande de se connecter, et on affiche la page seulement après
-                    this.rootPage = MeshorairesPage; //On enregsitre la page à afficher après la connexion
-                    let alert = this.alertCtrl.create({ // On affiche une alert pour dire qu'il doit se connecter
+                     //On enregsitre la page à afficher après la connexion
+                      if(idNoficiation == 1 || idNoficiation == 2){ // Le push concerne les horaires
+                        this.rootPage = MeshorairesPage;
+                      } else { // Le push concerne les demandes
+                        this.rootPage = DemandesPage;
+                      }
+                      let alert = this.alertCtrl.create({ // On affiche une alert pour dire qu'il doit se connecter
                       title: "Veuillez d'abord vous connecter !",
                       buttons: ['OK']
                     });
@@ -329,6 +341,7 @@ confirmerDemandeNouveauMotDePasse(){
   }//afficherNotificationLocale  
 
   afficherNotificationFinDeService(titreNotification, messageNotification, idNotification){
+
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,
