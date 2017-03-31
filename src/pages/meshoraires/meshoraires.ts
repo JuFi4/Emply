@@ -8,6 +8,7 @@ import { NotificationsLocalesService } from '../../providers/notifications-local
 import {MoisService} from '../../providers/mois-service';
 import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
+import { ApiPdfService } from '../../providers/api-pdf-service';
 
 //models
 import {Mois} from '../../models/mois';
@@ -59,8 +60,8 @@ export class MeshorairesPage {
   etablissement : Etablissement;
   nomCalendrierEvent = "Travail";
 
-   constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService, 
-    public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) {   
+   constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService,
+    public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService,  public pdfService : ApiPdfService) {   
      this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,30,13,0),"12h00","17h00",1);
     // window.localStorage.removeItem('autoImportNomEvent');
     // window.localStorage.removeItem('calendrierEvents');
@@ -88,6 +89,10 @@ export class MeshorairesPage {
     ionViewDidLoad() {
       console.log('Hello MesHoraires Page');      
     }//ionViewDidLoad
+
+    telechargerPDF(){
+      this.pdfService.getPdfHoraires(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'));
+    }//telechargerPDF
 
    saveAutoImportChange(){
      window.localStorage.setItem('autoImport', this.autoImport.toString());  // Création de la sauvegarde locale de ces horaires (mois et annee) 

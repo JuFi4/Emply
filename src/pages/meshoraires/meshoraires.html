@@ -21,6 +21,7 @@
        <ion-option  *ngFor = "let mois of moisListe"> {{mois.nom}}</ion-option>
     </ion-select>  
 </ion-item>-->
+
 <ion-item text-wrap>
     <ion-label>Synchroniser les nouveaux horaires dans le calendrier</ion-label>
     <ion-checkbox [(ngModel)]="autoImport"  (click)="saveAutoImportChange()" [disabled] ="isHorsLigne"></ion-checkbox>
@@ -86,4 +87,6 @@
   <h2 class = "messagePasH"> Vous n'avez pas d'heure aujourd'hui</h2>
 </div>
 </div>
+
+<button ion-button block outline  (click)="telechargerPDF()">Télécharger PDF</button>
 </ion-content>

@@ -17,6 +17,8 @@ import { NotificationsLocalesService } from '../providers/notifications-locales-
 import { ApiBddService } from '../providers/api-bdd-service';
 import {MoisService} from '../providers/mois-service';
 import { ConnectivityService } from '../providers/connectivity-service';
+import { ApiPdfService } from '../providers/api-pdf-service';
+
 
 @NgModule({
   declarations: [
@@ -43,6 +45,6 @@ import { ConnectivityService } from '../providers/connectivity-service';
     MonprofilPage,
     SaisiedemandePage
   ],
-  providers: [NotificationsLocalesService, ConnectivityService, ApiBddService, MoisService]
+  providers: [NotificationsLocalesService, ConnectivityService, ApiBddService, ApiPdfService, MoisService]
 })
 export class AppModule {}
