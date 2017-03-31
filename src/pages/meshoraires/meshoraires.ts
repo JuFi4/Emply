@@ -61,7 +61,7 @@ export class MeshorairesPage {
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService, 
     public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) {   
-     //this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,15,17,0),"12h00","17h00",1);
+     this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,30,13,0),"12h00","17h00",1);
     // window.localStorage.removeItem('autoImportNomEvent');
     // window.localStorage.removeItem('calendrierEvents');
      // Instanciation des valeurs par défaut
@@ -82,8 +82,7 @@ export class MeshorairesPage {
      // Méthodes à lancer au chargement de la page
      this.supprimerAnciennesSauvegares(); //Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone    
      this.gererCalendrierSmartphone();    //Prépare les éléments nécéssaires pour la gestion du calendrier smartphone   
-     this.gethorairesFuturs(); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier
-     this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,26,21,0),"21h00","23h00",1);  
+     this.gethorairesFuturs(); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier  
   }//constructor
 
     ionViewDidLoad() {

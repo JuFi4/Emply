@@ -358,6 +358,7 @@ confirmerDemandeNouveauMotDePasse(){
             text: 'Oui',
             handler: () => {
                console.log('Oui clicked'); // TODO: enregsitrer que c'est OK dans la BDD via API
+               this.validationHoraire(idNotification, 'null', 'null');
             }
           },
           {
@@ -395,12 +396,8 @@ confirmerDemandeNouveauMotDePasse(){
           {
             text: 'Valider',
             handler: data => {
-               console.log('Oui clicked');
-               if(data.heureFin > 0){
-                this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), idNotification, data.heureDebut, data.heureFin);
-              }else{
-                this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), idNotification, data.heureDebut, data.heureFin);
-              } 
+               console.log('Oui clicked');              
+                this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), idNotification, data.heureDebut, data.heureFin);  
             }
           }
         ]
@@ -470,10 +467,30 @@ afficherDateMaladie(titreNotification, messageNotification, idNotification){
             text: 'Valider',
             handler: data => {
                console.log('Oui clicked');
-               this.abiBddCtrl.getMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "0");
+               if(data.dateDebut >= data.dateFin){
+                    this.afficherAlertPasValide();
+               }else{
+                  this.abiBddCtrl.getMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "0").subscribe(
+                        data => {
+                          if(data) { // OK     
+                            console.log("OK");
+                          } else { // Erreur
+                            console.log("Pas ok");
+                    }
+                  });
+               }
             }
           }
         ]
+      });
+      alert.present();
+}
+
+afficherAlertPasValide(){
+  let alert = this.alertCtrl.create({
+      title: "Dates non valide",
+      message: "Vos dates ne sont pas valide veuillez mettre une date de début moins recente que la date de fin",
+        buttons: ['OK']
       });
       alert.present();
 }
@@ -501,7 +518,20 @@ afficherDateAccident(titreNotification, messageNotification, idNotification){
             text: 'Valider',
             handler: data => {
                console.log('Oui clicked');
-               this.abiBddCtrl.getMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "1");
+               console.log(data.dateDebut +" "+ data.dateFin);
+               if(data.dateDebut >= data.dateFin){
+                 console.log(data.dateDebut +" "+ data.dateFin);
+                    this.afficherAlertPasValide();
+               }else{
+                    this.abiBddCtrl.getMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "1").subscribe(
+                        data => {
+                          if(data) { // OK     
+                            console.log("OK");
+                          } else { // Erreur
+                            console.log("Pas ok");
+                    }
+                  });
+               }
             }
           }
         ]
@@ -513,13 +543,23 @@ modificationHoraire(hopId, dateDebut, DateFin){
     this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),hopId, dateDebut, DateFin).subscribe(        
       data => {
            if(data) {  // OK         
-              console.log("Modifications mot de passe enregsitrées");
+              console.log("Modifications faite");
              } else { // Erreur
                  console.log("Connexion échouée : mauvais mot de passe, token ou ID");
              }
         });
   }//modificationHoraire
 
+validationHoraire(hopId, hDebut, hFin){   
+    this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),hopId, hDebut, hFin ).subscribe(        
+      data => {
+           if(data) {  // OK         
+              console.log("Enregistrer");
+             } else { // Erreur
+                 console.log("Connexion échouée : mauvais mot de passe, token ou ID");
+             }
+        });
+  }//modificationHoraire
 
 
    afficherValidationMensuelle(titreNotification, messageNotification){

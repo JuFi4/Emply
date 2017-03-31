@@ -118,7 +118,7 @@ export class MonprofilPage {
         {
           text: 'Confirmer',
           handler: data => {
-            if (this.faireCheck(data.mdpNew, data.mdpNew2)== true){
+            if (this.faireCheck(data.mdpNew, data.mdpNew2)){
               this. modifierMotDePasse(data.mdpActuel, data.mdpNew);
               console.log('Changement ok');
             }else{
@@ -132,7 +132,7 @@ export class MonprofilPage {
   }//faireChangementMDP
 
   // TODO Céline: coder cette fonction
-  faireCheck(MDP1, MDP2){
+  faireCheck(MDP1, MDP2) : boolean {
     console.log('doCheck');
     if (MDP1 === MDP2) {
       console.log('true');

@@ -9,7 +9,7 @@ body {font-family: Verdana, sans-serif;}
 .month {
     padding: 10px 25px;
     width: 100%;
-    background: lightseagreen;
+    background: maroon;
 }
 
 /* Month list */
@@ -32,7 +32,7 @@ body {font-family: Verdana, sans-serif;}
 .month .prev {
     float: left;
     padding-top: 10px;
-    background: lightseagreen;
+    background: maroon;
     box-shadow:none;
 }
 
@@ -40,7 +40,7 @@ body {font-family: Verdana, sans-serif;}
 .month .next {
     float: right;
     padding-top: 10px;
-    background: lightseagreen;
+    background: maroon;
     box-shadow:none;
 }
 
@@ -105,7 +105,7 @@ body {font-family: Verdana, sans-serif;}
 .month {
     padding: 10px 25px;
     width: 100%;
-    background: lightseagreen;
+    background: maroon;
 }
 
 /* Month list */
@@ -132,14 +132,14 @@ body {font-family: Verdana, sans-serif;}
 .month .prev {
     float: left;
     padding-top: 10px;
-    background: lightseagreen;
+    background: maroon;
 }
 
 /* Next button */
 .month .next {
     float: right;
     padding-top: 10px;
-    background: lightseagreen;
+    background: maroon;
 }
 
 
@@ -241,4 +241,10 @@ body {font-family: Verdana, sans-serif;}
     padding: 10px;
     background: #1abc9c;
     color: white !important
+}
+
+//message
+.messagePasH{
+    color: maroon;
+    font-size: 20px;
 }
