@@ -73,6 +73,11 @@ export class MeshorairesPage {
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante    
      this.autoImport = this.setAutoImport();
 
+     // On fixe les heures, minutes et secondes de la date actuelle à 0
+     this.dateCourrante.setHours(0);
+     this.dateCourrante.setMinutes(0);
+     this.dateCourrante.setSeconds(0);
+
      this.notificationsLocalesCtrl.resetNotificationFinDeService();//Remise à zéro des notifications de fin de service : elles vont être re-crées
      // Méthodes à lancer au chargement de la page
      this.supprimerAnciennesSauvegares(); //Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone    
@@ -415,7 +420,7 @@ export class MeshorairesPage {
               console.log(data);
               for(let i = 0; i < data.length; i++){
                   let event = new CalendrierEvent(data[i].title, data[i].location, data[i].notes, new Date(data[i].startDate), new Date(data[i].endDate), data[i].id);
-                  if(event.startDate >= this.dateCourrante){ // Si l'event à lieux aujourd'hui ou dans le futur
+                  if(event.endDate >= this.dateCourrante){ // Si l'event à lieux aujourd'hui ou dans le futur
                       this.calendrierEvents.push(event)//On le prend dans la liste d'events
                   }
               }
