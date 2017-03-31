@@ -7,7 +7,6 @@ import 'rxjs/add/operator/map';
 //Models
 import { Utilisateur } from '../models/utilisateur';
 import { Etablissement } from '../models/etablissement';
-import { Notification } from '../models/notification';
 
 @Injectable()
 export class ApiBddService {  
@@ -142,7 +141,7 @@ export class ApiBddService {
    //Renvois : true ou false
    setModHoraire(userId:string, token:string, hopId:string, dateTimeDebut:string, dateTimeFin:string) {
      var url =this.baseUrl + 'type=valHoraire&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + 
-     '&hopId=' + encodeURI(hopId) + '&dateTimeDebut=' + encodeURI(dateTimeFin) + '&dateTimeFin=' + encodeURI(dateTimeFin);
+     '&hopId=' + encodeURI(hopId) + '&dateTimeDebut=' + encodeURI(dateTimeDebut) + '&dateTimeFin=' + encodeURI(dateTimeFin);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
@@ -183,5 +182,14 @@ export class ApiBddService {
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }
+
+ // Récupération du détail d'un horaore
+ // Renvois :  un JSON avec les données du profil utilisateurs (requête réussie), soit False (requête réussie)
+  getDetailHoraire(userId : string, token: string, horaireId: string)  {
+     var url =this.baseUrl + 'type=getDetailHoraire&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + "&horaireId=" +  encodeURI(horaireId);
+     console.log(url);
+    var response = this.http.get(url).map(res => res.json());
+     return response;
+   }//getDetailHoraire
 
 }//ApiBddService

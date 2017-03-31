@@ -14,6 +14,9 @@ import {ControlePage} from "../controle/controle";
 import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
 
+//Models
+import {Horaire} from '../../models/horaire';
+
 // Sert pour vérifier le connexion
 declare var navigator: any;
 declare var Connection: any;
@@ -38,6 +41,8 @@ export class LoginPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, 
         private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, private connectivityService: ConnectivityService) {      
+
+     this.modificationHoraires("Balbla", "bliaidsjfssd", 1);     
      // Définition de la d'accueil par défaut
      this.rootPage = AccueilPage; 
     
@@ -351,14 +356,14 @@ confirmerDemandeNouveauMotDePasse(){
             role: 'cancel',
             handler: () => {
               console.log('Non clicked');
-              this.afficherModificationHoraires(titreNotification,messageNotification, idNotification);
+              this.modificationHoraires(titreNotification,messageNotification, idNotification);
             }
           },
           {
             text: 'Oui',
             handler: () => {
                console.log('Oui clicked'); // TODO: enregsitrer que c'est OK dans la BDD via API
-               this.validationHoraire(idNotification, 'null', 'null');
+               this.validationHoraire(idNotification, '', ''); // -> Chaine vide , sinon ça enverra le string "Null" dans l'API
             }
           },
           {
@@ -374,7 +379,24 @@ confirmerDemandeNouveauMotDePasse(){
       alert.present();
    }//afficherNotificationFinDeService
 
-   afficherModificationHoraires(titreNotification, messageNotification, idNotification){
+   modificationHoraires(titreNotification, messageNotification, idNotification){
+     // 1) On récupère les détails de l'horaire prévu dans la BDD
+     this.abiBddCtrl.getDetailHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), "1").subscribe(
+          data => {        
+             if(data) {  // OK   
+                 let dateHoraire = new Date(data[0].date);
+                  let horaire =  new Horaire(data[0].id, dateHoraire,        
+                    new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[0].heureDebut, data[0].minuteDebut),
+                    new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[0].heureFin, data[0].minuteFin));
+                    // On lance la fonction d'affichate, on lui passant l'horaire prévu en paramètre
+                      this.afficherModificationHoraires(horaire, titreNotification, messageNotification, idNotification);
+            } else {
+              console.log('ERREUR');  // ERREUR   
+            }
+          }); 
+   }//modificationHoraires
+
+   afficherModificationHoraires(horaire: Horaire, titreNotification, messageNotification, idNotification){     
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,
@@ -383,21 +405,33 @@ confirmerDemandeNouveauMotDePasse(){
           id: 'heureDebut',
           type: 'time',
           name: 'heureDebut',
+          value: horaire.affichageHeureDebut,
           placeholder: 'Heure de début de service'
         },
         {
           id: 'heureFin',
           type: 'time',
           name: 'heureFin',
+          value: horaire.affichageHeureFin,
           placeholder: 'Heure de fin de service'
         },
       ],
         buttons: [
           {
             text: 'Valider',
-            handler: data => {
-               console.log('Oui clicked');              
-                this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), idNotification, data.heureDebut, data.heureFin);  
+            handler: data => {               
+              if(data.heureFin < data.heureDebut){ // Si l'heure de fin est plus petite que l'heure de début = on a travaillé
+                horaire.heureFin.setDate(horaire.heureFin.getDate() + 1); // On ajoute un jour à la date de fin
+              }
+              horaire.heureDebut.setHours(data.heureDebut.split(":")[0]);   // On fixe les heures de débuts entrés à la date de début
+              horaire.heureDebut.setMinutes(data.heureDebut.split(":")[1]);  // On fixe les minutes de débuts entrés à la date de début
+              horaire.heureFin.setHours(data.heureFin.split(":")[0]);  // On fixe les heures de fins entrés à la date de fin
+              horaire.heureFin.setMinutes(data.heureFin.split(":")[1]);  // On fixe les minutes de fins entrés à la date de fin
+
+              // On appelle la fonction d'enregistrement en formatant les dates pour qu'elles passent
+              this.validationHoraire(idNotification, 
+              horaire.heureDebut.getFullYear()+"-"+horaire.heureDebut.getMonth()+"-"+horaire.heureDebut.getDate()+" "+horaire.heureDebut.getHours()+":"+horaire.heureDebut.getMinutes(), 
+              horaire.heureFin.getFullYear()+"-"+horaire.heureFin.getMonth()+"-"+horaire.heureFin.getDate()+" "+horaire.heureFin.getHours()+":"+horaire.heureFin.getMinutes()); 
             }
           }
         ]
@@ -539,19 +573,9 @@ afficherDateAccident(titreNotification, messageNotification, idNotification){
       alert.present();
 }
 
-modificationHoraire(hopId, dateDebut, DateFin){   
-    this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),hopId, dateDebut, DateFin).subscribe(        
-      data => {
-           if(data) {  // OK         
-              console.log("Modifications faite");
-             } else { // Erreur
-                 console.log("Connexion échouée : mauvais mot de passe, token ou ID");
-             }
-        });
-  }//modificationHoraire
 
-validationHoraire(hopId, hDebut, hFin){   
-    this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),hopId, hDebut, hFin ).subscribe(        
+validationHoraire(hopId, hDebut, hFin){  
+    this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),hopId, hDebut, hFin).subscribe(        
       data => {
            if(data) {  // OK         
               console.log("Enregistrer");

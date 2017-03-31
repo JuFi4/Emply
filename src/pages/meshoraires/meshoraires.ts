@@ -61,7 +61,7 @@ export class MeshorairesPage {
   nomCalendrierEvent = "Travail";
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService,
-    public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService,  public pdfService : ApiPdfService) {   
+    public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService,  public pdfCtrl : ApiPdfService) {   
      this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,30,13,0),"12h00","17h00",1);
     // window.localStorage.removeItem('autoImportNomEvent');
     // window.localStorage.removeItem('calendrierEvents');
@@ -83,7 +83,7 @@ export class MeshorairesPage {
      // Méthodes à lancer au chargement de la page
      this.supprimerAnciennesSauvegares(); //Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone    
      this.gererCalendrierSmartphone();    //Prépare les éléments nécéssaires pour la gestion du calendrier smartphone   
-     this.gethorairesFuturs(); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier  
+     this.gethorairesFuturs(); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier 
   }//constructor
 
     ionViewDidLoad() {
@@ -91,7 +91,7 @@ export class MeshorairesPage {
     }//ionViewDidLoad
 
     telechargerPDF(){
-      this.pdfService.getPdfHoraires(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'));
+      this.pdfCtrl.getPdfHoraires(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'));
     }//telechargerPDF
 
    saveAutoImportChange(){
