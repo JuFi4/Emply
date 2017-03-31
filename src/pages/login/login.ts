@@ -40,9 +40,7 @@ export class LoginPage {
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, 
-        private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, private connectivityService: ConnectivityService) {      
-
-     this.modificationHoraires("Balbla", "bliaidsjfssd", 1);     
+        private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, private connectivityService: ConnectivityService) {        
      // Définition de la d'accueil par défaut
      this.rootPage = AccueilPage; 
     
