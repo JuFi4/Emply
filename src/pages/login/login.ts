@@ -379,7 +379,7 @@ confirmerDemandeNouveauMotDePasse(){
 
    modificationHoraires(titreNotification, messageNotification, idNotification){
      // 1) On récupère les détails de l'horaire prévu dans la BDD
-     this.abiBddCtrl.getDetailHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), "1").subscribe(
+     this.abiBddCtrl.getDetailHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), idNotification).subscribe(
           data => {        
              if(data) {  // OK   
                  let dateHoraire = new Date(data[0].date);
