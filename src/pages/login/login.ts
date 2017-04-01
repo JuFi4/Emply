@@ -13,6 +13,7 @@ import {ControlePage} from "../controle/controle";
 // Providers
 import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
+import { ApiPdfService } from '../../providers/api-pdf-service';
 
 //Models
 import {Horaire} from '../../models/horaire';
@@ -34,13 +35,13 @@ export class LoginPage {
    resteConnecte = false;
    rootPage : any; // Permet de définir une autre page d'accueil (pour les notifications)
    isNotificationEnAttente = false;
-   notificationEnAttente =  {id: '', titre: '', message:'' };  
+   notificationEnAttente =  {id: '', titre: '', message:'', data:'' };  
    radioOpen: boolean;
    radioResult;  
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, 
-        private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, private connectivityService: ConnectivityService) {        
+        private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, private connectivityService: ConnectivityService, public pdfCtrl : ApiPdfService) {        
      // Définition de la d'accueil par défaut
      this.rootPage = AccueilPage; 
     
@@ -229,7 +230,7 @@ confirmerDemandeNouveauMotDePasse(){
 
       // Si on a une notification en attente, on l'affiche
       if(this.isNotificationEnAttente) {
-          this.afficherNotificationLocale(this.notificationEnAttente.id, this.notificationEnAttente.titre, this.notificationEnAttente.message);
+          this.afficherNotificationLocale(this.notificationEnAttente.id, this.notificationEnAttente.titre, this.notificationEnAttente.message, this.notificationEnAttente.data);
       }                  
                         
      // On redirige vers la bonne page
@@ -324,26 +325,27 @@ confirmerDemandeNouveauMotDePasse(){
     LocalNotifications.on("click", (notification, state) => {
         console.log('notification' + notification.id);
         if(window.localStorage.getItem('utilisateurConnecte') === "1"){  
-          this.afficherNotificationLocale(notification.id, notification.title, notification.text);
+          this.afficherNotificationLocale(notification.id, notification.title, notification.text, notification.data);
         } else {
             this.isNotificationEnAttente = true;
             this.notificationEnAttente.id = notification.id;
             this.notificationEnAttente.titre = notification.title;
             this.notificationEnAttente.message = notification.text;   
+            this.notificationEnAttente.data = notification.data;   
         }
     }); 
   }//instancierNotificationsLocales
 
-  afficherNotificationLocale(idNotification, titreNotification, messageNotification) {
+  afficherNotificationLocale(idNotification, titreNotification, messageNotification, data) {
     console.log('notification' + idNotification);
     if(idNotification == 0){  // Si l'id est 1 = c'est la notification mensuelle de validation des heures
-      this.afficherValidationMensuelle(titreNotification, messageNotification);
+      this.afficherValidationMensuelle(titreNotification, messageNotification, data);
     } else  {
-      this.afficherNotificationFinDeService(titreNotification, messageNotification, idNotification);
+      this.afficherNotificationFinDeService(titreNotification, messageNotification, idNotification, data);
     }    
   }//afficherNotificationLocale  
 
-  afficherNotificationFinDeService(titreNotification, messageNotification, idNotification){
+  afficherNotificationFinDeService(titreNotification, messageNotification, idNotification, data){
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,
@@ -353,7 +355,7 @@ confirmerDemandeNouveauMotDePasse(){
             role: 'cancel',
             handler: () => {
               console.log('Non clicked');
-              this.modificationHoraires(titreNotification,messageNotification, idNotification);
+              this.afficherModificationHoraires(titreNotification,messageNotification, idNotification, data);
             }
           },
           {
@@ -376,24 +378,11 @@ confirmerDemandeNouveauMotDePasse(){
       alert.present();
    }//afficherNotificationFinDeService
 
-   modificationHoraires(titreNotification, messageNotification, idNotification){     
-     // 1) On récupère les détails de l'horaire prévu dans la BDD
-     this.abiBddCtrl.getDetailHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), idNotification).subscribe(
-          data => {        
-             if(data) {  // OK   
-                 let dateHoraire = new Date(data[0].date);
-                  let horaire =  new Horaire(data[0].id, dateHoraire,        
-                    new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[0].heureDebut, data[0].minuteDebut),
-                    new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[0].heureFin, data[0].minuteFin));
-                    // On lance la fonction d'affichate, on lui passant l'horaire prévu en paramètre
-                      this.afficherModificationHoraires(horaire, titreNotification, messageNotification, idNotification);
-            } else {
-              console.log('ERREUR');  // ERREUR   
-            }
-          }); 
-   }//modificationHoraires
-
-   afficherModificationHoraires(horaire: Horaire, titreNotification, messageNotification, idNotification){     
+   afficherModificationHoraires(titreNotification, messageNotification, idNotification, data){   
+        let dataHoraire = <Horaire>JSON.parse(data); // On récupère l'horaire passé en data
+        // Et on en fait un joli horaire avec des dates correctement formatées
+        let horaire = new Horaire(dataHoraire.id, new Date(dataHoraire.heureDebut), new Date(dataHoraire.heureDebut), new Date(dataHoraire.heureFin));
+        console.log(horaire);
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,
@@ -434,7 +423,7 @@ confirmerDemandeNouveauMotDePasse(){
         ]
       });
       alert.present();
-   }
+   }//afficherModificationHoraires
 
    faireChoixMaladieAccident(titreNotification, messageNotification, idNotification){
     let alert = this.alertCtrl.create();
@@ -583,15 +572,18 @@ validationHoraire(hopId, hDebut, hFin){
   }//modificationHoraire
 
 
-   afficherValidationMensuelle(titreNotification, messageNotification){
+  afficherValidationMensuelle(titreNotification, messageNotification, date){
+        let splitDate = date.split("-");
+        let annee = splitDate[0]
+        let mois = splitDate[1];
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,
         buttons: [         
           {
-            text: 'Afficher contrôle',
+            text: 'Télécharger ma feuille',
             handler: () => {
-               console.log('OK clicked'); // TODO: envoyer sur une page pour vérifier les heures mensuelles, qui aura un bouton valider, qui enregsitrera dans la BDD via API
+               this.pdfCtrl.getPdfValMensuelle(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois);
                this.navCtrl.push(ControlePage, {utilisateur: this.utilisateur});
           }
           }

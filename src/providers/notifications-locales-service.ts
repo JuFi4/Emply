@@ -3,6 +3,8 @@ import { Http } from '@angular/http';
 import { LocalNotifications } from 'ionic-native';
 import 'rxjs/add/operator/map';
 
+//Models
+import { Horaire } from '../models/horaire';
 /*
   Generated class for the NotificationsLocalesService provider.
 
@@ -28,22 +30,23 @@ export class NotificationsLocalesService {
   }//resetNotificationFinDeService
 
   // Gère l'envois différé de la notification locale de fin de service
-  public scheduleNotificationFinDeService(heureFin : Date, affHeureDebut : string, affHeureFin: string, id : number) {
-      let scheduleDate = new Date(heureFin);
+  public scheduleNotificationFinDeService(horaire : Horaire) {
+      let scheduleDate = new Date(horaire.heureFin,);
       scheduleDate.setMinutes(scheduleDate.getMinutes() + 10); // On met la notif 10 minutes après la fin du service
       console.log('scheduleNotificationFinDeService : ' + scheduleDate);
 
-       LocalNotifications.cancel(id); // On supprime la notification qui a cet id (si elle existe) -> pour ne pas avoir de doublon
+       LocalNotifications.cancel(horaire.id); // On supprime la notification qui a cet id (si elle existe) -> pour ne pas avoir de doublon
 
        // On enregsitre la nouvelle notification
        LocalNotifications.schedule({
-            id: id,
+            id: horaire.id,
             title: 'Validation de fin de service',
-            text: 'Avez-vous bien travailler de '+ affHeureDebut + ' à ' + affHeureFin +' ?',
+            text: 'Avez-vous bien travailler de '+ horaire.affichageHeureDebut + ' à ' + horaire.affichageHeureFin +' ?',
             at: scheduleDate,
             sound: 'res://platform_default',
             icon: 'res://icon',
-            led: 'FFFFFF'
+            led: 'FFFFFF',
+            data: JSON.stringify(horaire)
         });
     } //scheduleNotificationFinDeService
 
@@ -60,11 +63,11 @@ export class NotificationsLocalesService {
             id: 0,
             title: 'Validation mensuelle',
             text: 'Veuillez valider vos heures mensuelles!',
-            firstAt: new Date(actualYear, nextMonth, firstDay),
-            every: 'month',
+            at: new Date(actualYear, nextMonth, firstDay),
             sound: 'res://platform_default',
             icon: 'res://icon',
-            led: 'FFFFFF'
+            led: 'FFFFFF',
+            data : scheduleDate.getFullYear()+"-"+scheduleDate.getMonth() // On met en data le mois et l'année concernés par la validation
         });
     }//scheduleNotificationValidationMensuelle 
 

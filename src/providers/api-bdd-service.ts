@@ -183,13 +183,14 @@ export class ApiBddService {
      return response; 
    }
 
- // Récupération du détail d'un horaore
+// PAS UTILISE
+ // Récupération du détail d'un horaire
  // Renvois :  un JSON avec les données du profil utilisateurs (requête réussie), soit False (requête réussie)
-  getDetailHoraire(userId : string, token: string, horaireId: string)  {
+  /*getDetailHoraire(userId : string, token: string, horaireId: string)  {
      var url =this.baseUrl + 'type=getDetailHoraire&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + "&horaireId=" +  encodeURI(horaireId);
      console.log(url);
     var response = this.http.get(url).map(res => res.json());
      return response;
-   }//getDetailHoraire
+   }//getDetailHoraire*/
 
 }//ApiBddService

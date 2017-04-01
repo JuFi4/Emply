@@ -62,9 +62,6 @@ export class MeshorairesPage {
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService,
     public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService,  public pdfCtrl : ApiPdfService) {   
-     this.notificationsLocalesCtrl.scheduleNotificationFinDeService(new Date(2017,2,30,13,0),"12h00","17h00",1);
-    // window.localStorage.removeItem('autoImportNomEvent');
-    // window.localStorage.removeItem('calendrierEvents');
      // Instanciation des valeurs par défaut
      this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' ||connectivityService.isOffline();
      this.moisService.getSemaine().then(semaines => this.semaines = semaines);
@@ -484,7 +481,7 @@ export class MeshorairesPage {
     // Enregsitre la notification locale pour l'horaire passé en paramètre
     enregistrerNotification(horaire : Horaire){
         if(horaire.heureFin > new Date()){ // Si l'horaire est dans le futur (on ne va pas enregistrer des notif pour un horaire passé !)          
-          this.notificationsLocalesCtrl.scheduleNotificationFinDeService(horaire.heureFin, horaire.affichageHeureDebut, horaire.affichageHeureFin, horaire.id); // On enregsitre la notification locale
+          this.notificationsLocalesCtrl.scheduleNotificationFinDeService(horaire); // On enregsitre la notification locale
         } else {
           console.log("On enregsitre pas de notification pour cet horaire : " + horaire.heureFin);
         }
