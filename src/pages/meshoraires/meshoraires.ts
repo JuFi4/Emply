@@ -83,7 +83,7 @@ export class MeshorairesPage {
      // Méthodes à lancer au chargement de la page
      this.supprimerAnciennesSauvegares(); //Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone    
      this.gererCalendrierSmartphone();    //Prépare les éléments nécéssaires pour la gestion du calendrier smartphone   
-     this.gethorairesFuturs(); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier 
+     this.gethorairesFuturs(false); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier 
   }//constructor
 
     ionViewDidLoad() {
@@ -97,10 +97,10 @@ export class MeshorairesPage {
    saveAutoImportChange(){
      window.localStorage.setItem('autoImport', this.autoImport.toString());  // Création de la sauvegarde locale de ces horaires (mois et annee) 
      if(this.autoImport){ // Si on a coché "oui"
-      if(window.localStorage.getItem('autoImportNomEvent') != "undefined" && window.localStorage.getItem('autoImportNomEvent') != null){
-          this.nomCalendrierEvent = window.localStorage.getItem('autoImportNomEvent');
-      }
-      let alert = this.alertCtrl.create({
+     /* if(window.localStorage.getItem('autoImportNomEvent') != "undefined" && window.localStorage.getItem('autoImportNomEvent') != null){
+          this.nomCalendrierEvent = window.localStorage.getItem('autoImportNomEvent'); // On récupère la sauvegarde locale len nom par lequel on veut appeller les events
+      }*/
+      let alert = this.alertCtrl.create({ // On affiche une alert pour savoir par quel nom appeller les events
           title: "Nom de l'évenement",
           message: "Entrez le nom par lequel vous souhaitez appeller vos heures de travail dans votre calendrier : ",
           inputs: [
@@ -115,12 +115,14 @@ export class MeshorairesPage {
               handler: data => {
                  this.nomCalendrierEvent = data.nomEvent;//On defini ce nom comme nom pour les event
                  window.localStorage.setItem('autoImportNomEvent', data.nomEvent);//On enregsitre
-                 this.gethorairesFuturs();//On relance le chargement des horaires futurs pour qu'ils se synchronisent
+                 this.gethorairesFuturs(true);//On relance le chargement des horaires futurs pour qu'ils se synchronisent
               }
             }
           ]
         });
         alert.present();
+     } else { // On a coché non
+        this.supprimerCalendrierEvents();
      }
    }//saveAutoImportChange
 
@@ -284,8 +286,8 @@ export class MeshorairesPage {
       return false;
     }//setDemandeOnJour
 
-  gethorairesFuturs(){
-      if(!this.isHorsLigne){ // Si on a internet
+  gethorairesFuturs(isUpdateForCalendar){       
+    if(!this.isHorsLigne && !isUpdateForCalendar){ // Si on a internet, ou qu'il s'agit d'une mise à jour focrée pour le calendrier
               this.abiBddCtrl.getHorairesFuturs(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
                 data => {  
                   if(data) { // Si les données sont bien chargées 
@@ -294,11 +296,12 @@ export class MeshorairesPage {
                       let isNewData =   dataToString != window.localStorage.getItem('getHorairesFuturs'); // On compare les horaires stockés avec les nouveaux horaires chargés
                        console.log("isNewData : " + isNewData);
                       if(isNewData){ // Si il y a des changement, on enregsitre les horaires chargés en mémoire
-
+                          window.localStorage.setItem('getHorairesFuturs', dataToString);//On sauvegarde les nouveaux horaires en local
                           //Récupèration des données de l'établissement de l'utilisateur pour pouvoir l'indiquer dans les nouveau envents calendrier 
                            this.abiBddCtrl.getEtablissement(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(etablissement => {
                               if(etablissement) { // OK  
                                   this.etablissement = <Etablissement>etablissement[0];  // On enregsitre l'établissement
+                                  window.localStorage.setItem('etablissement', JSON.stringify(this.etablissement));//On sauvegarde l'établissement en local
                               } 
                               this.traiterHorairesFuturs(data, true); // On peut maintenant traiter les horaires avec l'indicateur de nouvelles données
                           }); 
@@ -311,9 +314,13 @@ export class MeshorairesPage {
                         console.log("Erreur");
                     }              
                 }); 
-        } else { // Mode hors ligne
-            // Traitement des horaires à partir des données sauvegardés
-            this.traiterHorairesFuturs(JSON.parse(window.localStorage.getItem('getHorairesFuturs')), false);      
+        } else { // Mode hors ligne  
+            //Si c'est une update pour le calendrier, et que l'établissement est défini en local storage                      
+            if(isUpdateForCalendar && window.localStorage.getItem('etablissement') != null && window.localStorage.getItem('etablissement')  != 'undefined'){
+                this.etablissement = <Etablissement>JSON.parse(window.localStorage.getItem('etablissement'));//On récupère l'établissement
+            }
+            // Traitement des horaires à partir des données sauvegardés (mode hors ligne ou coche de la case "synchroniser")
+            this.traiterHorairesFuturs(JSON.parse(window.localStorage.getItem('getHorairesFuturs')), isUpdateForCalendar);      
         }
     }//gethorairesFuturs
 
@@ -347,6 +354,21 @@ export class MeshorairesPage {
           this.updateCalendrierEvents(); // Vérifie si certains anciens events ont disparus et sauve la liste actuallisée 
       }
     }//traiterHorairesFuturs
+
+    // Supprime tous les events futurs programmés dans le calendrier
+    supprimerCalendrierEvents(){
+      for(let i = 0; i < this.calendrierEvents.length; i++){ //On boucle sur les events enregsitrée
+        console.log("On supprime " + this.calendrierEvents[i].startDate);
+           Calendar.deleteEvent( // On supprime l'event du calendrier
+              this.calendrierEvents[i].title,
+              this.calendrierEvents[i].location,
+              this.calendrierEvents[i].notes,
+              this.calendrierEvents[i].startDate,
+              this.calendrierEvents[i].endDate);  
+      }//for    
+      this.calendrierEvents = []; // On vide l'array des calendrier Events
+      window.localStorage.setItem('calendrierEvents', JSON.stringify(this.calendrierEvents));// On enregsitre la modification en local storage 
+    }//supprimerCalendrierEvents
 
     // Compare la liste des events mise à jour avec l'ancienne liste, et effectue les suppressions nécéssaires dans le calendrier du smartphone
     updateCalendrierEvents(){
@@ -430,7 +452,7 @@ export class MeshorairesPage {
               }
         } catch(Exception){}           
         if(window.localStorage.getItem('autoImportNomEvent') != "undefined" && window.localStorage.getItem('autoImportNomEvent') != null){
-          this.nomCalendrierEvent = window.localStorage.getItem('autoImportNomEvent');
+          this.nomCalendrierEvent = window.localStorage.getItem('autoImportNomEvent');//On récupère le nom par leqeul on veut sauver les events
       }
     }//gererCalendrier
 

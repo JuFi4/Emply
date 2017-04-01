@@ -344,7 +344,6 @@ confirmerDemandeNouveauMotDePasse(){
   }//afficherNotificationLocale  
 
   afficherNotificationFinDeService(titreNotification, messageNotification, idNotification){
-
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,
@@ -377,7 +376,7 @@ confirmerDemandeNouveauMotDePasse(){
       alert.present();
    }//afficherNotificationFinDeService
 
-   modificationHoraires(titreNotification, messageNotification, idNotification){
+   modificationHoraires(titreNotification, messageNotification, idNotification){     
      // 1) On récupère les détails de l'horaire prévu dans la BDD
      this.abiBddCtrl.getDetailHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), idNotification).subscribe(
           data => {        
