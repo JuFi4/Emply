@@ -293,20 +293,17 @@ export class MeshorairesPage {
                       let isNewData =   dataToString != window.localStorage.getItem('getHorairesFuturs'); // On compare les horaires stockés avec les nouveaux horaires chargés
                        console.log("isNewData : " + isNewData);
                       if(isNewData){ // Si il y a des changement
-                          window.localStorage.setItem('getHorairesFuturs', dataToString);//On sauvegarde les nouveaux horaires en local                           
-                          // On enregsitre le fait qu'on a vue les nouveaux horaires
-                         //this.abiBddCtrl.setValVueHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
-                          //  data => { // Et on continu que cet enregsitrement ai marché ou non (donc pas besoin de vérifier ce qu'il y a dans data)
-                          //  console.log("data "+data);
-                               //Récupèration des données de l'établissement de l'utilisateur pour pouvoir l'indiquer dans les nouveau envents calendrier 
-                                this.abiBddCtrl.getEtablissement(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(etablissement => {
-                                    if(etablissement) { // OK  
-                                        this.etablissement = <Etablissement>etablissement[0];  // On enregsitre l'établissement
-                                        window.localStorage.setItem('etablissement', JSON.stringify(this.etablissement));//On sauvegarde l'établissement en local
-                                    } 
-                                    this.traiterHorairesFuturs(data, true); // On peut maintenant traiter les horaires avec l'indicateur de nouvelles données
-                            });                           
-                     //   });                          
+                          window.localStorage.setItem('getHorairesFuturs', dataToString);//On sauvegarde les nouveaux horaires en local         
+                          this.enregsitrerReceptionHoraire();// On lance l'enregsitrement de l'accusé de récéption                  
+                           //Récupèration des données de l'établissement de l'utilisateur pour pouvoir l'indiquer dans les nouveau envents calendrier 
+                            this.abiBddCtrl.getEtablissement(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(etablissement => {
+                                if(etablissement) { // OK  
+                                    this.etablissement = <Etablissement>etablissement[0];  // On enregsitre l'établissement
+                                     window.localStorage.setItem('etablissement', JSON.stringify(this.etablissement));//On sauvegarde l'établissement en local
+                                } 
+                                this.traiterHorairesFuturs(data, true); // On peut maintenant traiter les horaires avec l'indicateur de nouvelles données
+                          });                          
+                                           
                       } else {                  
                           this.traiterHorairesFuturs(data, false); // On peut traiter directement les horaires disant qu'il n'y a pas de nouvelles données
                       }
@@ -326,8 +323,13 @@ export class MeshorairesPage {
         }
     }//gethorairesFuturs
 
+    enregsitrerReceptionHoraire(){
+       // On laisse le subscribe vide car on ne traite pas le cas ou la requête ne fonctionne pas
+      this.abiBddCtrl.setValVueHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(); 
+    }//enregsitrerReceptionHoraire
+
+
     traiterHorairesFuturs(data, isNewData){
-      console.log("traiterHorairesFuturs " + isNewData);
       this.horairesFuturs = [] // On instancie le tableau des horaires futures
       let verifierCalendrierEvents = (data.length > 0) ? false : true; // On instancie la vérification des horaire futurs à false, SAUF si le tableau des nouveaux horaires est vide
       for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données des horaires formatées
@@ -337,13 +339,10 @@ export class MeshorairesPage {
           new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[i].heureDebut, data[i].minuteDebut),
           new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[i].heureFin, data[i].minuteFin)
         );            
-        console.log(" this.horairesFuturs.push(horaire)");
         this.horairesFuturs.push(horaire);  // On ajoute l'horaire dans le tableau
 
-        console.log("balablagfsfgfgfs");
         // Si les horaires ont été modifiés par rapport à la copie locale, on enregsitre les notif locales pour l'horaire et on enregsitre l'horaire dans le calendrier du smartphone si besoin
         // -> inutile de fair toute cela si ls horaires n'ont pas changé car la notificaion et l'event dans le calendrier pour cet horaire auront forcément déja été crées
-         console.log("isNewData - " + isNewData);
          if(isNewData){
           console.log("Les horaires ont changés");
           this.enregistrerNotification(horaire);

@@ -150,17 +150,17 @@ export class ApiBddService {
 
    //Validation des heures du mois
    //Renvois : true or false
-   getValHoraire(userId:string, token:string, mois:string) {
-     var url =this.baseUrl + 'type=valMensuelle&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + 
+   setValMensuelle(userId:string, token:string, annee : string, mois:string) {
+     var url =this.baseUrl + 'type=valMensuelle&userId=' + encodeURI(userId) + '&annee=' + encodeURI(annee) + '&token=' + encodeURI(token) + 
      '&mois=' + encodeURI(mois);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
-   }//getModHoraire
+   }//setValMensuelle
 
   // Récupération des demandes pour le mois et l'année passés en paramètres
   // Renvois :  un JSON avec les demandes demandées (requête réussie), soit False (requête réussie)
-  getDemandesParMois(userId:string, token:string,  annee : string, mois: string) {
+  getDemandesParMois(userId:string, token:string,  annee : string,  mois: string) {
      var url =this.baseUrl + 'type=getDemandesParMois&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&annee=' + encodeURI(annee) + '&mois=' + encodeURI(mois);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());

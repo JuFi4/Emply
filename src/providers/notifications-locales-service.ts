@@ -32,7 +32,7 @@ export class NotificationsLocalesService {
   // Gère l'envois différé de la notification locale de fin de service
   public scheduleNotificationFinDeService(horaire : Horaire) {
       let scheduleDate = new Date(horaire.heureFin,);
-      scheduleDate.setMinutes(scheduleDate.getMinutes() + 10); // On met la notif 10 minutes après la fin du service
+      scheduleDate.setMinutes(scheduleDate.getMinutes()/* + 10*/); // On met la notif 10 minutes après la fin du service
       console.log('scheduleNotificationFinDeService : ' + scheduleDate);
 
        LocalNotifications.cancel(horaire.id); // On supprime la notification qui a cet id (si elle existe) -> pour ne pas avoir de doublon
@@ -63,11 +63,11 @@ export class NotificationsLocalesService {
             id: 0,
             title: 'Validation mensuelle',
             text: 'Veuillez valider vos heures mensuelles!',
-            at: new Date(actualYear, nextMonth, firstDay),
+            at: new Date(/*actualYear, nextMonth, firstDay*/),
             sound: 'res://platform_default',
             icon: 'res://icon',
             led: 'FFFFFF',
-            data : scheduleDate.getFullYear()+"-"+scheduleDate.getMonth() // On met en data le mois et l'année concernés par la validation
+            data : scheduleDate.getFullYear()+"-"+(scheduleDate.getMonth()+1) // On met en data le mois et l'année concernés par la validation, avec +1 pour les mois car JS compte les mois à partir de 0
         });
     }//scheduleNotificationValidationMensuelle 
 

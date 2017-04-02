@@ -91,7 +91,7 @@ export class LoginPage {
       //this.abiBddCtrl.connexion(window.localStorage.getItem('utilisateur'), window.localStorage.getItem('motDePasse'), window.localStorage.getItem('deviceToken')).subscribe();
     }     */
 
-    //this.afficherNotificationLocale(21, "blabla", "blibli", JSON.stringify(new Horaire(21, new Date(2017,3,2), new Date(2017,3,2,8,0), new Date(2017,3,2,15,0)))); 
+    //this.afficherNotificationLocale(0, "blabla", "blibli", JSON.stringify(new Horaire(21, new Date(2017,3,2), new Date(2017,3,2,8,0), new Date(2017,3,2,15,0)))); 
   }//constructor
 
   changeResteConnecte(){
@@ -104,8 +104,8 @@ export class LoginPage {
     if(this.connectivityService.isOffline()){
        window.localStorage.setItem('noNetwork', '1');
        let alert = this.alertCtrl.create({
-          title: 'Mode hors connexion',
-          subTitle: 'Vous êtes actuellement en mode hors connexion.\n '
+          title: 'Mode hors ligne',
+          message: 'Vous êtes actuellement en mode hors ligne.\n '
                   + 'Vous pouvez vous connecter avec le dernier compte utilisé et consulter les données chargées lors de votre dernière utilisation.\n '
                   + ' Vous ne pourrez pas charger de nouvelles données, ni enregsitrer de modifications.',
               buttons: ['OK']

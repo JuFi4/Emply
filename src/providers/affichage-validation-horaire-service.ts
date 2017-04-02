@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 
 // Providers
 import { ApiBddService } from '../providers/api-bdd-service';
-import { ConnectivityService } from '../../providers/connectivity-service';
+import { ConnectivityService } from '../providers/connectivity-service';
 import { ApiPdfService } from '../providers/api-pdf-service';
 
 //Models
@@ -19,9 +19,10 @@ import {ControlePage} from '../pages/controle/controle';
 export class AffichageValidationHoraireService {  
    radioOpen: boolean;
    radioResult;  
-    utilisateur = "";
+   isHorsLigne = false;
 
-  constructor( private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService, public pdfCtrl : ApiPdfService) {
+  constructor( private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService, public pdfCtrl : ApiPdfService, private connectivityService: ConnectivityService) {
+    this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
   }//constructor
 
 afficherNotificationFinDeService(titreNotification, messageNotification, idNotification, data){
@@ -171,14 +172,18 @@ afficherDateMaladie(titreNotification, messageNotification, idNotification){
                if(data.dateDebut >= data.dateFin){
                     this.afficherAlertPasValide();
                }else{
-                  this.abiBddCtrl.getMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "0").subscribe(
-                        data => {
-                          if(data) { // OK     
-                            console.log("OK");
-                          } else { // Erreur
-                            console.log("Pas ok");
-                    }
-                  });
+                  if(!this.isHorsLigne){//Si on est pas hors ligne -> OK
+                      this.abiBddCtrl.getMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "0").subscribe(
+                            data => {
+                              if(data) { // OK     
+                                console.log("OK");
+                              } else { // Erreur
+                                console.log("Pas ok");
+                        }
+                      });
+                  } else {
+                    this.afficherMessageHorsLigne();
+                  }
                }
             }
           }
@@ -224,14 +229,18 @@ afficherDateAccident(titreNotification, messageNotification, idNotification){
                  console.log(data.dateDebut +" "+ data.dateFin);
                     this.afficherAlertPasValide();
                }else{
-                    this.abiBddCtrl.getMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "1").subscribe(
-                        data => {
-                          if(data) { // OK     
-                            console.log("OK");
-                          } else { // Erreur
-                            console.log("Pas ok");
-                    }
-                  });
+                    if(!this.isHorsLigne){//Si on est pas hors ligne -> OK
+                        this.abiBddCtrl.getMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "1").subscribe(
+                            data => {
+                              if(data) { // OK     
+                                console.log("OK");
+                              } else { // Erreur
+                                console.log("Pas ok");
+                        }
+                      });
+                  }else {
+                    this.afficherMessageHorsLigne();
+                  }
                }
             }
           }
@@ -241,15 +250,19 @@ afficherDateAccident(titreNotification, messageNotification, idNotification){
 }
 
 
-validationHoraire(hopId, hDebut, hFin, traValid){  
-    this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),hopId, hDebut, hFin, traValid).subscribe(        
-      data => {
-           if(data) {  // OK         
-              console.log("Enregistrer");
-             } else { // Erreur
-                 console.log("Connexion échouée : mauvais mot de passe, token ou ID");
-             }
-        });
+validationHoraire(hopId, hDebut, hFin, traValid){ 
+   if(!this.isHorsLigne){//Si on est pas hors ligne -> OK 
+      this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),hopId, hDebut, hFin, traValid).subscribe(        
+        data => {
+            if(data) {  // OK         
+                console.log("Enregistrer");
+              } else { // Erreur
+                  console.log("Connexion échouée : mauvais mot de passe, token ou ID");
+              }
+          });
+    }else {
+        this.afficherMessageHorsLigne();
+    }
   }//modificationHoraire
 
    afficherValidationMensuelle(titreNotification, messageNotification, date){
@@ -263,12 +276,26 @@ validationHoraire(hopId, hDebut, hFin, traValid){
           {
             text: 'Télécharger ma feuille',
             handler: () => {
-               this.pdfCtrl.getPdfValMensuelle(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois);
-          }
+              if(!this.isHorsLigne){//Si on est pas hors ligne -> OK
+                this.abiBddCtrl.setValMensuelle(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe();
+                this.pdfCtrl.getPdfValMensuelle(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois);
+              }else {
+                    this.afficherMessageHorsLigne();
+              }
+            }
           }
         ]
       });
       alert.present();
     }//afficherValidationMensuelle
 
+  afficherMessageHorsLigne(){
+        let alert = this.alertCtrl.create({
+          title: 'Mode hors ligne',
+          message: "Vous êtes actuellement en mode hors ligne : l'enregsitrement de données est désactivé.",
+              buttons: ['OK']
+          });
+      alert.present();
+
+    }//afficherMessageHorsLigne
 }//ApiBddService
