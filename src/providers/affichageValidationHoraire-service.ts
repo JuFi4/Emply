@@ -1,5 +1,5 @@
 import { Injectable, Component, ViewChild } from '@angular/core';
-import {  AlertController, Nav, Platform, LoadingController} from 'ionic-angular';
+import { AlertController, Platform} from 'ionic-angular';
 import { LocalNotifications, Push, Splashscreen, StatusBar } from 'ionic-native';
 import 'rxjs/add/operator/map';
 
@@ -7,16 +7,21 @@ import 'rxjs/add/operator/map';
 // Providers
 import { ApiBddService } from '../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
+import { ApiPdfService } from '../providers/api-pdf-service';
 
 //Models
 import {Horaire} from '../models/horaire';
+
+//pagesimport 
+import {ControlePage} from '../pages/controle/controle';
 
 @Injectable()
 export class pushHoraireFin {  
    radioOpen: boolean;
    radioResult;  
+    utilisateur = "";
 
-  constructor(private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService) {
+  constructor( private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService, public pdfCtrl : ApiPdfService) {
   }//constructor
 
 afficherNotificationFinDeService(titreNotification, messageNotification, idNotification, data){
@@ -246,4 +251,24 @@ validationHoraire(hopId, hDebut, hFin, traValid){
              }
         });
   }//modificationHoraire
+
+   afficherValidationMensuelle(titreNotification, messageNotification, date){
+        let splitDate = date.split("-");
+        let annee = splitDate[0]
+        let mois = splitDate[1];
+        let alert = this.alertCtrl.create({
+        title: titreNotification,
+        message: messageNotification,
+        buttons: [         
+          {
+            text: 'Télécharger ma feuille',
+            handler: () => {
+               this.pdfCtrl.getPdfValMensuelle(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois);
+          }
+          }
+        ]
+      });
+      alert.present();
+    }//afficherValidationMensuelle
+
 }//ApiBddService

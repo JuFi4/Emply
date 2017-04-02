@@ -14,7 +14,7 @@ import {ControlePage} from "../controle/controle";
 import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
 import { ApiPdfService } from '../../providers/api-pdf-service';
-import {pushHoraireFin} from '../../providers/push-horairefindemois';
+import {pushHoraireFin} from '../../providers/affichageValidationHoraire-service';
 
 //Models
 import {Horaire} from '../../models/horaire';
@@ -343,30 +343,10 @@ confirmerDemandeNouveauMotDePasse(){
  afficherNotificationLocale(idNotification, titreNotification, messageNotification, data) {
     console.log('notification' + idNotification);
     if(idNotification == 0){  // Si l'id est 1 = c'est la notification mensuelle de validation des heures
-      this.afficherValidationMensuelle(titreNotification, messageNotification, data);
+      this.pushHoraireFin.afficherValidationMensuelle(titreNotification, messageNotification, data);
     } else  {
       this.pushHoraireFin.afficherNotificationFinDeService(titreNotification, messageNotification, idNotification, data);
     }    
   }//afficherNotificationLocale  
 
-
-  afficherValidationMensuelle(titreNotification, messageNotification, date){
-        let splitDate = date.split("-");
-        let annee = splitDate[0]
-        let mois = splitDate[1];
-        let alert = this.alertCtrl.create({
-        title: titreNotification,
-        message: messageNotification,
-        buttons: [         
-          {
-            text: 'Télécharger ma feuille',
-            handler: () => {
-               this.pdfCtrl.getPdfValMensuelle(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois);
-               this.navCtrl.push(ControlePage, {utilisateur: this.utilisateur});
-          }
-          }
-        ]
-      });
-      alert.present();
-    }//afficherValidationMensuelle
 }//LoginPage
