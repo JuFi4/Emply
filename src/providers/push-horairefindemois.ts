@@ -19,7 +19,7 @@ export class pushHoraireFin {
   constructor(private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService) {
   }//constructor
 
-afficherNotificationFinDeService(titreNotification, messageNotification, idNotification){
+afficherNotificationFinDeService(titreNotification, messageNotification, idNotification, data){
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,
@@ -29,7 +29,7 @@ afficherNotificationFinDeService(titreNotification, messageNotification, idNotif
             role: 'cancel',
             handler: () => {
               console.log('Non clicked');
-              this.modificationHoraires(titreNotification,messageNotification, idNotification);
+              this.modificationHoraires(titreNotification,messageNotification, idNotification, data);
             }
           },
           {
@@ -52,24 +52,12 @@ afficherNotificationFinDeService(titreNotification, messageNotification, idNotif
       alert.present();
    }//afficherNotificationFinDeService
 
-   modificationHoraires(titreNotification, messageNotification, idNotification){     
-     // 1) On récupère les détails de l'horaire prévu dans la BDD
-   //  this.abiBddCtrl.getDetailHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), idNotification).subscribe(
-   //       data => {        
-   //          if(data) {  // OK   
-   //              let dateHoraire = new Date(data[0].date);
-   //               let horaire =  new Horaire(data[0].id, dateHoraire,        
-   //                 new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[0].heureDebut, data[0].minuteDebut),
-   //                 new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[0].heureFin, data[0].minuteFin));
-   //                 // On lance la fonction d'affichate, on lui passant l'horaire prévu en paramètre
-   //                   this.afficherModificationHoraires(horaire, titreNotification, messageNotification, idNotification);
-   //         } else {
-   //           console.log('ERREUR');  // ERREUR   
-   //         }
-   //       }); 
-   }//modificationHoraires
+   modificationHoraires(titreNotification, messageNotification, idNotification, data){     
+        let dataHoraire = <Horaire>JSON.parse(data); // On récupère l'horaire passé en data
+        // Et on en fait un joli horaire avec des dates correctement formatées
+        let horaire = new Horaire(dataHoraire.id, new Date(dataHoraire.heureDebut), new Date(dataHoraire.heureDebut), new Date(dataHoraire.heureFin));
+        console.log(horaire);
 
-   afficherModificationHoraires(horaire: Horaire, titreNotification, messageNotification, idNotification){     
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,

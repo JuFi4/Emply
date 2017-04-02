@@ -11,7 +11,7 @@ export class Horaire {
         this.date = date, 
         this.heureDebut = heureDebut, 
         this.heureFin = heureFin;
-        this.affichageHeureDebut = this.heureDebut.getHours()+":"+(this.heureDebut.getMinutes() <= 9 ? "0"+this.heureDebut.getMinutes() : this.heureDebut.getMinutes());
-        this.affichageHeureFin = this.heureFin.getHours()+":"+(this.heureFin.getMinutes() <= 9 ? "0"+this.heureFin.getMinutes() : this.heureFin.getMinutes());
+        this.affichageHeureDebut = (this.heureDebut.getHours() <= 9 ? "0"+this.heureDebut.getHours() : this.heureDebut.getHours())+":"+(this.heureDebut.getMinutes() <= 9 ? "0"+this.heureDebut.getMinutes() : this.heureDebut.getMinutes());
+        this.affichageHeureFin =  (this.heureFin.getHours() <= 9 ? "0"+this.heureFin.getHours() : this.heureFin.getHours())+":"+(this.heureFin.getMinutes() <= 9 ? "0"+this.heureFin.getMinutes() : this.heureFin.getMinutes());
     }//constructor
 }//Horaires

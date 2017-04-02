@@ -43,6 +43,7 @@ export class LoginPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, 
         private pushHoraireFin : pushHoraireFin, private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, private connectivityService: ConnectivityService, public pdfCtrl : ApiPdfService) {        
+      
      // Définition de la d'accueil par défaut
      this.rootPage = AccueilPage; 
     
@@ -89,6 +90,8 @@ export class LoginPage {
       // JULIANA : Cette manière ne sauvegarde par ne nouveau token => autant passer directement par la méthode this.connecter() qui gère tout
       //this.abiBddCtrl.connexion(window.localStorage.getItem('utilisateur'), window.localStorage.getItem('motDePasse'), window.localStorage.getItem('deviceToken')).subscribe();
     }     */
+
+    //this.afficherNotificationLocale(21, "blabla", "blibli", JSON.stringify(new Horaire(21, new Date(2017,3,2), new Date(2017,3,2,8,0), new Date(2017,3,2,15,0)))); 
   }//constructor
 
   changeResteConnecte(){

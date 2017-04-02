@@ -283,7 +283,7 @@ export class MeshorairesPage {
       return false;
     }//setDemandeOnJour
 
-  gethorairesFuturs(isUpdateForCalendar){       
+  public gethorairesFuturs(isUpdateForCalendar){       
     if(!this.isHorsLigne && !isUpdateForCalendar){ // Si on a internet, ou qu'il s'agit d'une mise à jour focrée pour le calendrier
               this.abiBddCtrl.getHorairesFuturs(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
                 data => {  
@@ -353,7 +353,7 @@ export class MeshorairesPage {
     }//traiterHorairesFuturs
 
     // Supprime tous les events futurs programmés dans le calendrier
-    supprimerCalendrierEvents(){
+    public supprimerCalendrierEvents(){
       for(let i = 0; i < this.calendrierEvents.length; i++){ //On boucle sur les events enregsitrée
         console.log("On supprime " + this.calendrierEvents[i].startDate);
            Calendar.deleteEvent( // On supprime l'event du calendrier
