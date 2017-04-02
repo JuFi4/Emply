@@ -21,31 +21,31 @@ export class ApiPdfService {
 
 
   getPdfHoraires(userId:string, token:string){
-    const fileTransfer: TransferObject = new Transfer().create();
+   // const fileTransfer: TransferObject = new Transfer().create();
     let url = this.baseUrl+"type=horaires&userId="+encodeURI(userId)+"&token="+encodeURI(token);
     let dest = cordova.file.externalRootDirectory + 'horaires.pdf';
     console.log(url);
-    fileTransfer.download(url, cordova.file.externalRootDirectory + 'horaires.pdf').then((entry) => {
-        console.log('download complete: ' + entry.toURL()); 
-        this.afficherMessageOK("Le ficher PDF de vos horaires à bien été téléchargé dans le dossier de stockage de votre téléphone", entry.toURL());        
-      }, (error) => {
-        console.log(error);
-        this.afficherErreur();
-      });
+   // fileTransfer.download(url, cordova.file.externalRootDirectory + 'horaires.pdf').then((entry) => {
+   //     console.log('download complete: ' + entry.toURL()); 
+   //     this.afficherMessageOK("Le ficher PDF de vos horaires à bien été téléchargé dans le dossier de stockage de votre téléphone", entry.toURL());        
+   //   }, (error) => {
+   //     console.log(error);
+   //     this.afficherErreur();
+   //   });
   }//getPdfHoraires
 
    getPdfValMensuelle(userId:string, token:string, annee:string, mois:string){
-    const fileTransfer: TransferObject = new Transfer().create();
-    let url = this.baseUrl+"type=valMensuelle&userId="+encodeURI(userId)+"&token="+encodeURI(token)+"&annee="+encodeURI(annee)+"&mois="+encodeURI(mois);
-    let dest = cordova.file.externalRootDirectory + 'horaires.pdf';
-    console.log(url);
-    fileTransfer.download(url, cordova.file.externalRootDirectory + 'validationMensuelle_'+mois+'-'+annee+'.pdf').then((entry) => {
-        console.log('download complete: ' + entry.toURL()); 
-        this.afficherMessageOK("Le ficher PDF de vos heures mensuelles à bien été téléchargé dans le dossier de stockage de votre téléphone", entry.toURL());        
-      }, (error) => {
-        console.log(error);
-        this.afficherErreur();
-      });
+  //  const fileTransfer: TransferObject = new Transfer().create();
+  //  let url = this.baseUrl+"type=valMensuelle&userId="+encodeURI(userId)+"&token="+encodeURI(token)+"&annee="+encodeURI(annee)+"&mois="+encodeURI(mois);
+  //  let dest = cordova.file.externalRootDirectory + 'horaires.pdf';
+  //  console.log(url);
+  //  fileTransfer.download(url, cordova.file.externalRootDirectory + 'validationMensuelle_'+mois+'-'+annee+'.pdf').then((entry) => {
+  //      console.log('download complete: ' + entry.toURL()); 
+  //      this.afficherMessageOK("Le ficher PDF de vos heures mensuelles à bien été téléchargé dans le dossier de stockage de votre téléphone", entry.toURL());        
+  //    }, (error) => {
+  //      console.log(error);
+  //      this.afficherErreur();
+  //    });
   }//getPdfValMensuelle
 
   afficherMessageOK(monMessage, adresse){

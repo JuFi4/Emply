@@ -18,7 +18,7 @@ import { ApiBddService } from '../providers/api-bdd-service';
 import {MoisService} from '../providers/mois-service';
 import { ConnectivityService } from '../providers/connectivity-service';
 import { ApiPdfService } from '../providers/api-pdf-service';
-
+import {pushHoraireFin} from '../providers/push-horairefindemois';
 
 @NgModule({
   declarations: [
@@ -45,6 +45,13 @@ import { ApiPdfService } from '../providers/api-pdf-service';
     MonprofilPage,
     SaisiedemandePage
   ],
-  providers: [NotificationsLocalesService, ConnectivityService, ApiBddService, ApiPdfService, MoisService]
+  providers: [
+    NotificationsLocalesService, 
+    ConnectivityService, 
+    ApiBddService, 
+    ApiPdfService, 
+    MoisService,
+    pushHoraireFin
+    ]
 })
 export class AppModule {}

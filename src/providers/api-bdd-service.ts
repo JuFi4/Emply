@@ -139,9 +139,10 @@ export class ApiBddService {
 
    // Validation des heures et modification de ces dernières
    //Renvois : true ou false
-   setModHoraire(userId:string, token:string, hopId:string, dateTimeDebut:string, dateTimeFin:string) {
+   setModHoraire(userId:string, token:string, hopId:string, dateTimeDebut:string, dateTimeFin:string, traValide:string) {
      var url =this.baseUrl + 'type=valHoraire&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + 
-     '&hopId=' + encodeURI(hopId) + '&dateTimeDebut=' + encodeURI(dateTimeDebut) + '&dateTimeFin=' + encodeURI(dateTimeFin);
+     '&hopId=' + encodeURI(hopId) + '&dateTimeDebut=' + encodeURI(dateTimeDebut) + '&dateTimeFin=' + encodeURI(dateTimeFin) +
+     '&traValide='+ encodeURI(traValide);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
@@ -183,6 +184,12 @@ export class ApiBddService {
      return response; 
    }
 
+    getValVueHoraire(userId : string, token : string){ 
+     var url =this.baseUrl + 'type=getValVueHor&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());
+     return response; 
+   }
 // PAS UTILISE
  // Récupération du détail d'un horaire
  // Renvois :  un JSON avec les données du profil utilisateurs (requête réussie), soit False (requête réussie)
