@@ -19,8 +19,7 @@ export class pushHoraireFin {
   constructor(private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService) {
   }//constructor
 
- 
-  afficherNotificationFinDeService(titreNotification, messageNotification, idNotification, data){
+afficherNotificationFinDeService(titreNotification, messageNotification, idNotification){
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,
@@ -30,7 +29,7 @@ export class pushHoraireFin {
             role: 'cancel',
             handler: () => {
               console.log('Non clicked');
-              this.afficherModificationHoraires(titreNotification,messageNotification, idNotification, data);
+              this.modificationHoraires(titreNotification,messageNotification, idNotification);
             }
           },
           {
@@ -44,8 +43,7 @@ export class pushHoraireFin {
             text: 'Maladie/Accident',
             handler: () =>{
                console.log("maladieAccident click")
-               this.faireChoixMaladieAccident(titreNotification, messageNotification, idNotification);
-               this.validationHoraire(idNotification, '', '',-1)
+               this.faireChoixMaladieAccident(titreNotification, messageNotification, -1);
 
             } 
           }
@@ -54,11 +52,24 @@ export class pushHoraireFin {
       alert.present();
    }//afficherNotificationFinDeService
 
-   afficherModificationHoraires(titreNotification, messageNotification, idNotification, data){   
-        let dataHoraire = <Horaire>JSON.parse(data); // On récupère l'horaire passé en data
-        // Et on en fait un joli horaire avec des dates correctement formatées
-        let horaire = new Horaire(dataHoraire.id, new Date(dataHoraire.heureDebut), new Date(dataHoraire.heureDebut), new Date(dataHoraire.heureFin));
-        console.log(horaire);
+   modificationHoraires(titreNotification, messageNotification, idNotification){     
+     // 1) On récupère les détails de l'horaire prévu dans la BDD
+   //  this.abiBddCtrl.getDetailHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), idNotification).subscribe(
+   //       data => {        
+   //          if(data) {  // OK   
+   //              let dateHoraire = new Date(data[0].date);
+   //               let horaire =  new Horaire(data[0].id, dateHoraire,        
+   //                 new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[0].heureDebut, data[0].minuteDebut),
+   //                 new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[0].heureFin, data[0].minuteFin));
+   //                 // On lance la fonction d'affichate, on lui passant l'horaire prévu en paramètre
+   //                   this.afficherModificationHoraires(horaire, titreNotification, messageNotification, idNotification);
+   //         } else {
+   //           console.log('ERREUR');  // ERREUR   
+   //         }
+   //       }); 
+   }//modificationHoraires
+
+   afficherModificationHoraires(horaire: Horaire, titreNotification, messageNotification, idNotification){     
         let alert = this.alertCtrl.create({
         title: titreNotification,
         message: messageNotification,
@@ -99,7 +110,7 @@ export class pushHoraireFin {
         ]
       });
       alert.present();
-   }//afficherModificationHoraires
+   }
 
    faireChoixMaladieAccident(titreNotification, messageNotification, idNotification){
     let alert = this.alertCtrl.create();
@@ -125,6 +136,7 @@ export class pushHoraireFin {
       handler: data => {
         this.radioOpen = false;
         this.radioResult = data;
+        this.validationHoraire(idNotification, '', '',-1);
         console.log("HEY!!!! Je suis CONFIRMER!!!!");
         console.log("radioResult" + this.radioResult);
         if (data === "maladie"){ 
@@ -185,7 +197,7 @@ afficherDateMaladie(titreNotification, messageNotification, idNotification){
 afficherAlertPasValide(){
   let alert = this.alertCtrl.create({
       title: "Dates non valide",
-      message: "Vos dates ne sont pas valide veuillez mettre une date de début moins recente que la date de fin",
+      message: "Vos dates ne sont pas valides ! Veuillez mettre une date de debut antérieur à la date de fin",
         buttons: ['OK']
       });
       alert.present();
@@ -237,7 +249,7 @@ afficherDateAccident(titreNotification, messageNotification, idNotification){
 
 
 validationHoraire(hopId, hDebut, hFin, traValid){  
-    this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),hopId, hDebut, hFin,traValid).subscribe(        
+    this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),hopId, hDebut, hFin, traValid).subscribe(        
       data => {
            if(data) {  // OK         
               console.log("Enregistrer");
