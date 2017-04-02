@@ -167,7 +167,7 @@ export class ApiBddService {
      return response;
    }//getDemandesParMois
 
-     // Récupération des maladies/accidents pour le mois et l'année passés en paramètres
+   // Récupération des maladies/accidents pour le mois et l'année passés en paramètres
   // Renvois :  un JSON avec les demandes demandées (requête réussie), soit False (requête réussie)
   getMaladiesParMois(userId:string, token:string,  annee : string, mois: string) {
      var url =this.baseUrl + 'type=getMaladiesParMois&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&annee=' + encodeURI(annee) + '&mois=' + encodeURI(mois);
@@ -182,14 +182,14 @@ export class ApiBddService {
      console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
-   }
+   }//getMaladieAccident
 
-    getValVueHoraire(userId : string, token : string){ 
+    setValVueHoraire(userId : string, token : string){ 
      var url =this.baseUrl + 'type=getValVueHor&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
-   }
+   }//setValVueHoraire
 // PAS UTILISE
  // Récupération du détail d'un horaire
  // Renvois :  un JSON avec les données du profil utilisateurs (requête réussie), soit False (requête réussie)

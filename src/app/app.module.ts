@@ -18,7 +18,7 @@ import { ApiBddService } from '../providers/api-bdd-service';
 import {MoisService} from '../providers/mois-service';
 import { ConnectivityService } from '../providers/connectivity-service';
 import { ApiPdfService } from '../providers/api-pdf-service';
-import {pushHoraireFin} from '../providers/affichageValidationHoraire-service';
+import {AffichageValidationHoraireService} from '../providers/affichage-validation-horaire-service';
 
 @NgModule({
   declarations: [
@@ -51,7 +51,7 @@ import {pushHoraireFin} from '../providers/affichageValidationHoraire-service';
     ApiBddService, 
     ApiPdfService, 
     MoisService,
-    pushHoraireFin
+    AffichageValidationHoraireService
     ]
 })
 export class AppModule {}

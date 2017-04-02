@@ -14,7 +14,7 @@ import {ControlePage} from "../controle/controle";
 import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
 import { ApiPdfService } from '../../providers/api-pdf-service';
-import {pushHoraireFin} from '../../providers/affichageValidationHoraire-service';
+import { AffichageValidationHoraireService } from '../../providers/affichage-validation-horaire-service';
 
 //Models
 import {Horaire} from '../../models/horaire';
@@ -42,7 +42,7 @@ export class LoginPage {
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, 
-        private pushHoraireFin : pushHoraireFin, private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, private connectivityService: ConnectivityService, public pdfCtrl : ApiPdfService) {        
+        private pushHoraireFin : AffichageValidationHoraireService, private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, private connectivityService: ConnectivityService, public pdfCtrl : ApiPdfService) {        
       
      // Définition de la d'accueil par défaut
      this.rootPage = AccueilPage; 

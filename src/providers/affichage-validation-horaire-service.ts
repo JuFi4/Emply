@@ -16,7 +16,7 @@ import {Horaire} from '../models/horaire';
 import {ControlePage} from '../pages/controle/controle';
 
 @Injectable()
-export class pushHoraireFin {  
+export class AffichageValidationHoraireService {  
    radioOpen: boolean;
    radioResult;  
     utilisateur = "";
