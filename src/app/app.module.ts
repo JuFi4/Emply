@@ -11,6 +11,7 @@ import { MeshorairesPage } from '../pages/meshoraires/meshoraires';
 import { DemandesPage } from '../pages/demandes/demandes';
 import { MonprofilPage } from '../pages/monprofil/monprofil';
 import { SaisiedemandePage } from '../pages/saisiedemande/saisiedemande';
+import {ParametresPage} from '../pages/parametres/parametres';
 
 // Providers
 import { NotificationsLocalesService } from '../providers/notifications-locales-service';
@@ -29,7 +30,8 @@ import {AffichageValidationHoraireService} from '../providers/affichage-validati
     MeshorairesPage,
     DemandesPage,
     MonprofilPage,
-    SaisiedemandePage
+    SaisiedemandePage,
+    ParametresPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -43,7 +45,8 @@ import {AffichageValidationHoraireService} from '../providers/affichage-validati
     MeshorairesPage,
     DemandesPage,
     MonprofilPage,
-    SaisiedemandePage
+    SaisiedemandePage,
+    ParametresPage
   ],
   providers: [
     NotificationsLocalesService, 

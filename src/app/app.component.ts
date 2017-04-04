@@ -9,6 +9,8 @@ import { ControlePage } from '../pages/controle/controle';
 import { MeshorairesPage } from '../pages/meshoraires/meshoraires';
 import { DemandesPage } from '../pages/demandes/demandes';
 import { MonprofilPage } from '../pages/monprofil/monprofil';
+import { ParametresPage } from '../pages/parametres/parametres';
+
 
 // Providers
 import { ApiBddService } from '../providers/api-bdd-service';
@@ -32,6 +34,7 @@ export class MyApp {
       {title: 'Mes horaires', component: MeshorairesPage },
       {title: 'Demandes', component: DemandesPage },
       {title: 'Mon profil', component: MonprofilPage },
+      {title: 'Paramètres', component: ParametresPage },
     ];
   }
 
