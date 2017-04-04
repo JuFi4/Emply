@@ -30,7 +30,7 @@ export class MyApp {
     this.pages = [
       //{title: 'Login', component: LoginPage },
       {title: 'Accueil', component: AccueilPage },
-      {title: 'Contrôle', component: ControlePage },
+      {title: 'Validations', component: ControlePage },
       {title: 'Mes horaires', component: MeshorairesPage },
       {title: 'Demandes', component: DemandesPage },
       {title: 'Mon profil', component: MonprofilPage },
