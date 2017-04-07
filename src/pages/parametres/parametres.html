@@ -10,12 +10,61 @@
     <button ion-button icon-only menuToggle>
       <ion-icon name="menu"></ion-icon> 
     </button>
-    <ion-title>Contrôle</ion-title>
+    <ion-title>Paramètres</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-    <h3>Page de Paramètres</h3>
+  <h3>Page de Paramètres</h3>
+  <h4>Synchronisation de vos horaires dans votre calendrier</h4>
+  <ion-item text-wrap>
+    <ion-label>Synchroniser les nouveaux horaires dans le calendrier</ion-label>
+    <ion-checkbox [(ngModel)]="autoImport" (click)="saveAutoImportChange()" [disabled]="isHorsLigne"></ion-checkbox>
+  </ion-item>
+  <h4>Paramètre du temps du push dès la fin de votre service :</h4>
+
+  <ion-list radio-group>
+    <ion-list-header>
+      Choisissez une des options ci-dessous :
+    </ion-list-header>
+    <ion-item>
+      <ion-label>Immédiatement à la fin de mon service</ion-label>
+      <ion-radio value="0" (ionSelect)="sauverMinutes(0)" [disabled]="isHorsLigne" checked></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Après 15 minutes</ion-label>
+      <ion-radio value="15" (ionSelect)="sauverMinutes(15)" [disabled]="isHorsLigne"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Après 30 minutes</ion-label>
+      <ion-radio value="30" (ionSelect)="sauverMinutes(30)" [disabled]="isHorsLigne"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Après 45 minutes</ion-label>
+      <ion-radio value="45" (ionSelect)="sauverMinutes(45)" [disabled]="isHorsLigne"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Après une heure</ion-label>
+      <ion-radio value="60" (ionSelect)="sauverMinutes(60)" [disabled]="isHorsLigne"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Après une heure et demi</ion-label>
+      <ion-radio value="90" (ionSelect)="sauverMinutes(90)" [disabled]="isHorsLigne"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Après deux heures</ion-label>
+      <ion-radio value="120" (ionSelect)="sauverMinutes(120)" [disabled]="isHorsLigne"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Après deux heures et demi</ion-label>
+      <ion-radio value="150" (ionSelect)="sauverMinutes(150)" [disabled]="isHorsLigne"></ion-radio>
+    </ion-item>
+    <ion-item>
+      <ion-label>Après trois heures</ion-label>
+      <ion-radio value="180" (ionSelect)="sauverMinutes(180)" [disabled]="isHorsLigne"></ion-radio>
+    </ion-item>
+  </ion-list>
+
 </ion-content>

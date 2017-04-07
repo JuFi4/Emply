@@ -9,6 +9,7 @@ import { AccueilPage } from '../accueil/accueil';
 import {MeshorairesPage} from "../meshoraires/meshoraires";
 import {DemandesPage} from "../demandes/demandes";
 import {ControlePage} from "../controle/controle";
+import {ParametresPage} from "../parametres/parametres";
 
 // Providers
 import { ApiBddService } from '../../providers/api-bdd-service';
