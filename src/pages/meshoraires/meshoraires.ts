@@ -54,7 +54,8 @@ export class MeshorairesPage {
   pasHeure : boolean;
   isDisabledDay : boolean;
   isHorsLigne : boolean;
-  autoImport = true;
+  autoImport = false;
+  syncCalendar = false;
   calendrierEvents : CalendrierEvent[];
   calendrierEventsUpdate : CalendrierEvent[]
   etablissement : Etablissement;
@@ -68,19 +69,25 @@ export class MeshorairesPage {
      this.moisService.getMois().then(moisListe => this.moisListe = moisListe).then(result => this.selectionnerMois());
      this.affichageH = false;
      this.pasHeure = true;
-     this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante    
-     this.autoImport = this.setAutoImport();
+     this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante   
+
+     console.log(window.localStorage.getItem('syncCalendar')); 
+     this.setAutoImport();// On instancie l'autoImport par rapport à la valeur sauvegardée
+     console.log("autoImport  " + this.autoImport);
+     console.log("syncCalendar  " + this.syncCalendar);
+     console.log(window.localStorage.getItem('syncCalendar')); 
 
      // On fixe les heures, minutes et secondes de la date actuelle à 0
      this.dateCourrante.setHours(0);
      this.dateCourrante.setMinutes(0);
      this.dateCourrante.setSeconds(0);
+     
+    this.notificationsLocalesCtrl.resetNotification();//Remise à zéro des notifications de fin de service : elles vont être re-crées    
 
-     this.notificationsLocalesCtrl.resetNotificationFinDeService();//Remise à zéro des notifications de fin de service : elles vont être re-crées
      // Méthodes à lancer au chargement de la page
      this.supprimerAnciennesSauvegares(); //Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone    
      this.gererCalendrierSmartphone();    //Prépare les éléments nécéssaires pour la gestion du calendrier smartphone   
-     this.gethorairesFuturs(false); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier 
+     this.gethorairesFuturs(); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier 
 }//constructor
 
     ionViewDidLoad() {
@@ -91,12 +98,9 @@ export class MeshorairesPage {
       this.pdfCtrl.getPdfHoraires(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'));
     }//telechargerPDF
 
-   saveAutoImportChange(){
+  /* saveAutoImportChange(){
      window.localStorage.setItem('autoImport', this.autoImport.toString());  // Création de la sauvegarde locale de ces horaires (mois et annee) 
      if(this.autoImport){ // Si on a coché "oui"
-     /* if(window.localStorage.getItem('autoImportNomEvent') != "undefined" && window.localStorage.getItem('autoImportNomEvent') != null){
-          this.nomCalendrierEvent = window.localStorage.getItem('autoImportNomEvent'); // On récupère la sauvegarde locale len nom par lequel on veut appeller les events
-      }*/
       let alert = this.alertCtrl.create({ // On affiche une alert pour savoir par quel nom appeller les events
           title: "Nom de l'évenement",
           message: "Entrez le nom par lequel vous souhaitez appeller vos heures de travail dans votre calendrier : ",
@@ -122,10 +126,17 @@ export class MeshorairesPage {
         this.supprimerCalendrierEvents();
      }
    }//saveAutoImportChange
+   */
 
-    setAutoImport(){
-      if(window.localStorage.getItem('autoImport') == "true"){ return true;}
-      return false;
+    setAutoImport(){ // Si on a coché la case dans "paramètre"
+      if(window.localStorage.getItem('autoImport') == "true"){ 
+        this.autoImport = true;
+        if(window.localStorage.getItem('syncCalendar') == "true") { // Si la case vient d'être cochée
+          this.syncCalendar = true;
+          window.localStorage.setItem('syncCalendar', "false"); // On passe à false
+        }
+           
+      }
     }//setAutoImport
 
     selectionnerMois(){
@@ -164,6 +175,11 @@ export class MeshorairesPage {
      // On remplis les jours du mois 
      for(let i = 1; i <= nbJoursMois; i++){
         this.jour = new Jour(i, new Date(this.anneeSelectionne, this.moisSelectionne.moisId, i));
+        if(i == this.dateCourrante.getDate()){ //Si le jour est aujourd'hui
+          console.log("Date" + this.dateCourrante);
+          this.jour.setIsAujourdhui(); //On dit que c'est aujourd'hui
+          this.detailHoraire(this.jour) // On affiche son détail
+        }
         this.jours.push(this.jour);
      }
      this.getControleMensuel(this.anneeSelectionne, this.moisSelectionne.moisId+1);
@@ -283,8 +299,8 @@ export class MeshorairesPage {
       return false;
     }//setDemandeOnJour
 
-  public gethorairesFuturs(isUpdateForCalendar){       
-    if(!this.isHorsLigne && !isUpdateForCalendar){ // Si on a internet, ou qu'il s'agit d'une mise à jour focrée pour le calendrier
+  public gethorairesFuturs(){       
+    if(!this.isHorsLigne){ // Si on a internet
               this.abiBddCtrl.getHorairesFuturs(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
                 data => {  
                   if(data) { // Si les données sont bien chargées 
@@ -303,9 +319,9 @@ export class MeshorairesPage {
                                 } 
                                 this.traiterHorairesFuturs(data, true); // On peut maintenant traiter les horaires avec l'indicateur de nouvelles données
                           });                          
-                                           
-                      } else {                  
-                          this.traiterHorairesFuturs(data, false); // On peut traiter directement les horaires disant qu'il n'y a pas de nouvelles données
+                                            
+                      } else { // On peut traiter directement les horaires en disant qu'il n'y a pas de nouvelles données, sauf si on doit synchroniser le calendrier                  
+                          this.traiterHorairesFuturs(data, this.syncCalendar); 
                       }
                       // Dans tous les cas: on  programme une notification locale pour la validation mensuelle
                       this.enregistrerNotificationMensuelle();         
@@ -313,13 +329,13 @@ export class MeshorairesPage {
                         console.log("Erreur");
                     }              
                 }); 
-        } else { // Mode hors ligne  
-            //Si c'est une update pour le calendrier, et que l'établissement est défini en local storage                      
-            if(isUpdateForCalendar && window.localStorage.getItem('etablissement') != null && window.localStorage.getItem('etablissement')  != 'undefined'){
+        } else { // Mode hors ligne 
+            //Si l'établissement est défini en local storage                      
+            if(window.localStorage.getItem('etablissement') != null && window.localStorage.getItem('etablissement')  != 'undefined'){
                 this.etablissement = <Etablissement>JSON.parse(window.localStorage.getItem('etablissement'));//On récupère l'établissement
             }
-            // Traitement des horaires à partir des données sauvegardés (mode hors ligne ou coche de la case "synchroniser")
-            this.traiterHorairesFuturs(JSON.parse(window.localStorage.getItem('getHorairesFuturs')), isUpdateForCalendar);      
+            // Traitement des horaires à partir des données sauvegardés : mode hors-ligne, ou synchronisation du calendrier au cas ou les horaires n'ont pas changés
+            this.traiterHorairesFuturs(JSON.parse(window.localStorage.getItem('getHorairesFuturs')), this.syncCalendar);      
         }
     }//gethorairesFuturs
 
@@ -341,17 +357,15 @@ export class MeshorairesPage {
         );            
         this.horairesFuturs.push(horaire);  // On ajoute l'horaire dans le tableau
 
-        // Si les horaires ont été modifiés par rapport à la copie locale, on enregsitre les notif locales pour l'horaire et on enregsitre l'horaire dans le calendrier du smartphone si besoin
-        // -> inutile de fair toute cela si ls horaires n'ont pas changé car la notificaion et l'event dans le calendrier pour cet horaire auront forcément déja été crées
-         if(isNewData){
-          console.log("Les horaires ont changés");
-          this.enregistrerNotification(horaire);
-          if(this.autoImport){ //Si l'auto-import est activé                
+        this.enregistrerNotification(horaire);// On enregsitre la notification
+
+        // Si les horaires ont été modifiés par rapport à la copie locale, on enregsitre l'horaire dans le calendrier du smartphone si besoin
+        // -> inutile de fair toute cela si ls horaires n'ont pas changé car  et l'event dans le calendrier pour cet horaire aura forcément déja été crée
+         if(isNewData && this.autoImport){       
                this.enregsitrerDansCalendrierSmartphone(horaire); // On enregsitrer dans le calendrier du smartphone
-               verifierCalendrierEvents = true;
-          }
+               verifierCalendrierEvents = true;          
         } else {
-           console.log("Aucune modification des horaires - pas besoin de vérifier les notifications ou les events");
+           console.log("Aucune modification des horaires - pas besoin de vérifier  les events");
         } 
       } //For
 
@@ -361,7 +375,8 @@ export class MeshorairesPage {
     }//traiterHorairesFuturs
 
     // Supprime tous les events futurs programmés dans le calendrier
-    public supprimerCalendrierEvents(){
+   /* supprimerCalendrierEvents(){
+       console.log("supprimerCalendrierEvents");
       for(let i = 0; i < this.calendrierEvents.length; i++){ //On boucle sur les events enregsitrée
         console.log("On supprime " + this.calendrierEvents[i].startDate);
            Calendar.deleteEvent( // On supprime l'event du calendrier
@@ -373,7 +388,7 @@ export class MeshorairesPage {
       }//for    
       this.calendrierEvents = []; // On vide l'array des calendrier Events
       window.localStorage.setItem('calendrierEvents', JSON.stringify(this.calendrierEvents));// On enregsitre la modification en local storage 
-    }//supprimerCalendrierEvents
+    }//supprimerCalendrierEvents*/
 
     // Compare la liste des events mise à jour avec l'ancienne liste, et effectue les suppressions nécéssaires dans le calendrier du smartphone
     updateCalendrierEvents(){

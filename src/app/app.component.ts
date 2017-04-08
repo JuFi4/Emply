@@ -14,6 +14,7 @@ import { ParametresPage } from '../pages/parametres/parametres';
 
 // Providers
 import { ApiBddService } from '../providers/api-bdd-service';
+import { NotificationsLocalesService } from '../providers/notifications-locales-service';
 
 @Component({
   templateUrl: 'app.html'
@@ -24,7 +25,7 @@ export class MyApp {
   rootPage = LoginPage;
   pages: Array<{title: string, component: any}>;
 
-  constructor( public platform: Platform, public menu: MenuController, public alertCtrl: AlertController, public abiBddCtrl: ApiBddService) {
+  constructor( public platform: Platform, public menu: MenuController, public alertCtrl: AlertController, public abiBddCtrl: ApiBddService, public notificationsLocalesCtrl : NotificationsLocalesService) {
     this.initializeApp();
 
     this.pages = [
@@ -84,6 +85,10 @@ export class MyApp {
           console.log("Mot de passe: " + window.localStorage.getItem('motDePasse'));
           console.log("Id: " + window.localStorage.getItem('id'));
           console.log("Token bdd: " + window.localStorage.getItem('tokenBDD'));
+
+          // On supprime les notifications locales -  elles vont être re-crées quand la personne se reconnecterais et ira voir ses horaires  
+           this.notificationsLocalesCtrl.resetNotification();
+
           this.menu.close();
           this.nav.push(LoginPage); //charge la page login
           //this.nav.popToRoot();

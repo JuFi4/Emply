@@ -18,20 +18,21 @@ export class NotificationsLocalesService {
     console.log('Hello NotificationsLocalesService Provider');
   }
 
-  // Suppression des notificaitons de fin de service : id > 0
-  public resetNotificationFinDeService(){
+  // Suppression des notifications
+  public resetNotification(){
+      console.log("resetNotificationFinDeService");
       LocalNotifications.getAllIds().then((data) => {
-            for(let id in data){
-                if(parseInt(id) > 0){
-                    LocalNotifications.cancel(id);
-                }
+            console.log(data);
+            for(let i = 0; i < data.length; i++){
+                LocalNotifications.cancel(data[i]);
+                console.log(data[i]);                
             }
         }); 
   }//resetNotificationFinDeService
 
   // Gère l'envois différé de la notification locale de fin de service
   public scheduleNotificationFinDeService(horaire : Horaire) {
-      let scheduleDate = new Date(horaire.heureFin,);
+      let scheduleDate = new Date(horaire.heureFin);
       scheduleDate.setMinutes(scheduleDate.getMinutes()/* + 10*/); // On met la notif 10 minutes après la fin du service
       console.log('scheduleNotificationFinDeService : ' + scheduleDate);
 
@@ -63,7 +64,7 @@ export class NotificationsLocalesService {
             id: 0,
             title: 'Validation mensuelle',
             text: 'Veuillez valider vos heures mensuelles!',
-            at: new Date(/*actualYear, nextMonth, firstDay*/),
+            at: new Date(actualYear, nextMonth, firstDay),
             sound: 'res://platform_default',
             icon: 'res://icon',
             led: 'FFFFFF',

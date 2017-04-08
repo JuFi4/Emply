@@ -21,11 +21,12 @@
        <ion-option  *ngFor = "let mois of moisListe"> {{mois.nom}}</ion-option>
     </ion-select>  
 </ion-item>-->
-
+<!--
+<ion-item>
 <ion-item text-wrap>
     <ion-label>Synchroniser les nouveaux horaires dans le calendrier</ion-label>
     <ion-checkbox [(ngModel)]="autoImport"  (click)="saveAutoImportChange()" [disabled] ="isHorsLigne"></ion-checkbox>
-  </ion-item>
+  </ion-item>-->
 <div *ngIf = "annee && moisSelectionne"  (swipe)="changerMois($event)">
 <div class="month"> 
   <ul>
@@ -56,6 +57,7 @@
   <li  *ngFor ="let i of jours">
    <button class="detailJour" ion-button (click)="detailHoraire(i)"         
         [class.hasHoraire]="i.hasHoraire"
+        [class.isAujourdhui]="i.isAujourdhui"
         [class.isMaladie]="i.isMaladie"
         [class.isAccident]="i.isAccident"
         [class.isVacance]="i.isVacance"

@@ -20,11 +20,10 @@
   <h3>Page de Paramètres</h3>
   <h4>Synchronisation de vos horaires dans votre calendrier</h4>
   <ion-item text-wrap>
-    <ion-label>Synchroniser les nouveaux horaires dans le calendrier</ion-label>
+    <ion-label>Synchroniser les nouveaux horaires</ion-label>
     <ion-checkbox [(ngModel)]="autoImport" (click)="saveAutoImportChange()" [disabled]="isHorsLigne"></ion-checkbox>
   </ion-item>
   <h4>Paramètre du temps du push dès la fin de votre service :</h4>
-
   <ion-list radio-group>
     <ion-list-header>
       Choisissez une des options ci-dessous :

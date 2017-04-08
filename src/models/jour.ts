@@ -13,6 +13,7 @@ export class Jour {
     isCongeSansSolde = false;
     isRecuperation = false;
     isAutreDemande = false;
+    isAujourdhui = false;
     
     constructor(jour, date : Date){
         this.tbHoraire = [];
@@ -33,4 +34,5 @@ export class Jour {
     setIsCongeSansSolde(){ this.isCongeSansSolde = true; }
     setIsRecuperation(){ this.isRecuperation = true; }
     setIsAutreDemande(){ this.isAutreDemande = true; }
+    setIsAujourdhui(){ this.isAujourdhui = true; }
 }//Jour

@@ -3,6 +3,7 @@ import { ToastController, AlertController } from 'ionic-angular';
 import { Transfer, TransferObject } from '@ionic-native/transfer';
 
 
+
 /*
   Generated class for the ApiPdfService provider.
 
