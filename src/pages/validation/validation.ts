@@ -11,6 +11,7 @@ import { NavController, NavParams } from 'ionic-angular';
   selector: 'page-validation',
   templateUrl: 'validation.html'
 })
+export class ValidationPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {}
 
