@@ -3,8 +3,6 @@ import { NavController, NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 
-import { SaisiedemandePage } from '../saisiedemande/saisiedemande';
-
 // Providers
 import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';

@@ -6,11 +6,10 @@ import { MyApp } from './app.component';
 // Pages
 import { LoginPage } from '../pages/login/login';
 import { AccueilPage } from '../pages/accueil/accueil';
-import { ControlePage } from '../pages/controle/controle';
+import { ValidationPage } from '../pages/validation/validation';
 import { MeshorairesPage } from '../pages/meshoraires/meshoraires';
 import { DemandesPage } from '../pages/demandes/demandes';
 import { MonprofilPage } from '../pages/monprofil/monprofil';
-import { SaisiedemandePage } from '../pages/saisiedemande/saisiedemande';
 import {ParametresPage} from '../pages/parametres/parametres';
 
 // Providers
@@ -26,11 +25,10 @@ import {AffichageValidationHoraireService} from '../providers/affichage-validati
     MyApp,
     LoginPage,
     AccueilPage,
-    ControlePage,
+    ValidationPage,
     MeshorairesPage,
     DemandesPage,
     MonprofilPage,
-    SaisiedemandePage,
     ParametresPage
   ],
   imports: [
@@ -41,11 +39,10 @@ import {AffichageValidationHoraireService} from '../providers/affichage-validati
     MyApp,
     LoginPage,
     AccueilPage,
-    ControlePage,
+    ValidationPage,
     MeshorairesPage,
     DemandesPage,
     MonprofilPage,
-    SaisiedemandePage,
     ParametresPage
   ],
   providers: [

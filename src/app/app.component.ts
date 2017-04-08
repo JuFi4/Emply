@@ -5,7 +5,7 @@ import { StatusBar } from 'ionic-native';
 // Pages
 import { LoginPage } from '../pages/login/login';
 import { AccueilPage } from '../pages/accueil/accueil';
-import { ControlePage } from '../pages/controle/controle';
+import { ValidationPage } from '../pages/validation/validation';
 import { MeshorairesPage } from '../pages/meshoraires/meshoraires';
 import { DemandesPage } from '../pages/demandes/demandes';
 import { MonprofilPage } from '../pages/monprofil/monprofil';
@@ -31,7 +31,7 @@ export class MyApp {
     this.pages = [
       //{title: 'Login', component: LoginPage },
       {title: 'Accueil', component: AccueilPage },
-      {title: 'Validations', component: ControlePage },
+      {title: 'Validations', component: ValidationPage },
       {title: 'Mes horaires', component: MeshorairesPage },
       {title: 'Demandes', component: DemandesPage },
       {title: 'Mon profil', component: MonprofilPage },
