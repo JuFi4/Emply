@@ -108,6 +108,15 @@ export class ApiBddService {
      return response;
    }//getHorairesFuturs
 
+   // Récupération des horaires en attente de validation d'un utilisateur
+  // Renvois :  un JSON avec les horaires en attente de validation (requête réussie), soit False (requête réussie)
+  getHorairesAttenteValidation(userId : string, token: string) {
+     var url =this.baseUrl + 'type=getHorairesAttenteValidation&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());     
+     return response;
+   }//getHorairesAttenteValidation
+
   // Enregsitrement d'une demande
  // Renvois :  True (requête réussie), ou False (mauvais userId, demId, ou Token)
   setDemande(userId:string, token:string, typeDemId:string, dateDebut: string, dateFin:string, motif:string) {

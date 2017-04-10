@@ -17,5 +17,9 @@
 
 
 <ion-content padding>
-    <h3>Vue pour la validation des heures</h3>
+    <ion-list>
+      <ion-item *ngFor="let horaire of horairesAttenteValidation">
+            <ion-label> Horaire du: {{horaire.date}}</ion-label>             
+      </ion-item>
+  </ion-list>
 </ion-content>
