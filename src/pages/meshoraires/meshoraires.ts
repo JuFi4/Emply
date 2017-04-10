@@ -175,7 +175,7 @@ export class MeshorairesPage {
      // On remplis les jours du mois 
      for(let i = 1; i <= nbJoursMois; i++){
         this.jour = new Jour(i, new Date(this.anneeSelectionne, this.moisSelectionne.moisId, i));
-        if(i == this.dateCourrante.getDate()){ //Si le jour est aujourd'hui
+        if(this.moisSelectionne.moisId == this.moisCourant && i == this.dateCourrante.getDate()){ //Si le jour est aujourd'hui
           console.log("Date" + this.dateCourrante);
           this.jour.setIsAujourdhui(); //On dit que c'est aujourd'hui
           this.detailHoraire(this.jour) // On affiche son détail
