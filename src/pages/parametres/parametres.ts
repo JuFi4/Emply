@@ -25,25 +25,14 @@ export class ParametresPage {
   isHorsLigne : boolean;
   autoImport = true;
   nomCalendrierEvent = "Travail";
-  minute;
+  minute = "0";
   importeMinutes = true;
   calendrierEvents : CalendrierEvent[];
-  is0= false;
-  is15 = false;
-  is30 = false;
-  is45 = false;
-  is60 = false;
-  is90 = false;
-  is120 = false;
-  is150 = false;
-  is180 = false;
-  isNull = false; // choix pour désactiver => minute à -1
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private connectivityService: ConnectivityService,  public alertCtrl: AlertController) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' ||connectivityService.isOffline();
     this.autoImport = this.setAutoImport();
-    this.importMinutes();
-    this.selectionnerMinutes();
+    this.importeMinutes = this.importMinutes();
   }
 
   ionViewDidLoad() {
@@ -87,21 +76,20 @@ export class ParametresPage {
    }//saveAutoImportChange
 
    setAutoImport(){
+      console.log("je suis dans setautoImport");
       if(window.localStorage.getItem('autoImport') == "true"){ return true;}
       return false;
     }//setAutoImport
 
   importMinutes(){
-      if(window.localStorage.getItem('importeMinutes') !== null){ 
-        this.minute = window.localStorage.getItem('importeMinutes');
-        return true;
-      }
+      if(window.localStorage.getItem('importMinutes') == "true"){ return true;}
       return false;
   }//importMinutes
 
-  sauverMinutes(valeur){ // valeur = -1 si désactiver
+  sauverMinutes(valeur){
     this.minute = valeur;
-    window.localStorage.setItem('importeMinutes', this.minute);//On enregsitre
+    window.localStorage.setItem('importMinutes', this.minute);//On enregsitre
+    console.log(window.localStorage.getItem('importMinutes'));
   }//sauverMinutes
 
    // Supprime tous les events futurs programmés dans le calendrier
@@ -140,31 +128,5 @@ export class ParametresPage {
               }
         } catch(Exception){}          
     }//gererCalendrier
-
-    selectionnerMinutes(){
-      if (this.minute === "0"){ 
-        this.is0 = true;
-      }else if (this.minute === "15"){
-        this.is15 = true;
-      }else if (this.minute === "30"){
-        this.is30 = true;
-      }else if (this.minute === "45"){
-        this.is45 = true;
-      }else if (this.minute === "60"){
-        this.is60 = true;
-      }else if (this.minute === "90"){
-        this.is90 = true;
-      }else if (this.minute === "120"){
-        this.is120 = true;
-      }else if (this.minute === "150"){
-        this.is150 = true;
-      }else if (this.minute === "180"){
-        this.is180 = true;
-      }else if(this.minute === "-1"){ // -1 => désactiver
-        this.isNull = true;
-      }else{
-        this.is0 = true;
-      }
-    }
 
 }
