@@ -13,9 +13,11 @@ import { NavController, NavParams, AlertController } from 'ionic-angular';
 })
 export class AccueilPage {
   utilisateur: string;
+  inputDisabled;
 
   constructor(private navCtrl: NavController, private navParams: NavParams, private alertCtrl: AlertController) {
     this.utilisateur = navParams.get('utilisateur');
+    this.inputDisabled = true;
   }//constructor
   
   ionViewDidLoad() {
