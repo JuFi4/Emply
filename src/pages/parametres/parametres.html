@@ -10,60 +10,34 @@
     <button ion-button icon-only menuToggle>
       <ion-icon name="menu"></ion-icon> 
     </button>
-    <ion-title>Paramètres</ion-title>
+    <ion-title>Mes Paramètres</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  <h3>Page de Paramètres</h3>
-  <h4>Synchronisation de vos horaires dans votre calendrier</h4>
+  <h5>Synchronisation de vos horaires dans votre calendrier</h5>
   <ion-item text-wrap>
     <ion-label>Synchroniser les nouveaux horaires</ion-label>
     <ion-checkbox [(ngModel)]="autoImport" (click)="saveAutoImportChange()" [disabled]="isHorsLigne"></ion-checkbox>
   </ion-item>
-  <h4>Paramètre du temps du push dès la fin de votre service :</h4>
-  <ion-list radio-group>
-    <ion-list-header>
-      Choisissez une des options ci-dessous :
-    </ion-list-header>
-    <ion-item>
-      <ion-label>Immédiatement à la fin de mon service</ion-label>
-      <ion-radio value="0" (ionSelect)="sauverMinutes(0)" [disabled]="isHorsLigne" checked></ion-radio>
-    </ion-item>
-    <ion-item>
-      <ion-label>Après 15 minutes</ion-label>
-      <ion-radio value="15" (ionSelect)="sauverMinutes(15)" [disabled]="isHorsLigne"></ion-radio>
-    </ion-item>
-    <ion-item>
-      <ion-label>Après 30 minutes</ion-label>
-      <ion-radio value="30" (ionSelect)="sauverMinutes(30)" [disabled]="isHorsLigne"></ion-radio>
-    </ion-item>
-    <ion-item>
-      <ion-label>Après 45 minutes</ion-label>
-      <ion-radio value="45" (ionSelect)="sauverMinutes(45)" [disabled]="isHorsLigne"></ion-radio>
-    </ion-item>
-    <ion-item>
-      <ion-label>Après une heure</ion-label>
-      <ion-radio value="60" (ionSelect)="sauverMinutes(60)" [disabled]="isHorsLigne"></ion-radio>
-    </ion-item>
-    <ion-item>
-      <ion-label>Après une heure et demi</ion-label>
-      <ion-radio value="90" (ionSelect)="sauverMinutes(90)" [disabled]="isHorsLigne"></ion-radio>
-    </ion-item>
-    <ion-item>
-      <ion-label>Après deux heures</ion-label>
-      <ion-radio value="120" (ionSelect)="sauverMinutes(120)" [disabled]="isHorsLigne"></ion-radio>
-    </ion-item>
-    <ion-item>
-      <ion-label>Après deux heures et demi</ion-label>
-      <ion-radio value="150" (ionSelect)="sauverMinutes(150)" [disabled]="isHorsLigne"></ion-radio>
-    </ion-item>
-    <ion-item>
-      <ion-label>Après trois heures</ion-label>
-      <ion-radio value="180" (ionSelect)="sauverMinutes(180)" [disabled]="isHorsLigne"></ion-radio>
-    </ion-item>
-  </ion-list>
+  <h5>Paramètre du temps du push dès la fin de votre service :</h5>
+
+   <ion-item>   
+     <ion-label>Votre choix :</ion-label>
+    <ion-select>
+      <ion-option value="0" (ionSelect)="sauverMinutes(0)" [disabled]="isHorsLigne" [selected]='is0'>Immédiatement à la fin de mon service</ion-option>
+      <ion-option value="15" (ionSelect)="sauverMinutes(15)" [disabled]="isHorsLigne" [selected]='is15'>Après 15 minutes</ion-option>
+      <ion-option value="30" (ionSelect)="sauverMinutes(30)" [disabled]="isHorsLigne" [selected]='is30'>Après 30 minutes</ion-option>
+      <ion-option value="45" (ionSelect)="sauverMinutes(45)" [disabled]="isHorsLigne" [selected]='is45'>Après 45 minutes</ion-option>
+      <ion-option value="60" (ionSelect)="sauverMinutes(60)" [disabled]="isHorsLigne" [selected]='is60'>Après une heure</ion-option>
+      <ion-option value="90" (ionSelect)="sauverMinutes(90)" [disabled]="isHorsLigne" [selected]='is90'>Après une heure et demi</ion-option>
+      <ion-option value="120" (ionSelect)="sauverMinutes(120)" [disabled]="isHorsLigne" [selected]='is120'>Après deux heures</ion-option>
+      <ion-option value="150" (ionSelect)="sauverMinutes(150)" [disabled]="isHorsLigne" [selected]='is150'>Après deux heures et demi</ion-option>
+      <ion-option value="180" (ionSelect)="sauverMinutes(180)" [disabled]="isHorsLigne" [selected]='is180'>Après trois heures</ion-option>
+      <ion-option value="-1" (ionSelect)="sauverMinutes(-1)" [disabled]="isHorsLigne" [selected]='isNull'>Désactiver</ion-option>
+    </ion-select>
+   </ion-item>
 
 </ion-content>
