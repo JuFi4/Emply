@@ -209,4 +209,28 @@ export class ApiBddService {
      return response;
    }//getDetailHoraire*/
 
+   //retourne le numéro de l'établissement de l'employé connecté 
+   getIdEtablissement(userId : string){ 
+     var url =this.baseUrl + 'type=getIdEtablissement&userId=' + encodeURI(userId);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());
+     return response; 
+   }//getIdEtablissement
+
+   //retourne les heures que l'employé à effectué  
+   getInfosSolde(userId : string, dateDebut : string, dateFin : string){ 
+     var url =this.baseUrl + 'type=getInfosSolde&userId=' + encodeURI(userId) + '&dateDebut' + encodeURI(dateDebut) + '&dateFin' + encodeURI(dateFin);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());
+     return response; 
+   }//getIdEtablissement
+
+   //retourne les informations sur l'établissement et l'employé 
+   getInfosHeuresMois(userId : string, mois : string, annee : string, idEta : string){ 
+     var url =this.baseUrl + 'type=getInfosHeuresMois&userId=' + encodeURI(userId) + '&mois' + encodeURI(mois) + '&annee' + encodeURI(annee) + '&idEta' + encodeURI(idEta);
+     console.log(url);
+     var response = this.http.get(url).map(res => res.json());
+     return response; 
+   }//getIdEtablissement
+
 }//ApiBddService
