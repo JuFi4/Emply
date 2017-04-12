@@ -32,23 +32,32 @@ export class NotificationsLocalesService {
 
   // Gère l'envois différé de la notification locale de fin de service
   public scheduleNotificationFinDeService(horaire : Horaire) {
-      let scheduleDate = new Date(horaire.heureFin);
-      scheduleDate.setMinutes(scheduleDate.getMinutes()/* + 10*/); // On met la notif 10 minutes après la fin du service
-      console.log('scheduleNotificationFinDeService : ' + scheduleDate);
+      let delai =  0;     
+      if(window.localStorage.getItem('importeMinutes') != "undefined" && window.localStorage.getItem('importeMinutes') != null) {
+          delai = parseInt(window.localStorage.getItem('importeMinutes'));          
+      }
+      
+      LocalNotifications.cancel(horaire.id); // On supprime la notification qui a cet id (si elle existe) -> pour ne pas avoir de doublon
 
-       LocalNotifications.cancel(horaire.id); // On supprime la notification qui a cet id (si elle existe) -> pour ne pas avoir de doublon
+      if(delai > -1) { // Si les notifications n'ont pas été désactivées
+        let scheduleDate = new Date(horaire.heureFin);
+        scheduleDate.setMinutes(scheduleDate.getMinutes() + delai); // On met la notif après le délai enregistré
+        console.log('scheduleNotificationFinDeService : ' + scheduleDate + " - délai : " + delai);       
 
-       // On enregsitre la nouvelle notification
-       LocalNotifications.schedule({
-            id: horaire.id,
-            title: 'Validation de fin de service',
-            text: 'Avez-vous bien travailler de '+ horaire.affichageHeureDebut + ' à ' + horaire.affichageHeureFin +' ?',
-            at: scheduleDate,
-            sound: 'res://platform_default',
-            icon: 'res://icon',
-            led: 'FFFFFF',
-            data: JSON.stringify(horaire)
-        });
+        // On enregsitre la nouvelle notification
+        LocalNotifications.schedule({
+                id: horaire.id,
+                title: 'Validation de fin de service',
+                text: 'Avez-vous bien travailler de '+ horaire.affichageHeureDebut + ' à ' + horaire.affichageHeureFin +' ?',
+                at: scheduleDate,
+                sound: 'res://platform_default',
+                icon: 'res://icon',
+                led: 'FFFFFF',
+                data: JSON.stringify(horaire)
+            });
+      } else {
+          console.log('NotificationFinDeService :notifications désactivées');
+      }
     } //scheduleNotificationFinDeService
 
   // Gère l'envois différé de la notification locale de validation mensuelle des heures
