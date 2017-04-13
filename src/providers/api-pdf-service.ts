@@ -89,7 +89,8 @@ export class ApiPdfService {
         text: 'Afficher',
         handler: () => {
           console.log("ouvrir " + adresse);
-          cordova.InAppBrowser.open(adresse, '_system', 'location=yes');
+          //cordova.InAppBrowser.open(adresse, '_system', 'location=yes');
+          window.open(adresse, '_system');
         }
       }
     ]
