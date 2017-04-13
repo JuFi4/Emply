@@ -81,5 +81,26 @@ export class NotificationsLocalesService {
         });
     }//scheduleNotificationValidationMensuelle 
 
+    // Gère l'envois différé de la notification locale d'avertissement pour les horaires toujours en attente de validation
+  // L'ID de cette notification est toujours de -1 : permet de la reconnaitre par rapport aux notifications de fin de service
+  public scheduleNotificationAttenteValidation() {
+      let scheduleDate = new Date();
+      let targetDay = 28;
+      let nextMonth = (scheduleDate.getMonth()) + 1;
+      let actualYear = scheduleDate.getFullYear();
+      console.log('scheduleNotificationAttenteValidation : ' + new Date(actualYear, nextMonth, targetDay));
+       LocalNotifications.cancel(0); // Supprime la notification d'attente de validation si elle est existante
+       LocalNotifications.schedule({
+            id: -1,
+            title: 'Horaires en attente de validation',
+            text: 'Veuillez confirmer ou modifier vos horaires en attente de validation afin que votre responsable puisse clôturer votre horaire du mois.',
+            at: new Date(actualYear, nextMonth, targetDay),
+            sound: 'res://platform_default',
+            icon: 'res://icon',
+            led: 'FFFFFF',
+            data : scheduleDate.getFullYear()+"-"+(scheduleDate.getMonth()+1) // On met en data le mois et l'année concernés par la validation, avec +1 pour les mois car JS compte les mois à partir de 0
+        });
+    }//scheduleNotificationAttenteValidation
+
 
 }//NotificationsLocalesService

@@ -323,6 +323,8 @@ export class MeshorairesPage {
                       } else { // On peut traiter directement les horaires en disant qu'il n'y a pas de nouvelles données, sauf si on doit synchroniser le calendrier                  
                           this.traiterHorairesFuturs(data, this.syncCalendar); 
                       }
+                      // Dans tous les cas: on  programme une notification locale pour les horaires en attente de validation
+                      this.enregistrerNotificationAttenteValidation();
                       // Dans tous les cas: on  programme une notification locale pour la validation mensuelle
                       this.enregistrerNotificationMensuelle();         
                     } else { 
@@ -515,6 +517,9 @@ export class MeshorairesPage {
         this.notificationsLocalesCtrl.scheduleNotificationValidationMensuelle(); // On enregsitre la notification locale de fin de mois        
     }//enregistrerNotification
 
+    enregistrerNotificationAttenteValidation() {
+        this.notificationsLocalesCtrl.scheduleNotificationAttenteValidation();
+    }//enregistrerNotificationAttenteValidation
     
     detailHoraire(jour : Jour){
       console.log(jour);
