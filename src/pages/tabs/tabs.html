@@ -14,11 +14,7 @@
 
 <ion-content padding>
 <ion-tabs selectedIndex="0" color="primary" tabsHighlight=true >
-  <ion-tab [root]="tab1Root">
-      <ion-icon color="white" name="calendar"></ion-icon>
-  </ion-tab>
-  <ion-tab [root]="tab2Root">
-      <ion-icon name="list"></ion-icon>
-  </ion-tab>
+  <ion-tab tabIcon="calendar" tabTitle="Calendrier" [root]="tab1Root"></ion-tab>
+  <ion-tab tabIcon="list" tabTitle="Liste" [root]="tab2Root"></ion-tab>
 </ion-tabs>
 </ion-content>

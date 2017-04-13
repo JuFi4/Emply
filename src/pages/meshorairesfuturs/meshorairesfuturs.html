@@ -7,6 +7,9 @@
 <ion-header>
 
   <ion-navbar>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon> 
+    </button>
     <ion-title>Mes horaires</ion-title>
   </ion-navbar>
 
@@ -14,5 +17,14 @@
 
 
 <ion-content padding>
-
+<ion-list>
+<!--  <ion-item *ngFor="let horaire of horairesAttenteValidation" text-wrap>
+            <ion-label style="float: left; width: 800px;"> Horaire du {{horaire.affichageDateAttente}}</ion-label>
+            <ion-label style="text-align: right">
+                           
+            </ion-label>             
+      </ion-item>
+-->
+  </ion-list>
+  <button ion-button block outline (click)="telechargerPDF()">Télécharger PDF</button>
 </ion-content>
