@@ -20,53 +20,60 @@ export class AffichageValidationHoraireService {
    radioOpen: boolean;
    radioResult;  
    isHorsLigne = false;
+   affichageToday : string;
 
   constructor( private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService, public pdfCtrl : ApiPdfService, private connectivityService: ConnectivityService) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
+    this.affichageToday =  new Date().getFullYear() + '-' + ('0' + ( new Date().getMonth() + 1)).slice(-2) + '-' + ('0' +  new Date().getDate()).slice(-2)
+
   }//constructor
 
-afficherNotificationFinDeService(titreNotification, messageNotification, idNotification, data){
-        let alert = this.alertCtrl.create({
-        title: titreNotification,
-        message: messageNotification,
+afficherNotificationFinDeService(horaireToString){
+        let dataHoraire = <Horaire>JSON.parse(horaireToString); // On récupère l'horaire passé en data
+        // Et on en fait un joli horaire avec des dates correctement formatées
+        let horaire = new Horaire(dataHoraire.id, new Date(dataHoraire.heureDebut), new Date(dataHoraire.heureDebut), new Date(dataHoraire.heureFin));
+        console.log(horaire);
+        this.afficherAlertFinDeService(horaire);
+}//afficherNotificationFinDeService
+
+// JULIANA : c'est cette fonction qui est appellée au lieu de afficherNotificationFinDeService, et passe lui l'horaire en paramètre
+afficherAlertFinDeService(horaire : Horaire){
+     let alert = this.alertCtrl.create({
+        title: "Validation des heures de service",
+        message: "Avez-vous bien travailler de" + horaire.affichageHeureDebut + " à " + horaire.affichageHeureFin +" le "+ horaire.affichageDate +"? ",
         buttons: [
           {
             text: 'Non',
             role: 'cancel',
             handler: () => {
               console.log('Non clicked');
-              this.modificationHoraires(titreNotification,messageNotification, idNotification, data);
+              this.modificationHoraires(horaire);
             }
           },
           {
             text: 'Oui',
             handler: () => {
                console.log('Oui clicked'); // TODO: enregsitrer que c'est OK dans la BDD via API
-               this.validationHoraire(idNotification, '', '',1); // -> Chaine vide , sinon ça enverra le string "Null" dans l'API
+               this.validationHoraire(horaire.id, '', '',1); // -> Chaine vide , sinon ça enverra le string "Null" dans l'API
             }
           },
           {
             text: 'Maladie/Accident',
             handler: () =>{
                console.log("maladieAccident click")
-               this.faireChoixMaladieAccident(titreNotification, messageNotification, -1);
+               this.faireChoixMaladieAccident(horaire);
 
             } 
           }
         ]
       });
       alert.present();
-   }//afficherNotificationFinDeService
+   }//afficherAlertFinDeService
 
-   modificationHoraires(titreNotification, messageNotification, idNotification, data){     
-        let dataHoraire = <Horaire>JSON.parse(data); // On récupère l'horaire passé en data
-        // Et on en fait un joli horaire avec des dates correctement formatées
-        let horaire = new Horaire(dataHoraire.id, new Date(dataHoraire.heureDebut), new Date(dataHoraire.heureDebut), new Date(dataHoraire.heureFin));
-        console.log(horaire);
-
+   modificationHoraires(horaire){            
         let alert = this.alertCtrl.create({
-        title: titreNotification,
-        message: messageNotification,
+        title: "Modification des heures de services",
+        message: "Veuillez entrer les horaires réellement effectués",
         inputs: [
         {
           id: 'heureDebut',
@@ -96,7 +103,7 @@ afficherNotificationFinDeService(titreNotification, messageNotification, idNotif
               horaire.heureFin.setMinutes(data.heureFin.split(":")[1]);  // On fixe les minutes de fins entrés à la date de fin
 
               // On appelle la fonction d'enregistrement en formatant les dates pour qu'elles passent
-              this.validationHoraire(idNotification, 
+              this.validationHoraire(horaire.id, 
               horaire.heureDebut.getFullYear()+"-"+horaire.heureDebut.getMonth()+"-"+horaire.heureDebut.getDate()+" "+horaire.heureDebut.getHours()+":"+horaire.heureDebut.getMinutes(), 
               horaire.heureFin.getFullYear()+"-"+horaire.heureFin.getMonth()+"-"+horaire.heureFin.getDate()+" "+horaire.heureFin.getHours()+":"+horaire.heureFin.getMinutes(), 1); 
             }
@@ -104,9 +111,9 @@ afficherNotificationFinDeService(titreNotification, messageNotification, idNotif
         ]
       });
       alert.present();
-   }
+   }//modificationHoraires
 
-   faireChoixMaladieAccident(titreNotification, messageNotification, idNotification){
+   faireChoixMaladieAccident(horaire){
     let alert = this.alertCtrl.create();
     alert.setTitle('Maladie ou accident');
     alert.addInput({
@@ -130,13 +137,13 @@ afficherNotificationFinDeService(titreNotification, messageNotification, idNotif
       handler: data => {
         this.radioOpen = false;
         this.radioResult = data;
-        this.validationHoraire(idNotification, '', '',-1);
+        this.validationHoraire(horaire.id, '', '',-1);
         console.log("HEY!!!! Je suis CONFIRMER!!!!");
         console.log("radioResult" + this.radioResult);
         if (data === "maladie"){ 
-          this.afficherDateMaladie(titreNotification, messageNotification, idNotification);
+          this.afficherDateMaladie(horaire);
         }else if(data === 'accident'){
-          this.afficherDateAccident(titreNotification, messageNotification, idNotification)
+          this.afficherDateAccident(horaire)
         }
         else{
           console.log("RIEN!!!!!");
@@ -144,23 +151,25 @@ afficherNotificationFinDeService(titreNotification, messageNotification, idNotif
       }
     });
     alert.present(); 
-   }
+   }//faireChoixMaladieAccident
 
-afficherDateMaladie(titreNotification, messageNotification, idNotification){
+afficherDateMaladie(horaire){
   let alert = this.alertCtrl.create({
-      title: titreNotification,
-      message: messageNotification,
+      title: "Entrer absence maladie",
+      message: "Veuillez indiquer les dates de début et de fin votre certificat médical",
         inputs: [
         {
           id: 'dateDebut',
           type: 'date',
           name: 'dateDebut',
+          value: this.affichageToday,
           placeholder: 'Date de début'
         },
         {
           id: 'dateFin',
           type: 'date',
           name: 'dateFin',
+          value: this.affichageToday,
           placeholder: 'Date de fin'
         },
       ],
@@ -190,7 +199,7 @@ afficherDateMaladie(titreNotification, messageNotification, idNotification){
         ]
       });
       alert.present();
-}
+}//afficherDateMaladie
 
 afficherAlertPasValide(){
   let alert = this.alertCtrl.create({
@@ -199,23 +208,25 @@ afficherAlertPasValide(){
         buttons: ['OK']
       });
       alert.present();
-}
+}//afficherAlertPasValide
 
-afficherDateAccident(titreNotification, messageNotification, idNotification){
+afficherDateAccident(horaire){
   let alert = this.alertCtrl.create({
-      title: titreNotification,
-      message: messageNotification,
+       title: "Entrer absence accident",
+      message: "Veuillez indiquer les dates de début et de fin votre certificat médical",
         inputs: [
         {
           id: 'dateDebut',
           type: 'date',
           name: 'dateDebut',
+          value: this.affichageToday,
           placeholder: 'Date de début'
         },
         {
           id: 'dateFin',
           type: 'date',
           name: 'dateFin',
+          value: this.affichageToday,
           placeholder: 'Date de fin'
         },
       ],
@@ -247,7 +258,7 @@ afficherDateAccident(titreNotification, messageNotification, idNotification){
         ]
       });
       alert.present();
-}
+}//afficherDateAccident
 
 
 validationHoraire(hopId, hDebut, hFin, traValid){ 
@@ -312,6 +323,6 @@ validationHoraire(hopId, hDebut, hFin, traValid){
               buttons: ['OK']
           });
       alert.present();
-
     }//afficherMessageHorsLigne
-}//ApiBddService
+    
+}//AffichageValidationHoraireService

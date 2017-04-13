@@ -19,7 +19,7 @@
 <ion-content padding>
     <ion-list>
       <ion-item *ngFor="let horaire of horairesAttenteValidation" text-wrap>
-            <ion-label style="float: left; width: 800px;"> Horaire du {{horaire.affichageDateAttente}}</ion-label>
+            <ion-label style="float: left; width: 800px;"> Horaire du {{horaire.affichageDate}} <br> {{horaire.affichageHeureDebut}} à {{horaire.affichageHeureFin}}</ion-label>
             <ion-label style="text-align: right">
               <button ion-button icon-only ion-button type="submit" (click)="afficherValidationAttenteAlert(horaire)">
                  <ion-icon name="checkmark"></ion-icon>

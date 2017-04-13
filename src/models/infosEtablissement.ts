@@ -1,4 +1,4 @@
-export class infosEtablissement {
+export class InfosEtablissement {
     jourEffectifConge : String;
     jourEffectifHeure : String;
     droitConge : String;

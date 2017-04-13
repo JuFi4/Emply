@@ -349,7 +349,7 @@ confirmerDemandeNouveauMotDePasse(){
       if (idNotification == -1) { // Si l'id est -1 = c'est la notification des horaires en attente de validation
         this.pushHoraireFin.afficherAlertAttenteValidation(titreNotification, messageNotification);
       } else {
-        this.pushHoraireFin.afficherNotificationFinDeService(titreNotification, messageNotification, idNotification, data);
+        this.pushHoraireFin.afficherNotificationFinDeService(data);
       }
   }    
   }//afficherNotificationLocale  

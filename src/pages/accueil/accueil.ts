@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
 
 //model
-import {infoHeureUser} from '../../models/infoHeureUser';
+import {InfoHeureUser} from '../../models/infoHeureUser';
 import {userEta} from '../../models/userEta';
-import {infosEtablissement} from '../../models/infosEtablissement';
+import {InfosEtablissement} from '../../models/infosEtablissement';
 
 //import du provider
 import { ApiBddService } from '../../providers/api-bdd-service';
@@ -22,9 +22,9 @@ import { ApiBddService } from '../../providers/api-bdd-service';
 export class AccueilPage {
   utilisateur: string;
   inputDisabled;
-  entablissement : any =[];
-  dataInfoUser;
-  infoEta : any;
+  etablissement : number;
+  dataInfoUser : InfoHeureUser;
+  infoEta : InfosEtablissement;
   idEtablissement;
   dataInfo;
   
@@ -37,8 +37,7 @@ export class AccueilPage {
     this.apiBddService.getIdEtablissement(window.localStorage.getItem('id')).subscribe(
                             eta => {
                               if(eta) { // OK   
-                                console.log("coucou");  
-                                console.log("OK");
+                                // @ VANESSA : L'API ne retourne rien, donc je ne sais pas comment tester. Est-ce normal que ça ne retourne rien ?
                                 this.idEtablissement = eta;
                                 console.log(this.idEtablissement);
                                // window.localStorage.setItem('getEtablissement', JSON.stringify(this.entablissement));
@@ -51,13 +50,8 @@ export class AccueilPage {
       this.apiBddService.getInfosSolde(window.localStorage.getItem('id'), "2017-01-01","2017-12-31").subscribe(
                 dataInfoSolde => {
                        if(dataInfoSolde) { // OK     
-                           console.log(dataInfoSolde);
-                           this.dataInfoUser = new infoHeureUser(
-                             dataInfoSolde[0].brut.time,
-                             dataInfoSolde[0].conge,
-                             dataInfoSolde[0].net.time,
-                             dataInfoSolde[0].totalPause,
-                           )
+                         // @ VANESSA : OK : tout se range bien dans ton objet
+                           this.dataInfoUser = new InfoHeureUser(dataInfoSolde.brut.time,dataInfoSolde.totalPause.time,dataInfoSolde.net.time, dataInfoSolde.conges) 
                            console.log(this.dataInfoUser.conge);
                            window.localStorage.setItem('getInfoEta', JSON.stringify(this.dataInfoUser));
                         } else { // Erreur
@@ -66,12 +60,12 @@ export class AccueilPage {
       });
 
 
-this.apiBddService.getInfosHeuresMois(window.localStorage.getItem('id'), "4","2017", "1").subscribe(
+   this.apiBddService.getInfosHeuresMois(window.localStorage.getItem('id'), "4","2017", "1").subscribe(
                             dataInfo => {
-                              console.log(dataInfo)   
+                              // @ VANESSA : Les "/" posent effectivement problème, il faut que Joel les enlève et ensuite ça fonctionnera
                               if(dataInfo) { // OK  
                                 console.log("OK");
-                                this.dataInfo = new infosEtablissement(
+                                this.dataInfo = new InfosEtablissement(
                                       dataInfo.droitvacancesannee.time,
                                       dataInfo.droitjoursferiesannee,
                                 )

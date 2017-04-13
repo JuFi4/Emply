@@ -24,8 +24,7 @@ export class ValidationPage {
 isHorsLigne : boolean;
 horairesAttenteValidation : Horaire[];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService
-   //public pushHoraireAttente : AffichageValidationHoraireService
+  constructor(public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService, private affichageValidation : AffichageValidationHoraireService
    ) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
 
@@ -69,9 +68,9 @@ horairesAttenteValidation : Horaire[];
       console.log(this.horairesAttenteValidation);
   }//traiterHorairesAttenteValidation
 
-  afficherValidationAttenteAlert(horaire) {
+  afficherValidationAttenteAlert(horaire : Horaire) {
       // TODO: corriger pour que ça ouvre la bonne alerte qui permettera de valider l'horaire dans la BDD et mettre la valeur de tra_valide à 1
-      //this.pushHoraireAttente.afficherNotificationFinDeService("Validation de l'horaire en attente", "Blabla", 1, horaire);
+      this.affichageValidation.afficherAlertFinDeService(horaire);
   }
 
 }

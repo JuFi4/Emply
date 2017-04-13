@@ -48,7 +48,7 @@ export class NotificationsLocalesService {
         LocalNotifications.schedule({
                 id: horaire.id,
                 title: 'Validation de fin de service',
-                text: 'Avez-vous bien travailler de '+ horaire.affichageHeureDebut + ' à ' + horaire.affichageHeureFin +' ?',
+                text: 'Avez-vous bien travailler de '+ horaire.affichageHeureDebut + ' à ' + horaire.affichageHeureFin +' le '+ horaire.affichageDate +'?',
                 at: scheduleDate,
                 sound: 'res://platform_default',
                 icon: 'res://icon',

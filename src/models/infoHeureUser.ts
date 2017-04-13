@@ -1,4 +1,4 @@
-export class infoHeureUser {
+export class InfoHeureUser {
     brut : String;   
     conge : string;
     net : string;
