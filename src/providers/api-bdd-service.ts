@@ -212,7 +212,7 @@ export class ApiBddService {
    //retourne le numéro de l'établissement de l'employé connecté 
    getIdEtablissement(userId : string){ 
      var url =this.baseUrl + 'type=getIdEtablissement&userId=' + encodeURI(userId);
-     console.log(url);
+     console.log("getEtablissement "+ url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//getIdEtablissement
@@ -220,15 +220,15 @@ export class ApiBddService {
    //retourne les heures que l'employé à effectué  
    getInfosSolde(userId : string, dateDebut : string, dateFin : string){ 
      var url =this.baseUrl + 'type=getInfosSolde&userId=' + encodeURI(userId) + '&dateDebut' + encodeURI(dateDebut) + '&dateFin' + encodeURI(dateFin);
-     console.log(url);
+     console.log("getInfoSolde "+ url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//getIdEtablissement
 
    //retourne les informations sur l'établissement et l'employé 
    getInfosHeuresMois(userId : string, mois : string, annee : string, idEta : string){ 
-     var url =this.baseUrl + 'type=getInfosHeuresMois&userId=' + encodeURI(userId) + '&mois' + encodeURI(mois) + '&annee' + encodeURI(annee) + '&idEta' + encodeURI(idEta);
-     console.log(url);
+     var url =this.baseUrl + 'type=getInfosHeuresMois&userId=' + encodeURI(userId) + '&mois=' + encodeURI(mois) + '&annee=' + encodeURI(annee) + '&idEta=' + encodeURI(idEta);
+     console.log("getInfosHeuresMois "+ url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//getIdEtablissement
