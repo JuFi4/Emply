@@ -21,7 +21,7 @@ export class AffichageValidationHoraireService {
    radioResult;  
    isHorsLigne = false;
 
-  constructor( private alertCtrl: AlertController, public navCtrl: NavController, public platform : Platform, private abiBddCtrl: ApiBddService, public pdfCtrl : ApiPdfService, private connectivityService: ConnectivityService) {
+  constructor( private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService, public pdfCtrl : ApiPdfService, private connectivityService: ConnectivityService) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
   }//constructor
 
@@ -297,7 +297,7 @@ validationHoraire(hopId, hDebut, hFin, traValid){
           {
             text: 'Valider mes horaires en attente',
             handler: () => {
-              this.navCtrl.push(ValidationPage);
+              //this.navCtrl.push(ValidationPage);
             }
           }
         ]

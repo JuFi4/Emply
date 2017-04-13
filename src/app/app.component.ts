@@ -10,7 +10,8 @@ import { MeshorairesPage } from '../pages/meshoraires/meshoraires';
 import { DemandesPage } from '../pages/demandes/demandes';
 import { MonprofilPage } from '../pages/monprofil/monprofil';
 import { ParametresPage } from '../pages/parametres/parametres';
-
+import { TabsPage } from '../pages/tabs/tabs';
+import { MeshorairesfutursPage } from '../pages/meshorairesfuturs/meshorairesfuturs';
 
 // Providers
 import { ApiBddService } from '../providers/api-bdd-service';
@@ -32,7 +33,7 @@ export class MyApp {
       //{title: 'Login', component: LoginPage },
       {title: 'Accueil', component: AccueilPage },
       {title: 'Validations', component: ValidationPage },
-      {title: 'Mes horaires', component: MeshorairesPage },
+      {title: 'Mes horaires', component: TabsPage },
       {title: 'Demandes', component: DemandesPage },
       {title: 'Mon profil', component: MonprofilPage },
       {title: 'Paramètres', component: ParametresPage },

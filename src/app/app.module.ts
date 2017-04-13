@@ -10,12 +10,14 @@ import { ValidationPage } from '../pages/validation/validation';
 import { MeshorairesPage } from '../pages/meshoraires/meshoraires';
 import { DemandesPage } from '../pages/demandes/demandes';
 import { MonprofilPage } from '../pages/monprofil/monprofil';
-import {ParametresPage} from '../pages/parametres/parametres';
+import { ParametresPage } from '../pages/parametres/parametres';
+import {TabsPage} from '../pages/tabs/tabs';
+import { MeshorairesfutursPage } from '../pages/meshorairesfuturs/meshorairesfuturs';
 
 // Providers
 import { NotificationsLocalesService } from '../providers/notifications-locales-service';
 import { ApiBddService } from '../providers/api-bdd-service';
-import {MoisService} from '../providers/mois-service';
+import { MoisService } from '../providers/mois-service';
 import { ConnectivityService } from '../providers/connectivity-service';
 import { ApiPdfService } from '../providers/api-pdf-service';
 import {AffichageValidationHoraireService} from '../providers/affichage-validation-horaire-service';
@@ -26,7 +28,9 @@ import {AffichageValidationHoraireService} from '../providers/affichage-validati
     LoginPage,
     AccueilPage,
     ValidationPage,
+    TabsPage,
     MeshorairesPage,
+    MeshorairesfutursPage,
     DemandesPage,
     MonprofilPage,
     ParametresPage
@@ -40,7 +44,9 @@ import {AffichageValidationHoraireService} from '../providers/affichage-validati
     LoginPage,
     AccueilPage,
     ValidationPage,
+    TabsPage,
     MeshorairesPage,
+    MeshorairesfutursPage,
     DemandesPage,
     MonprofilPage,
     ParametresPage
