@@ -92,7 +92,7 @@ export class ParametresPage {
   }//setAutoImport
 
   importMinutes() {
-    if (window.localStorage.getItem('importMinutes') == "true") { return true; }
+    if (window.localStorage.getItem('importeMinutes') == "true") { return true; }
     if (window.localStorage.getItem('importeMinutes') !== null) {
       this.minute = window.localStorage.getItem('importeMinutes');
       return true;

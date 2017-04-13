@@ -346,8 +346,12 @@ confirmerDemandeNouveauMotDePasse(){
     if(idNotification == 0){  // Si l'id est 1 = c'est la notification mensuelle de validation des heures
       this.pushHoraireFin.afficherValidationMensuelle(titreNotification, messageNotification, data);
     } else  {
-      this.pushHoraireFin.afficherNotificationFinDeService(titreNotification, messageNotification, idNotification, data);
-    }    
+      if (idNotification == -1) { // Si l'id est -1 = c'est la notification des horaires en attente de validation
+        this.pushHoraireFin.afficherAlertAttenteValidation(titreNotification, messageNotification);
+      } else {
+        this.pushHoraireFin.afficherNotificationFinDeService(titreNotification, messageNotification, idNotification, data);
+      }
+  }    
   }//afficherNotificationLocale  
 
 }//LoginPage

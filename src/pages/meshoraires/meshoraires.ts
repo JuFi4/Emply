@@ -8,7 +8,7 @@ import { NotificationsLocalesService } from '../../providers/notifications-local
 import {MoisService} from '../../providers/mois-service';
 import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
-import { ApiPdfService } from '../../providers/api-pdf-service';
+
 
 //models
 import {Mois} from '../../models/mois';
@@ -62,7 +62,7 @@ export class MeshorairesPage {
   nomCalendrierEvent = "Travail";
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService,
-    public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService,  public pdfCtrl : ApiPdfService) {   
+    public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) {   
      // Instanciation des valeurs par défaut
      this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' ||connectivityService.isOffline();
      this.moisService.getSemaine().then(semaines => this.semaines = semaines);
@@ -94,9 +94,6 @@ export class MeshorairesPage {
       console.log('Hello MesHoraires Page');      
     }//ionViewDidLoad
 
-    telechargerPDF(){
-      this.pdfCtrl.getPdfHoraires(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'));
-    }//telechargerPDF
 
   /* saveAutoImportChange(){
      window.localStorage.setItem('autoImport', this.autoImport.toString());  // Création de la sauvegarde locale de ces horaires (mois et annee) 
@@ -323,6 +320,8 @@ export class MeshorairesPage {
                       } else { // On peut traiter directement les horaires en disant qu'il n'y a pas de nouvelles données, sauf si on doit synchroniser le calendrier                  
                           this.traiterHorairesFuturs(data, this.syncCalendar); 
                       }
+                      // Dans tous les cas: on  programme une notification locale pour les horaires en attente de validation
+                      this.enregistrerNotificationAttenteValidation();
                       // Dans tous les cas: on  programme une notification locale pour la validation mensuelle
                       this.enregistrerNotificationMensuelle();         
                     } else { 
@@ -515,6 +514,9 @@ export class MeshorairesPage {
         this.notificationsLocalesCtrl.scheduleNotificationValidationMensuelle(); // On enregsitre la notification locale de fin de mois        
     }//enregistrerNotification
 
+    enregistrerNotificationAttenteValidation() {
+        this.notificationsLocalesCtrl.scheduleNotificationAttenteValidation();
+    }//enregistrerNotificationAttenteValidation
     
     detailHoraire(jour : Jour){
       console.log(jour);

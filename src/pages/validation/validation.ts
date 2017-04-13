@@ -4,6 +4,7 @@ import { NavController, NavParams } from 'ionic-angular';
 // Providers
 import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
+import { AffichageValidationHoraireService } from '../../providers/affichage-validation-horaire-service';
 
 // Models
 import {Horaire} from '../../models/horaire';
@@ -23,7 +24,9 @@ export class ValidationPage {
 isHorsLigne : boolean;
 horairesAttenteValidation : Horaire[];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService
+   //public pushHoraireAttente : AffichageValidationHoraireService
+   ) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
 
     // Méthodes à lancer au chargement de la page
@@ -64,6 +67,11 @@ horairesAttenteValidation : Horaire[];
         this.horairesAttenteValidation.push(horaire);  // On ajoute l'horaire dans le tableau
       } //For
       console.log(this.horairesAttenteValidation);
-    }//traiterHorairesAttenteValidation
+  }//traiterHorairesAttenteValidation
+
+  afficherValidationAttenteAlert(horaire) {
+      // TODO: corriger pour que ça ouvre la bonne alerte qui permettera de valider l'horaire dans la BDD et mettre la valeur de tra_valide à 1
+      //this.pushHoraireAttente.afficherNotificationFinDeService("Validation de l'horaire en attente", "Blabla", 1, horaire);
+  }
 
 }

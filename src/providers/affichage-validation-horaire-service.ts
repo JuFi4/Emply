@@ -1,5 +1,5 @@
 import { Injectable, Component, ViewChild } from '@angular/core';
-import { AlertController, Platform} from 'ionic-angular';
+import { AlertController, NavController, Platform} from 'ionic-angular';
 import { LocalNotifications, Push, Splashscreen, StatusBar } from 'ionic-native';
 import 'rxjs/add/operator/map';
 
@@ -13,7 +13,7 @@ import { ApiPdfService } from '../providers/api-pdf-service';
 import {Horaire} from '../models/horaire';
 
 //pagesimport 
-import {ControlePage} from '../pages/controle/controle';
+import {ValidationPage} from '../pages/validation/validation';
 
 @Injectable()
 export class AffichageValidationHoraireService {  
@@ -288,6 +288,22 @@ validationHoraire(hopId, hDebut, hFin, traValid){
       });
       alert.present();
     }//afficherValidationMensuelle
+
+    afficherAlertAttenteValidation(titreNotification, messageNotification) {
+        let alert = this.alertCtrl.create({
+        title: titreNotification,
+        message: messageNotification,
+        buttons: [         
+          {
+            text: 'Valider mes horaires en attente',
+            handler: () => {
+              //this.navCtrl.push(ValidationPage);
+            }
+          }
+        ]
+      });
+      alert.present();
+    }
 
   afficherMessageHorsLigne(){
         let alert = this.alertCtrl.create({
