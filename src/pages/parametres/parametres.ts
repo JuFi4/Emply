@@ -5,7 +5,7 @@ import { Calendar } from 'ionic-native';
 
 // Providers
 import { ConnectivityService } from '../../providers/connectivity-service';
-
+import { SyncHorairesService } from '../../providers/sync-horaires-service';
 
 //Modele
 import { CalendrierEvent } from '../../models/calendrierEvent';
@@ -39,7 +39,7 @@ export class ParametresPage {
   is180 = false;
   isNull = false; // choix pour désactiver => minute à -1
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private connectivityService: ConnectivityService, public alertCtrl: AlertController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private connectivityService: ConnectivityService, public alertCtrl: AlertController, private syncHoraireCtrl : SyncHorairesService) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     this.autoImport = this.setAutoImport();
     this.importMinutes();
@@ -53,10 +53,6 @@ export class ParametresPage {
   saveAutoImportChange() {
     window.localStorage.setItem('autoImport', this.autoImport.toString());  // Création de la sauvegarde locale de ces horaires (mois et annee) 
     if (this.autoImport) { // Si on a coché "oui"
-      window.localStorage.setItem('syncCalendar', "true"); //On enregsitre que le calendrier doit se sychroniser
-      if (window.localStorage.getItem('autoImportNomEvent') != "undefined" && window.localStorage.getItem('autoImportNomEvent') != null) {
-        this.nomCalendrierEvent = window.localStorage.getItem('autoImportNomEvent'); // On récupère la sauvegarde locale len nom par lequel on veut appeller les events
-      }
       let alert = this.alertCtrl.create({ // On affiche une alert pour savoir par quel nom appeller les events
         title: "Nom de l'évenement",
         message: "Entrez le nom par lequel vous souhaitez appeller vos heures de travail dans votre calendrier : ",
@@ -72,9 +68,10 @@ export class ParametresPage {
             handler: data => {
               console.log("je suis dans ok");
               this.nomCalendrierEvent = data.nomEvent;//On defini ce nom comme nom pour les event
-              console.log(this.nomCalendrierEvent + " je suis le nom du calendrier");
-              window.localStorage.setItem('autoImportNomEvent', data.nomEvent);//On enregsitre                 
+              console.log(this.nomCalendrierEvent + " je suis le nom du calendrier");              
+              window.localStorage.setItem('autoImportNomEvent', data.nomEvent);                
               console.log("j'ai été enregistré " + data.nomEvent);
+              this.syncCalendrierSmartphone(); //On synchronose le calendrier 
             }
           }
         ]
@@ -85,6 +82,13 @@ export class ParametresPage {
       console.log("On a coché non");
     }
   }//saveAutoImportChange
+
+  syncCalendrierSmartphone(){
+    if(window.localStorage.getItem('getHorairesFuturs') != null && window.localStorage.getItem('getHorairesFuturs')  != 'undefined'){
+      // On re-traite les horaires avec paramètre de synchronisation
+      this.syncHoraireCtrl.traiterHorairesFuturs(JSON.parse(window.localStorage.getItem('getHorairesFuturs')), true, false);
+    }
+  }
 
   setAutoImport() {
     if (window.localStorage.getItem('autoImport') == "true") { return true; }
@@ -108,7 +112,10 @@ export class ParametresPage {
   // Supprime tous les events futurs programmés dans le calendrier
   public supprimerCalendrierEvents() {
     console.log("supprimerCalendrierEvents");
-    this.getCalendrierSmartphone(); // On récupère les events enregsitrés
+
+    this.syncHoraireCtrl.gererCalendrierSmartphone(); // On récupère les events enregsitrés
+    this.calendrierEvents = this.syncHoraireCtrl.calendrierEvents;
+
     for (let i = 0; i < this.calendrierEvents.length; i++) { //On boucle sur les events enregsitrés
       console.log("On supprime " + this.calendrierEvents[i].startDate);
       Calendar.deleteEvent( // On supprime l'event du calendrier
@@ -122,25 +129,6 @@ export class ParametresPage {
     window.localStorage.setItem('calendrierEvents', JSON.stringify(this.calendrierEvents));// On enregsitre la modification en local storage 
   }//supprimerCalendrierEvents
 
-  // Récupère les liste des events programmés pour la gestion du calendrier smartphone
-  getCalendrierSmartphone() {
-    this.calendrierEvents = []; // Instanciation de l'array qui contient les events déja enregsitrés
-    try {
-      let data = JSON.parse(window.localStorage.getItem('calendrierEvents')); // On récupère les events précédement crées depuis la mémoire locale
-      console.log(data);
-      // On fixe les heures, minutes et secondes de la date actuelle à 0
-      let dateCourrante = new Date();
-      dateCourrante.setHours(0);
-      dateCourrante.setMinutes(0);
-      dateCourrante.setSeconds(0);
-      for (let i = 0; i < data.length; i++) {
-        let event = new CalendrierEvent(data[i].title, data[i].location, data[i].notes, new Date(data[i].startDate), new Date(data[i].endDate), data[i].id);
-        if (event.endDate >= dateCourrante) { // Si l'event à lieux aujourd'hui ou dans le futur
-          this.calendrierEvents.push(event)//On le prend dans la liste d'events
-        }
-      }
-    } catch (Exception) { }
-  }//gererCalendrier
 
   selectionnerMinutes() {
     if (this.minute === "0") {

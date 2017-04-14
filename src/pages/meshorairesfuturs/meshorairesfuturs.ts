@@ -4,7 +4,11 @@ import { NavController, NavParams } from 'ionic-angular';
 
 // Providers
 import { ApiPdfService } from '../../providers/api-pdf-service';
+import { SyncHorairesService } from '../../providers/sync-horaires-service';
 
+
+//Models
+import {Horaire} from '../../models/horaire';
 /*
   Generated class for the Meshorairesfuturs page.
 
@@ -17,7 +21,9 @@ import { ApiPdfService } from '../../providers/api-pdf-service';
 })
 export class MeshorairesfutursPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public pdfCtrl: ApiPdfService) {
+  horairesFuturs : Horaire[];
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public pdfCtrl: ApiPdfService, private syncHoraireCtrl : SyncHorairesService) {
     // Méthodes à lancer au chargement de la page
     this.getHorairesFuturs(); // On charge les horaires futurs
   }
@@ -27,7 +33,12 @@ export class MeshorairesfutursPage {
   }
 
   getHorairesFuturs() {
-    console.log("Coucou les horaires futurs")
+    console.log("Coucou les horaires futurs");
+    if(window.localStorage.getItem('getHorairesFuturs') != null && window.localStorage.getItem('getHorairesFuturs')  != 'undefined'){
+      this.syncHoraireCtrl.traiterHorairesFuturs(JSON.parse(window.localStorage.getItem('getHorairesFuturs')), false, false);
+      this.horairesFuturs = this.syncHoraireCtrl.horairesFuturs;
+      console.log(this.horairesFuturs);
+    }
   }
 
   telechargerPDF(){

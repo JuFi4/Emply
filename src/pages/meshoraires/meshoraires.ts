@@ -44,7 +44,7 @@ export class MeshorairesPage {
   selJour : any = [];
   annee : any = []; 
   affichageH : Boolean;
-  horairesFuturs : Horaire[]; // JULIANA :  Voici le tableau qui contient les horaires futurs, il est chargé par this.gethorairesFuturs(), appellé dans le constructeur
+  //horairesFuturs : Horaire[]; // JULIANA :  Voici le tableau qui contient les horaires futurs, il est chargé par this.gethorairesFuturs(), appellé dans le constructeur
   horaireDuJour : Horaire[]; // Tableau qui contient les horaires du jour selectionné
   inputDisabled : Boolean;    
   dateCourrante = new Date();
@@ -54,11 +54,11 @@ export class MeshorairesPage {
   pasHeure : boolean;
   isDisabledDay : boolean;
   isHorsLigne : boolean;
-  autoImport = false;
-  syncCalendar = false;
-  calendrierEvents : CalendrierEvent[];
-  calendrierEventsUpdate : CalendrierEvent[]
-  etablissement : Etablissement;
+  //autoImport = false;
+  //syncCalendar = false;
+  //calendrierEvents : CalendrierEvent[];
+  //calendrierEventsUpdate : CalendrierEvent[]
+  //etablissement : Etablissement;
   nomCalendrierEvent = "Travail";
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService,
@@ -71,11 +71,11 @@ export class MeshorairesPage {
      this.pasHeure = true;
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante   
 
-     console.log(window.localStorage.getItem('syncCalendar')); 
-     this.setAutoImport();// On instancie l'autoImport par rapport à la valeur sauvegardée
-     console.log("autoImport  " + this.autoImport);
-     console.log("syncCalendar  " + this.syncCalendar);
-     console.log(window.localStorage.getItem('syncCalendar')); 
+     //console.log(window.localStorage.getItem('syncCalendar')); 
+     //this.setAutoImport();// On instancie l'autoImport par rapport à la valeur sauvegardée
+     //console.log("autoImport  " + this.autoImport);
+     //console.log("syncCalendar  " + this.syncCalendar);
+     //console.log(window.localStorage.getItem('syncCalendar')); 
 
      // On fixe les heures, minutes et secondes de la date actuelle à 0
      this.dateCourrante.setHours(0);
@@ -86,8 +86,8 @@ export class MeshorairesPage {
 
      // Méthodes à lancer au chargement de la page
      this.supprimerAnciennesSauvegares(); //Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone    
-     this.gererCalendrierSmartphone();    //Prépare les éléments nécéssaires pour la gestion du calendrier smartphone   
-     this.gethorairesFuturs(); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier 
+     //this.gererCalendrierSmartphone();    //Prépare les éléments nécéssaires pour la gestion du calendrier smartphone   
+     //this.gethorairesFuturs(); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier 
 }//constructor
 
     ionViewDidLoad() {
@@ -125,7 +125,7 @@ export class MeshorairesPage {
    }//saveAutoImportChange
    */
 
-    setAutoImport(){ // Si on a coché la case dans "paramètre"
+   /* setAutoImport(){ // Si on a coché la case dans "paramètre"
       if(window.localStorage.getItem('autoImport') == "true"){ 
         this.autoImport = true;
         if(window.localStorage.getItem('syncCalendar') == "true") { // Si la case vient d'être cochée
@@ -134,7 +134,7 @@ export class MeshorairesPage {
         }
            
       }
-    }//setAutoImport
+    }//setAutoImport*/
 
     selectionnerMois(){
         this.moisSelectionne = this.moisListe[this.moisCourant]; 
@@ -296,7 +296,7 @@ export class MeshorairesPage {
       return false;
     }//setDemandeOnJour
 
-  public gethorairesFuturs(){       
+  /*public gethorairesFuturs(){       
     if(!this.isHorsLigne){ // Si on a internet
               this.abiBddCtrl.getHorairesFuturs(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
                 data => {  
@@ -336,15 +336,15 @@ export class MeshorairesPage {
             // Traitement des horaires à partir des données sauvegardés : mode hors-ligne, ou synchronisation du calendrier au cas ou les horaires n'ont pas changés
             this.traiterHorairesFuturs(JSON.parse(window.localStorage.getItem('getHorairesFuturs')), this.syncCalendar);      
         }
-    }//gethorairesFuturs
+    }//gethorairesFuturs*/
 
-    enregsitrerReceptionHoraire(){
+   /* enregsitrerReceptionHoraire(){
        // On laisse le subscribe vide car on ne traite pas le cas ou la requête ne fonctionne pas
       this.abiBddCtrl.setValVueHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(); 
-    }//enregsitrerReceptionHoraire
+    }//enregsitrerReceptionHoraire*/
 
 
-    traiterHorairesFuturs(data, isNewData){
+   /* traiterHorairesFuturs(data, isNewData){
       this.horairesFuturs = [] // On instancie le tableau des horaires futures
       let verifierCalendrierEvents = (data.length > 0) ? false : true; // On instancie la vérification des horaire futurs à false, SAUF si le tableau des nouveaux horaires est vide
       for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données des horaires formatées
@@ -371,7 +371,7 @@ export class MeshorairesPage {
       if(verifierCalendrierEvents){ // A l fin e la boucle: si on est dans un cas où le calendrier à pu être modifié
           this.updateCalendrierEvents(); // Vérifie si certains anciens events ont disparus et sauve la liste actuallisée 
       }
-    }//traiterHorairesFuturs
+    }//traiterHorairesFuturs*/
 
     // Supprime tous les events futurs programmés dans le calendrier
    /* supprimerCalendrierEvents(){
@@ -390,7 +390,7 @@ export class MeshorairesPage {
     }//supprimerCalendrierEvents*/
 
     // Compare la liste des events mise à jour avec l'ancienne liste, et effectue les suppressions nécéssaires dans le calendrier du smartphone
-    updateCalendrierEvents(){
+    /*updateCalendrierEvents(){
       for(let i = 0; i < this.calendrierEvents.length; i++){ //On boucle sur les anciens events
          if(this.eventStateInList(this.calendrierEvents[i], this.calendrierEventsUpdate) === -2){  // Si l'ancien even n'est pas dans la liste mise à jour
           console.log("On supprime : " + this.calendrierEvents[i].id + " : " + this.calendrierEvents[i].startDate+ " : " + this.calendrierEvents[i].endDate);  
@@ -487,7 +487,7 @@ export class MeshorairesPage {
           }
       }
       return -2; // L'event n'existe pas : retourne -2
-    }//eventStateInList
+    }//eventStateInList*/
 
     // Supprime les sauvegardes locales trop anciennes pour ne pas surcharger le téléphone
     supprimerAnciennesSauvegares(){
@@ -501,7 +501,7 @@ export class MeshorairesPage {
     }//supprimerAnciennesSauvegares   
 
     // Enregsitre la notification locale pour l'horaire passé en paramètre
-    enregistrerNotification(horaire : Horaire){
+  /*  enregistrerNotification(horaire : Horaire){
         if(horaire.heureFin > new Date()){ // Si l'horaire est dans le futur (on ne va pas enregistrer des notif pour un horaire passé !)          
           this.notificationsLocalesCtrl.scheduleNotificationFinDeService(horaire); // On enregsitre la notification locale
         } else {
@@ -516,7 +516,7 @@ export class MeshorairesPage {
 
     enregistrerNotificationAttenteValidation() {
         this.notificationsLocalesCtrl.scheduleNotificationAttenteValidation();
-    }//enregistrerNotificationAttenteValidation
+    }//enregistrerNotificationAttenteValidation*/
     
     detailHoraire(jour : Jour){
       console.log(jour);
