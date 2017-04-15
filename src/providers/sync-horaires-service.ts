@@ -40,6 +40,7 @@ export class SyncHorairesService {
   manangeSync(){
      return new Promise((resolve, reject) => {
         this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || this.connectivityService.isOffline();
+        this.notificationsLocalesCtrl.resetNotification();//Remise à zéro des notifications de fin de service : elles vont être re-crées    
         this.setAutoImport();// On instancie l'autoImport par rapport à la valeur sauvegardée
         this.gererCalendrierSmartphone();    //Prépare les éléments nécéssaires pour la gestion du calendrier smartphone   
         this.gethorairesFuturs(); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier 
@@ -134,7 +135,7 @@ export class SyncHorairesService {
                this.enregsitrerDansCalendrierSmartphone(horaire); // On enregsitrer dans le calendrier du smartphone
                verifierCalendrierEvents = true;          
         } else {
-           console.log("Aucune modification des horaires - pas besoin de vérifier  les events");
+           console.log("Aucune modification des horaires ou sync désactivée - pas besoin de vérifier  les events");
         } 
       } //For
 

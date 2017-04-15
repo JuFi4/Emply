@@ -186,12 +186,13 @@ export class ApiBddService {
    }//getMaladiesParMois
 
    //Ajoute les date congé maladie ou accident dans la table maladieAccident 
-   getMaladieAccident(userId : string, token : string, dateDebut : string, dateFin: string, isAccdient : string){ 
-     var url =this.baseUrl + 'type=dateMaladieAccident&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin)+ '&isAccident=' + encodeURI(isAccdient);
+   setMaladieAccident(userId : string, token : string, dateDebut : string, dateFin: string, isAccdient : string, horaireId : string){ 
+     var url =this.baseUrl + 'type=dateMaladieAccident&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin)+ 
+      '&isAccident=' + encodeURI(isAccdient) +'&horaireId='+ encodeURI(horaireId);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
-   }//getMaladieAccident
+   }//setMaladieAccident
 
     setValVueHoraire(userId : string, token : string){ 
      var url =this.baseUrl + 'type=getValVueHor&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);

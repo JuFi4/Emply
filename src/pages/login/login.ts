@@ -43,7 +43,7 @@ export class LoginPage {
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, 
-        private pushHoraireFin : AffichageValidationHoraireService, private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, private connectivityService: ConnectivityService, public pdfCtrl : ApiPdfService) {        
+        private validationCtrl : AffichageValidationHoraireService, private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, private connectivityService: ConnectivityService, public pdfCtrl : ApiPdfService) {        
       
      // Définition de la d'accueil par défaut
      this.rootPage = AccueilPage; 
@@ -327,6 +327,7 @@ confirmerDemandeNouveauMotDePasse(){
   }//afficherNotificationPush
 
   instancierNotificationsLocales(){
+    console.log('instancierNotificationsLocales');
     LocalNotifications.on("click", (notification, state) => {
         console.log('notification' + notification.id);
         if(window.localStorage.getItem('utilisateurConnecte') === "1"){  
@@ -344,12 +345,12 @@ confirmerDemandeNouveauMotDePasse(){
  afficherNotificationLocale(idNotification, titreNotification, messageNotification, data) {
     console.log('notification' + idNotification);
     if(idNotification == 0){  // Si l'id est 1 = c'est la notification mensuelle de validation des heures
-      this.pushHoraireFin.afficherValidationMensuelle(titreNotification, messageNotification, data);
+      this.validationCtrl.afficherValidationMensuelle(titreNotification, messageNotification, data);
     } else  {
       if (idNotification == -1) { // Si l'id est -1 = c'est la notification des horaires en attente de validation
-        this.pushHoraireFin.afficherAlertAttenteValidation(titreNotification, messageNotification);
+        this.validationCtrl.afficherAlertAttenteValidation(titreNotification, messageNotification);
       } else {
-        this.pushHoraireFin.afficherNotificationFinDeService(data);
+        this.validationCtrl.afficherNotificationFinDeService(data);
       }
   }    
   }//afficherNotificationLocale  

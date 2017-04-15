@@ -40,11 +40,10 @@ afficherNotificationFinDeService(horaireToString){
 afficherAlertFinDeService(horaire : Horaire){
      let alert = this.alertCtrl.create({
         title: "Validation des heures de service",
-        message: "Avez-vous bien travailler de" + horaire.affichageHeureDebut + " à " + horaire.affichageHeureFin +" le "+ horaire.affichageDate +"? ",
+        message: "Avez-vous bien travailler  le "+ horaire.affichageDate + " de "+ horaire.affichageHeureDebut + " à " + horaire.affichageHeureFin + "? ",
         buttons: [
           {
-            text: 'Non',
-            role: 'cancel',
+            text: 'Non',            
             handler: () => {
               console.log('Non clicked');
               this.modificationHoraires(horaire);
@@ -53,22 +52,19 @@ afficherAlertFinDeService(horaire : Horaire){
           {
             text: 'Oui',
             handler: () => {
-               console.log('Oui clicked'); // TODO: enregsitrer que c'est OK dans la BDD via API
-               this.validationHoraire(horaire.id, '', '',1); // -> Chaine vide , sinon ça enverra le string "Null" dans l'API
+               console.log('Oui clicked'); 
+               this.validationHoraire(horaire.id, '', '','oui'); // On enregsitre l'absence dans la BDD 
             }
           },
           {
-            text: 'Maladie/Accident',
-            handler: () =>{
-               console.log("maladieAccident click")
-               this.faireChoixMaladieAccident(horaire);
-
-            } 
+            text: 'Annuler',
+            role: 'cancel'           
           }
         ]
       });
       alert.present();
    }//afficherAlertFinDeService
+   
 
    modificationHoraires(horaire){            
         let alert = this.alertCtrl.create({
@@ -88,11 +84,11 @@ afficherAlertFinDeService(horaire : Horaire){
           name: 'heureFin',
           value: horaire.affichageHeureFin,
           placeholder: 'Heure de fin de service'
-        },
+        }       
       ],
         buttons: [
           {
-            text: 'Valider',
+            text: 'Valdier les modifications',
             handler: data => {               
               if(data.heureFin < data.heureDebut){ // Si l'heure de fin est plus petite que l'heure de début = on a travaillé
                 horaire.heureFin.setDate(horaire.heureFin.getDate() + 1); // On ajoute un jour à la date de fin
@@ -105,8 +101,26 @@ afficherAlertFinDeService(horaire : Horaire){
               // On appelle la fonction d'enregistrement en formatant les dates pour qu'elles passent
               this.validationHoraire(horaire.id, 
               horaire.heureDebut.getFullYear()+"-"+horaire.heureDebut.getMonth()+"-"+horaire.heureDebut.getDate()+" "+horaire.heureDebut.getHours()+":"+horaire.heureDebut.getMinutes(), 
-              horaire.heureFin.getFullYear()+"-"+horaire.heureFin.getMonth()+"-"+horaire.heureFin.getDate()+" "+horaire.heureFin.getHours()+":"+horaire.heureFin.getMinutes(), 1); 
+              horaire.heureFin.getFullYear()+"-"+horaire.heureFin.getMonth()+"-"+horaire.heureFin.getDate()+" "+horaire.heureFin.getHours()+":"+horaire.heureFin.getMinutes(), 'mod'); 
             }
+          },
+           {
+             text: 'Absent',
+             handler: () =>{
+               console.log("Absent click")   
+               this.validationHoraire(horaire.id, '', '','absent');  // On enregsitre l'absence dans la BDD        
+            }
+          },
+          {
+            text: 'Maladie / Accident (avec CM)',
+             handler: () =>{
+               console.log("maladieAccident click")
+               this.faireChoixMaladieAccident(horaire);
+            } 
+          },         
+          {
+            text: 'Annuler',
+            role: 'cancel'           
           }
         ]
       });
@@ -136,8 +150,7 @@ afficherAlertFinDeService(horaire : Horaire){
       text: 'Confirmer',
       handler: data => {
         this.radioOpen = false;
-        this.radioResult = data;
-        this.validationHoraire(horaire.id, '', '',-1);
+        this.radioResult = data;        
         console.log("HEY!!!! Je suis CONFIRMER!!!!");
         console.log("radioResult" + this.radioResult);
         if (data === "maladie"){ 
@@ -175,6 +188,10 @@ afficherDateMaladie(horaire){
       ],
         buttons: [
           {
+            text: 'Annuler',
+            role: 'cancel'           
+          },
+          {
             text: 'Valider',
             handler: data => {
                console.log('Oui clicked');
@@ -182,7 +199,8 @@ afficherDateMaladie(horaire){
                     this.afficherAlertPasValide();
                }else{
                   if(!this.isHorsLigne){//Si on est pas hors ligne -> OK
-                      this.abiBddCtrl.getMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "0").subscribe(
+                      this.validationHoraire(horaire.id, '', '','maladie');
+                      this.abiBddCtrl.setMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "0", horaire.id).subscribe(
                             data => {
                               if(data) { // OK     
                                 console.log("OK");
@@ -195,7 +213,7 @@ afficherDateMaladie(horaire){
                   }
                }
             }
-          }
+          }           
         ]
       });
       alert.present();
@@ -231,7 +249,10 @@ afficherDateAccident(horaire){
         },
       ],
         buttons: [
-          {
+           {
+            text: 'Annuler',
+            role: 'cancel'           
+          },{
             text: 'Valider',
             handler: data => {
                console.log('Oui clicked');
@@ -241,7 +262,8 @@ afficherDateAccident(horaire){
                     this.afficherAlertPasValide();
                }else{
                     if(!this.isHorsLigne){//Si on est pas hors ligne -> OK
-                        this.abiBddCtrl.getMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "1").subscribe(
+                        this.validationHoraire(horaire.id, '', '','accident');
+                        this.abiBddCtrl.setMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "1", horaire.id).subscribe(
                             data => {
                               if(data) { // OK     
                                 console.log("OK");
@@ -254,7 +276,7 @@ afficherDateAccident(horaire){
                   }
                }
             }
-          }
+          }          
         ]
       });
       alert.present();

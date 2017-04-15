@@ -80,9 +80,8 @@ export class MeshorairesPage {
      // On fixe les heures, minutes et secondes de la date actuelle à 0
      this.dateCourrante.setHours(0);
      this.dateCourrante.setMinutes(0);
-     this.dateCourrante.setSeconds(0);
-     
-    this.notificationsLocalesCtrl.resetNotification();//Remise à zéro des notifications de fin de service : elles vont être re-crées    
+     this.dateCourrante.setSeconds(0);     
+   
 
      // Méthodes à lancer au chargement de la page
      this.supprimerAnciennesSauvegares(); //Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone    
