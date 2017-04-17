@@ -84,11 +84,9 @@ export class ParametresPage {
   }//saveAutoImportChange
 
   syncCalendrierSmartphone(){
-    if(window.localStorage.getItem('getHorairesFuturs') != null && window.localStorage.getItem('getHorairesFuturs')  != 'undefined'){
       // On re-traite les horaires avec paramètre de synchronisation
       this.syncHoraireCtrl.autoImport = true;
-      this.syncHoraireCtrl.traiterHorairesFuturs(JSON.parse(window.localStorage.getItem('getHorairesFuturs')), true, false);
-    }
+      this.syncHoraireCtrl.gethorairesFuturs(true);    
   }
 
   setAutoImport() {

@@ -34,11 +34,9 @@ export class MeshorairesfutursPage {
 
   getHorairesFuturs() {
     console.log("Coucou les horaires futurs");
-    if(window.localStorage.getItem('getHorairesFuturs') != null && window.localStorage.getItem('getHorairesFuturs')  != 'undefined'){
-      this.syncHoraireCtrl.traiterHorairesFuturs(JSON.parse(window.localStorage.getItem('getHorairesFuturs')), false, false);
+      this.syncHoraireCtrl.gethorairesFuturs();
       this.horairesFuturs = this.syncHoraireCtrl.horairesFuturs;
-      console.log(this.horairesFuturs);
-    }
+      console.log(this.horairesFuturs);    
   }
 
   telechargerPDF(){

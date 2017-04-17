@@ -89,7 +89,7 @@ export class NotificationsLocalesService {
       let nextMonth = (scheduleDate.getMonth()) + 1;
       let actualYear = scheduleDate.getFullYear();
       console.log('scheduleNotificationAttenteValidation : ' + new Date(actualYear, nextMonth, targetDay));
-       LocalNotifications.cancel(0); // Supprime la notification d'attente de validation si elle est existante
+       LocalNotifications.cancel(-1); // Supprime la notification d'attente de validation si elle est existante
        LocalNotifications.schedule({
             id: -1,
             title: 'Horaires en attente de validation',

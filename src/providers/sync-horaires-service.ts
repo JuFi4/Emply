@@ -39,8 +39,7 @@ export class SyncHorairesService {
 
   manangeSync(){
      return new Promise((resolve, reject) => {
-        this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || this.connectivityService.isOffline();
-        this.notificationsLocalesCtrl.resetNotification();//Remise à zéro des notifications de fin de service : elles vont être re-crées    
+        this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || this.connectivityService.isOffline();        
         this.setAutoImport();// On instancie l'autoImport par rapport à la valeur sauvegardée
         this.gererCalendrierSmartphone();    //Prépare les éléments nécéssaires pour la gestion du calendrier smartphone   
         this.gethorairesFuturs(); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier 
@@ -54,8 +53,11 @@ export class SyncHorairesService {
       }
     }//setAutoImport
 
-  gethorairesFuturs(){       
-     return new Promise((resolve, reject) => {
+ 
+ // Paramètre forceCalendarSync, par défaut à false : on on appelle la fonction en mettant true, les horaires seront synchronés dans le calendrier même s'ils n'ont pas changé
+ // -> Permet de forcer la synchronication lorsqu'on a coché la case "synchronication" dans paramètres
+  public gethorairesFuturs(forceCalendarSync = false){             
+     return new Promise((resolve, reject) => {      
       if(!this.isHorsLigne){ // Si on a internet
                 this.abiBddCtrl.getHorairesFuturs(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
                   data => {  
@@ -68,10 +70,11 @@ export class SyncHorairesService {
                           window.localStorage.setItem('getHorairesFuturs', dataToString);//On sauvegarde les nouveaux horaires en local              
                            this.enregsitrerReceptionHoraire();// On lance l'enregsitrement de l'accusé de récéption                       
 
-                          //Récupèration des données de l'établissement de l'utilisateur pour pouvoir l'indiquer dans les nouveau envents calendrier 
-                          this.getEtablissement().then(result => this.traiterHorairesFuturs(data, true, true));  
-                        } else { // On peut traiter directement les horaires en disant qu'il n'y a pas de nouvelles données, sauf si on doit synchroniser le calendrier                  
-                            this.traiterHorairesFuturs(data, false, true); 
+                          //Récupèration des données de l'établissement de l'utilisateur pour pouvoir l'indiquer dans les nouveau envents calendrier
+                          // Puis traitement des horaires avec indicateurs de nouvelles données
+                          this.getEtablissement().then(result => this.traiterHorairesFuturs(data, true));  
+                        } else { // On peut traiter directement les horaires en disant qu'il n'y a pas de nouvelles données          
+                            this.traiterHorairesFuturs(data, forceCalendarSync); 
                         }
                         // Dans tous les cas: on  programme une notification locale pour les horaires en attente de validation
                         this.enregistrerNotificationAttenteValidation();
@@ -88,7 +91,7 @@ export class SyncHorairesService {
               }
               // Traitement des horaires à partir des données sauvegardés : mode hors-ligne, ou synchronisation du calendrier au cas ou les horaires n'ont pas changés
               if(window.localStorage.getItem('getHorairesFuturs') != null && window.localStorage.getItem('getHorairesFuturs')  != 'undefined'){
-                this.traiterHorairesFuturs(JSON.parse(window.localStorage.getItem('getHorairesFuturs')), false, true);  
+                this.traiterHorairesFuturs(JSON.parse(window.localStorage.getItem('getHorairesFuturs')), forceCalendarSync);  
               }    
           }
           resolve("Fini");
@@ -114,7 +117,10 @@ export class SyncHorairesService {
       this.abiBddCtrl.setValVueHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(); 
     }//enregsitrerReceptionHoraire
 
-    traiterHorairesFuturs(data, isNewData, makeNotification){
+    public traiterHorairesFuturs(data, isNewData){
+      if(isNewData){ // Si on les données ont changées les notifications : on remet tout à zéro (on va les refaire)
+        this.notificationsLocalesCtrl.resetNotification();//Remise à zéro des notifications de fin de service : elles vont être re-crées    
+      }
       this.horairesFuturs = [] // On instancie le tableau des horaires futures
       let verifierCalendrierEvents = (data.length > 0) ? false : true; // On instancie la vérification des horaire futurs à false, SAUF si le tableau des nouveaux horaires est vide
       for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données des horaires formatées
@@ -126,7 +132,7 @@ export class SyncHorairesService {
         );            
         this.horairesFuturs.push(horaire);  // On ajoute l'horaire dans le tableau
 
-        if(makeNotification) {
+        if(isNewData) { // Si les données sont nouvelles 
           this.enregistrerNotification(horaire);// On enregsitre la notification
         }
         // Si les horaires ont été modifiés par rapport à la copie locale, on enregsitre l'horaire dans le calendrier du smartphone si besoin
