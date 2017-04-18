@@ -52,9 +52,9 @@ export class AccueilPage {
       this.apiBddService.getIdEtablissement(window.localStorage.getItem('id')).subscribe(
                               eta => {
                                 if(eta) { // OK   
-                                  // @ VANESSA : L'API ne retourne rien, donc je ne sais pas comment tester. Est-ce normal que ça ne retourne rien ?
+                                   // @ VANESSA : OK : tout se range bien dans this.idEtablissement
                                   this.idEtablissement = eta;
-                                  console.log(this.idEtablissement);
+                                  console.log("idEtablissement : " + this.idEtablissement);
                                 // window.localStorage.setItem('getEtablissement', JSON.stringify(this.entablissement));
                                 } else { // Erreur
                                   console.log("Pas ok");
@@ -65,9 +65,10 @@ export class AccueilPage {
         this.apiBddService.getInfosSolde(window.localStorage.getItem('id'), "2017-01-01","2017-12-31").subscribe(
                   dataInfoSolde => {
                         if(dataInfoSolde) { // OK     
-                          // @ VANESSA : OK : tout se range bien dans ton objet
+                           // @ VANESSA : OK : tout se range bien dans ton objet
                             this.dataInfoUser = new InfoHeureUser(dataInfoSolde.brut.time,dataInfoSolde.totalPause.time,dataInfoSolde.net.time, dataInfoSolde.conges) 
-                            console.log(this.dataInfoUser.conge);
+                            console.log("dataInfoUser");
+                            console.log(this.dataInfoUser);  
                             window.localStorage.setItem('getInfoEta', JSON.stringify(this.dataInfoUser));
                           } else { // Erreur
                             console.log("Pas ok");
@@ -77,14 +78,18 @@ export class AccueilPage {
 
     this.apiBddService.getInfosHeuresMois(window.localStorage.getItem('id'), "4","2017", "1").subscribe(
                               dataInfo => {
-                                // @ VANESSA : Les "/" posent effectivement problème, il faut que Joel les enlève et ensuite ça fonctionnera
-                                if(dataInfo) { // OK  
-                                  console.log("OK");
-                                  this.dataInfo = new InfosEtablissement(
-                                        dataInfo.droitvacancesannee.time,
-                                        dataInfo.droitjoursferiesannee,
-                                  )
-                                  console.log(this.dataInfo.droitJourFerieAnnee);
+                                // @ VANESSA : OK : tout se range bien dans ton objet, par contre j'ai récupéré le "time" comme tu m'avais dit, mais je ne comprend pas bien à quoi il correspond
+                                // Pour droitvacances_annee j'ai : hours:"840", minutes:"57", seconds:"36", time:35.04 et ke trouve que c'est assez bizare : je ne vois pas quelle est l'unité de mesure du "time" !!
+                                // Donc j'espère que Joel t'a expliqué ce que c'est car je ne comprend pas trop !!
+                                // Si jamais tu as besoin d'autres champs je pense que tu as compris comment ça fonctionne (il n'y jamais le "[0]", et si jamais tu  me dis ;)
+                                if(dataInfo) { // OK
+                                  console.log(dataInfo)  
+                                  this.infoEta = new InfosEtablissement(
+                                        dataInfo.droitvacances_annee.time,
+                                        dataInfo.droitjoursferies_annee,
+                                  )                                                                   
+                                  console.log("dataInfo");
+                                  console.log(this.infoEta);
                                   window.localStorage.setItem('getInfoEta', JSON.stringify(this.dataInfo));
                                 } else { // Erreur
                                   console.log("Pas ok");
