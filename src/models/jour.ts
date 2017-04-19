@@ -14,6 +14,11 @@ export class Jour {
     isRecuperation = false;
     isAutreDemande = false;
     isAujourdhui = false;
+    isConge = false;
+    isMilitaire = false;
+    isMaternite = false;
+    isDeces = false;
+    isDemenagement = false;   
     
     constructor(jour, date : Date){
         this.tbHoraire = [];
@@ -35,4 +40,9 @@ export class Jour {
     setIsRecuperation(){ this.isRecuperation = true; }
     setIsAutreDemande(){ this.isAutreDemande = true; }
     setIsAujourdhui(){ this.isAujourdhui = true; }
+    setIsMilitaire(){this.isMilitaire = true;}
+    setIsMaternite(){this.isMaternite = true;}
+    setIsDeces(){this.isDeces = true;}
+    setIsDemenagement(){this.isDemenagement = true;}
+    setIsConge(){this.isConge = true;}
 }//Jour

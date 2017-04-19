@@ -292,6 +292,22 @@ export class MeshorairesPage {
                   break;
               case 6:
                   jour.setIsAutreDemande();
+                  break;
+              case 7:
+                  jour.setIsDemenagement();
+                  break;
+              case 8: 
+                  jour.setIsDemenagement();
+                  break;
+              case 9:
+                  jour.setIsMilitaire();
+                  break;
+              case 10:
+                  jour.setIsMaternite();
+                  break;
+              case 11:
+                  jour.setIsConge();    
+              
           }
           return true;
         }
