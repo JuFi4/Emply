@@ -46,6 +46,10 @@ export class DemandesPage {
     //this.enregsitrerDemande(idDemande, dateDebut+" "+minudesDebut, dateFin+" "+minutesFin, 0, motif) ;
     // -> Exemple
     //this.enregsitrerDemande(2, "2017-05-05"+" "+"14:30", "2017-05-05"+" "+"16:30", 0, "salut") ;
+
+    // -> la méthode modifierDemande() fonctionne exactement de la même manière
+    //this.modifierDemande(1, "2017-05-05"+" "+"14:30", "2017-05-05"+" "+"16:30", 0, "") ;
+    //this.modifierDemande(1, "2017-04-15", "2017-04-16", 1, "") ;
   }//constructor
 
   ionViewDidLoad() {
@@ -413,7 +417,7 @@ export class DemandesPage {
                 this.faireCheckDatePassee(data.NewDebut);//Vérifier que les dates ne sont pas dans le passé
                 if (this.isCheckDatePasse) {
                   console.log(demande.id, data.NewDebut, data.DateFinNew, data.MotifNew);
-                  this.modifierDemande(demande.id, data.NewDebut, data.DateFinNew, data.MotifNew);
+                  //this.modifierDemande(demande.id, data.NewDebut, data.DateFinNew, data.MotifNew);
                   this.getDemandes();
                 } else {
                   this.faireAlertePasOkDatePassee();
@@ -435,9 +439,9 @@ export class DemandesPage {
     }
   }//modifierDemandeAlert
 
-  modifierDemande(demId, dateDebut: string, dateFin: string, motif: string) {
+  modifierDemande(demId, dateDebut: string, dateFin: string, isJourneeComplete, motif: string) {
     // setDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, motif:string
-    this.abiBddCtrl.modDemande(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), demId, dateDebut, dateFin, motif).subscribe(
+    this.abiBddCtrl.modDemande(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), demId, dateDebut, dateFin, isJourneeComplete, motif).subscribe(
       data => {
         if (data) {  // OK         
           console.log("Modification enregsitrée"); // Traiter le cas où c'est ok : un toast par exemple

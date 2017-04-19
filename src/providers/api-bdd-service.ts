@@ -129,9 +129,9 @@ export class ApiBddService {
 
  // Modification d'une demande
  // Renvois :  True (requête réussie), ou False (mauvais userId, demId, ou Token)
-  modDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, motif:string) {
+  modDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, isJourneeComplete:string, motif:string) {
      var url =this.baseUrl + 'type=modDemande&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&id=' + encodeURI(demId) 
-      + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin) + '&motif=' + encodeURI(motif);
+      + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin) +  '&isJourneeComplete=' + encodeURI(isJourneeComplete)  +'&motif=' + encodeURI(motif);
      console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
