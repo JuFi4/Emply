@@ -33,6 +33,19 @@ export class DemandesPage {
     this.isCheckDate = true;
     this.isCheckDatePasse = true;
     this.getDemandes();
+
+    
+    // EXEMPLE D'APPEL DE LA METHODE enregsitrerDemande()
+    // Demande journée complète
+    //this.enregsitrerDemande(2, "2017-05-01", "2017-05-01", 1, "salut") ;
+
+    //Demande journée pas complète
+    //this.enregsitrerDemande(2, "2017-05-03 14:30", "2017-05-03 15:30", 0, "salut");
+
+    // Vu que tu dois mettre les heures et les minutes, tu peux concatener tout ça de cette manière :
+    //this.enregsitrerDemande(idDemande, dateDebut+" "+minudesDebut, dateFin+" "+minutesFin, 0, motif) ;
+    // -> Exemple
+    //this.enregsitrerDemande(2, "2017-05-05"+" "+"14:30", "2017-05-05"+" "+"16:30", 0, "salut") ;
   }//constructor
 
   ionViewDidLoad() {
@@ -161,7 +174,7 @@ export class DemandesPage {
             if (this.isCheckDate) {
               this.faireCheckDatePassee(data.DateDebVac); // Vérifier que les dates ne sont pas dans le passé
               if (this.isCheckDatePasse) {
-                this.enregsitrerDemande(1, data.DateDebVac, data.DateFinVac, data.Motif);
+                //this.enregsitrerDemande(1, data.DateDebVac, data.DateFinVac, data.Motif);
                 console.log(1, data.DateDebVac, data.DateFinVac, data.Motif);
                 this.getDemandes();
               } else {
@@ -212,7 +225,7 @@ export class DemandesPage {
               this.faireCheckDatePassee(data.DateDebRec); //Vérifier que les dates ne sont pas dans le passé
               if (this.isCheckDatePasse) {
                 console.log('Confirmer');
-                this.enregsitrerDemande(id, data.DateDebRec, data.DateFinRec, "");
+                //this.enregsitrerDemande(id, data.DateDebRec, data.DateFinRec, "");
                 console.log(id, data.DateDebRec, data.DateFinRec);
                 this.getDemandes();
               } else {
@@ -263,7 +276,7 @@ export class DemandesPage {
               this.faireCheckDatePassee(data.DateDebRec);// Vérifier que les dates ne sont pas dans le passé
               if (this.isCheckDatePasse) {
                 console.log('Confirmer');
-                this.enregsitrerDemande(5, data.DateDebRec, data.DateFinRec, "");
+               // this.enregsitrerDemande(5, data.DateDebRec, data.DateFinRec, "");
                 console.log(5, data.DateDebRec, data.DateFinRec);
                 this.getDemandes();
               } else {
@@ -320,7 +333,7 @@ export class DemandesPage {
               this.faireCheckDatePassee(data.DateDebInconnue); //Vérifier que les dates ne sont pas dans le passé
               if (this.isCheckDatePasse) {
                 console.log('Confirmer');
-                this.enregsitrerDemande(6, data.DateDebInconnue, data.DateFinRecInconne, data.MotifInconnue);
+                //this.enregsitrerDemande(6, data.DateDebInconnue, data.DateFinRecInconne, data.MotifInconnue);
                 console.log(6, data.DateDebInconnue, data.DateFinRecInconne, data.MotifInconnue);
                 this.getDemandes();
               } else {
@@ -336,9 +349,8 @@ export class DemandesPage {
     prompt.present();
   }//faireDemandeInconnue
 
-  enregsitrerDemande(typeDemId, dateDebut: string, dateFin: string, motif: string) {
-    // setDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, motif:string
-    this.abiBddCtrl.setDemande(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), typeDemId, dateDebut, dateFin, motif).subscribe(
+  enregsitrerDemande(typeDemId, dateDebut: string, dateFin: string, isJourneeComplete, motif: string) {
+    this.abiBddCtrl.setDemande(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), typeDemId, dateDebut, dateFin, isJourneeComplete, motif).subscribe(
       data => {
         if (data) {  // OK         
           console.log("Demande enregsitrée"); // Traiter le cas où c'est ok : un toast par exemple
@@ -449,6 +461,7 @@ export class DemandesPage {
                 new Date(data[i].dateDebut),
                 new Date(data[i].dateFin),
                 data[i].motif,
+                data[i].isJourneeComplete,
                 data[i].statut,
                 data[i].id_typeDemande,
                 data[i].nom_typeDemande

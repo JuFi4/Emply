@@ -213,7 +213,7 @@ export class MeshorairesPage {
                             data => {   
                               if(data) { // Si les données sont bien chargées 
                                   for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données demandes formatées
-                                      this.demandesDuMois.push(new Demande(data[i].id, new Date(data[i].dateDebut), new Date(data[i].dateFin), data[i].motif, "", data[i].id_typeDemande, data[i].nom_typeDemande));
+                                      this.demandesDuMois.push(new Demande(data[i].id, new Date(data[i].dateDebut), new Date(data[i].dateFin), data[i].motif,  data[i].isJourneeComplete, "", data[i].id_typeDemande, data[i].nom_typeDemande));
                                   }//for    
                                   this.traiterControleMensuel(annee, mois, false);  
                                   return;//On sort
