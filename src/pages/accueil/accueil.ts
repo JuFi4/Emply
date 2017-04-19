@@ -28,6 +28,10 @@ export class AccueilPage {
   infoEta : InfosEtablissement;
   idEtablissement;
   dataInfo;
+  annneeCourrante = new Date().getFullYear(); // Année courrante
+  moisCourant = new Date().getMonth();
+  vacancesAnnee : String;
+  jourFerierAnnee : String;
   
 
 
@@ -44,6 +48,7 @@ export class AccueilPage {
 
     //On sync les horaires (calendrier + notification ) ensuite: en récupère les stats, et quand c'est fini, on arrête l'affichage de l'icone de chargement
     syncHoraireCtrl.manangeSync().then(result => this.getStats()).then(result => loader.dismiss());
+    this.getCalcul();
   }//constructor
   
   getStats(){
@@ -76,7 +81,7 @@ export class AccueilPage {
         });
 
 
-    this.apiBddService.getInfosHeuresMois(window.localStorage.getItem('id'), "4","2017", "1").subscribe(
+    this.apiBddService.getInfosHeuresMois(window.localStorage.getItem('id'),"4", "2017", this.idEtablissement).subscribe(
                               dataInfo => {
                                 // @ VANESSA : OK : tout se range bien dans ton objet, par contre j'ai récupéré le "time" comme tu m'avais dit, mais je ne comprend pas bien à quoi il correspond
                                 // Pour droitvacances_annee j'ai : hours:"840", minutes:"57", seconds:"36", time:35.04 et ke trouve que c'est assez bizare : je ne vois pas quelle est l'unité de mesure du "time" !!
@@ -89,7 +94,9 @@ export class AccueilPage {
                                         dataInfo.droitjoursferies_annee,
                                   )                                                                   
                                   console.log("dataInfo");
-                                  console.log(this.infoEta);
+                                  console.log(this.infoEta.droitVacanceAnnee);
+                                  this.vacancesAnnee = this.infoEta.droitVacanceAnnee;
+                                  this.jourFerierAnnee = this.infoEta.droitJourFerieAnnee;
                                   window.localStorage.setItem('getInfoEta', JSON.stringify(this.dataInfo));
                                 } else { // Erreur
                                   console.log("Pas ok");
@@ -98,6 +105,11 @@ export class AccueilPage {
        resolve("Fini");
       });
   }//getStats
+
+  getCalcul(){
+      
+
+  }
 
   ionViewDidLoad() {
     console.log('Hello Accueil Page');

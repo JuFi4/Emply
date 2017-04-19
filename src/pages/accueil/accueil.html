@@ -15,7 +15,6 @@
 </ion-header>
 
 <ion-content padding>
-    <h5 align="center">Hello {{utilisateur}}, bienvenue sur Emply!</h5>
     
     <ion-label>Votre tableau de bord :</ion-label>
     <ion-item>
@@ -32,11 +31,15 @@
     </ion-item>
     <ion-item>
     <ion-label color="primary" stacked>Nombre de jours de vacances : </ion-label>
-    <ion-input type = "text" name = "nbJoursVacances" [disabled] ="inputDisabled"></ion-input>
+    <ion-input type = "text" [disabled] ="inputDisabled" required [(ngModel)]="vacancesAnnee"></ion-input>
     </ion-item>
     <ion-item>
     <ion-label color="primary" stacked>Nombre de jours de vacances à prendre : </ion-label>
     <ion-input type = "text" name = "nbJoursVacancesAPrendre"[disabled] ="inputDisabled"></ion-input>
+    </ion-item>
+    <ion-item>
+    <ion-label color="primary" stacked>Nombre de jours férier à prendre : </ion-label>
+    <ion-input type = "text" name = "nbJoursVacancesAPrendre"[disabled] ="inputDisabled" required [(ngModel)]="jourFerierAnnee"></ion-input>
     </ion-item>
 </ion-content>
 

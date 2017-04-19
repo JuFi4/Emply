@@ -15,20 +15,20 @@ export class ConnectivityService {
   }
  
   isOnline(): boolean {
-    if(this.onDevice && Network.connection){
-      return Network.connection !== Connection.NONE;
-    } else {
-      return navigator.onLine; 
-    }
-    //return true;
+    //if(this.onDevice && Network.connection){
+    //  return Network.connection !== Connection.NONE;
+    //} else {
+    //  return navigator.onLine; 
+   // }
+    return true;
   }
  
   isOffline(): boolean {
-    if(this.onDevice && Network.connection){
-      return Network.connection === Connection.NONE;
-    } else {
-      return !navigator.onLine;   
-    }
-   // return false;
+   // if(this.onDevice && Network.connection){
+   //   return Network.connection === Connection.NONE;
+   // } else {
+   //   return !navigator.onLine;   
+   // }
+    return false;
   }
 }//ConnectivityService

@@ -54,11 +54,15 @@ export class MeshorairesPage {
   pasHeure : boolean;
   isDisabledDay : boolean;
   isHorsLigne : boolean;
-  //autoImport = false;
-  //syncCalendar = false;
-  //calendrierEvents : CalendrierEvent[];
-  //calendrierEventsUpdate : CalendrierEvent[]
-  //etablissement : Etablissement;
+  isVacances : boolean;
+  isMaladie : boolean;
+  isCongeSansSolde : boolean;
+  isFormation : boolean;
+  isPaternite : boolean;
+  isRecuperation : boolean;
+  isAutreDemande : boolean;
+  isAccident : boolean;
+  isCongePaternite : boolean;
   nomCalendrierEvent = "Travail";
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService,
@@ -521,9 +525,124 @@ export class MeshorairesPage {
       console.log(jour);
       this.horaireDuJour = jour.tbHoraire;  
       console.log(this.horaireDuJour);
-      this.pasHeure = this.horaireDuJour.length <= 0; //Contient false si on a pas d'horaire pour ce jour
       this.affichageH = true;
-      this.selJour = jour.jour;      
+      this.selJour = jour.jour; 
+      console.log(jour.isMaladie);
+      this.pasHeure = false;
+      if(this.horaireDuJour.length <= 0){
+          this.isMaladie = false;
+          this.isAccident = false;
+          this.isCongeSansSolde = false;
+          this.isFormation = false;
+          this.isCongePaternite = false;
+          this.isRecuperation = false;
+          this.isAutreDemande = false;
+          this.isVacances = false;
+          this.pasHeure =  true;
+      }
+
+
+      if(jour.isMaladie){
+        console.log("malade");
+        this.isMaladie = true;
+         this.isAccident = false;
+         this.isCongeSansSolde = false;
+          this.isFormation = false;
+          this.isCongePaternite = false;
+          this.isRecuperation = false;
+          this.isAutreDemande = false;
+          this.isVacances = false;
+          this.pasHeure =  false;
+      }
+      if(jour.isAccident){
+        console.log("accident");
+         this.isMaladie = false;
+         this.isAccident = true;
+         this.isCongeSansSolde = false;
+          this.isFormation = false;
+          this.isCongePaternite = false;
+          this.isRecuperation = false;
+          this.isAutreDemande = false;
+          this.isVacances = false;
+          this.pasHeure =  false;
+      }
+      
+      if(jour.isCongeSansSolde){
+        console.log("congé sans solde")
+         this.isMaladie = false;
+         this.isAccident = false;
+         this.isCongeSansSolde = true;
+         this.isFormation = false;
+         this.isCongePaternite = false;
+         this.isRecuperation = false;
+         this.isAutreDemande = false;
+         this.isVacances = false;
+         this.pasHeure =  false;
+      }
+      
+      if(jour.isFormation){
+        console.log("congé de formation");
+          this.isMaladie = false;
+          this.isAccident = false;
+          this.isCongeSansSolde = false;
+          this.isFormation = true;
+          this.isCongePaternite = false;
+          this.isRecuperation = false;
+          this.isAutreDemande = false;
+          this.isVacances = false;
+          this.pasHeure =  false;
+      }
+      
+      if(jour.isPaternite){
+        console.log("conge paternite");
+          this.isMaladie = false;
+          this.isAccident = false;
+          this.isCongeSansSolde = false;
+          this.isFormation = false;
+          this.isCongePaternite = true;
+          this.isRecuperation = false;
+          this.isAutreDemande = false;
+          this.isVacances = false;
+          this.pasHeure =  false;
+      }
+      
+       if(jour.isRecuperation){
+        console.log("recup");
+          this.isMaladie = false;
+          this.isAccident = false;
+          this.isCongeSansSolde = false;
+          this.isFormation = false;
+          this.isCongePaternite = false;
+          this.isRecuperation = true;
+          this.isAutreDemande = false;
+          this.isVacances = false;
+          this.pasHeure =  false;
+      }
+      if(jour.isVacance){
+          this.isMaladie = false;
+          this.isAccident = false;
+          this.isCongeSansSolde = false;
+          this.isFormation = false;
+          this.isCongePaternite = false;
+          this.isRecuperation = false;
+          this.isAutreDemande = false;
+          this.isVacances = true;
+          this.pasHeure =  false;
+      }
+      
+      if(jour.isAutreDemande){
+          this.isMaladie = false;
+          this.isAccident = false;
+          this.isCongeSansSolde = false;
+          this.isFormation = false;
+          this.isCongePaternite = false;
+          this.isRecuperation = false;
+          this.isAutreDemande = true;
+          this.isVacances = false;
+          this.pasHeure =  false;
+      } 
+  
+        
    }//DetailHoraire
 
 

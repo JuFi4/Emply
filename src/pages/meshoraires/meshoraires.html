@@ -75,7 +75,7 @@
 
 </div>
 <div *ngIf="affichageH">
-  <h3 >Vos horaires du {{selJour}}</h3> 
+  <h3 class = "titreH" >Vos horaires du {{selJour}}</h3> 
  <ul>
  <li *ngFor = "let hjours of horaireDuJour">
   <ion-item>
@@ -88,6 +88,30 @@
   </ul> 
 <div *ngIf = "pasHeure">
   <h2 class = "messagePasH"> Vous n'avez pas d'heure aujourd'hui</h2>
+</div>
+<div *ngIf = "isMaladie">
+  <h2 class = "messagePasH"> Vous êtes en congé maladie/accident, rétablissez vous bien</h2>
+</div>
+<div *ngIf = "isAccident">
+  <h2 class = "messagePasH"> Vous êtes en congé maladie/accident, rétablissez vous bien</h2>
+</div>
+<div *ngIf = "isCongeSansSolde">
+  <h2 class = "messagePasH"> Vous avez pris un congé sans solde</h2>
+</div>
+<div *ngIf = "isFormation">
+  <h2 class = "messagePasH"> Vous êtes en formations</h2>
+</div>
+<div *ngIf = "isVacances">
+  <h2 class = "messagePasH"> Vous êtes en vacances</h2>
+</div>
+<div *ngIf = "isCongePaternite">
+  <h2 class = "messagePasH"> Vous êtes en congé paternité</h2>
+</div>
+<div *ngIf = "isRecuperation">
+  <h2 class = "messagePasH"> Vous êtes en congé de récupération</h2>
+</div>
+<div *ngIf = "isAutreDemande">
+  <h2 class = "messagePasH"> Vous êtes actuellement en congé </h2>
 </div>
 </div>
 </ion-content>

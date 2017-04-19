@@ -9,7 +9,7 @@ body {font-family: Verdana, sans-serif;}
 .month {
     padding: 10px 25px;
     width: 100%;
-    background: maroon;
+    background: blue;
 }
 
 /* Month list */
@@ -28,21 +28,6 @@ body {font-family: Verdana, sans-serif;}
     margin-right: center;
 }
 
-/* Previous button inside month header */
-.month .prev {
-    float: left;
-    padding-top: 10px;
-    background: maroon;
-    box-shadow:none;
-}
-
-/* Next button */
-.month .next {
-    float: right;
-    padding-top: 10px;
-    background: maroon;
-    box-shadow:none;
-}
 
 
 /* Weekdays (Mon-Sun) */
@@ -105,7 +90,7 @@ body {font-family: Verdana, sans-serif;}
 .month {
     padding: 10px 25px;
     width: 100%;
-    background: maroon;
+    background: dodgerblue;
 }
 
 /* Month list */
@@ -132,14 +117,14 @@ body {font-family: Verdana, sans-serif;}
 .month .prev {
     float: left;
     padding-top: 10px;
-    background: maroon;
+    background: dodgerblue;
 }
 
 /* Next button */
 .month .next {
     float: right;
     padding-top: 10px;
-    background: maroon;
+    background: dodgerblue;
 }
 
 
@@ -193,15 +178,15 @@ body {font-family: Verdana, sans-serif;}
 }
 
 .isMaladie{   
-    background:yellow;
+    background:cornflowerblue;
 }
 
 .isAccident{   
-    background:salmon;
+    background:dodgerblue;
 }
 
 .isVacance{   
-    background:palegreen;
+    background:blueviolet;
 }
 
 .isPaternite{   
@@ -209,15 +194,15 @@ body {font-family: Verdana, sans-serif;}
 }
 
 .isFormation{   
-    background:aquamarine;
+    background:palevioletred;
 }
 
 .isCongeSansSolde{   
-    background:darkseagreen;
+    background: pink;
 }
 
 .isRecuperation{   
-    background:lightpink;
+    background:hotpink;
 }
 
 .isAutreDemande{   
@@ -250,6 +235,12 @@ body {font-family: Verdana, sans-serif;}
 
 //message
 .messagePasH{
-    color: maroon;
-    font-size: 20px;
+    color: grey;
+    font-size: 15px;
+}
+
+.titreH{
+    color: grey;
+    font-size: 18px;
+
 }

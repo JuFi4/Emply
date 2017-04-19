@@ -14,6 +14,6 @@ export class InfosEtablissement {
     constructor(droitVacanceAnnee : String, droitJourFerieAnnee : String,){
             this.droitVacanceAnnee = droitVacanceAnnee;
             this.droitJourFerieAnnee = droitJourFerieAnnee;
-
     }//constructor
+
 }//Maladie
