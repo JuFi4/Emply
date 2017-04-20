@@ -18,6 +18,17 @@ export class AlertsToasts {
     console.log('Hello AlertsToasts Provider');
   }
 
+  //Pour le provider d'affichage des validation des horaires et les demandes
+  //Alerts pour les demandes dont les dates ne sont pas cohérentes (dateDebut > dateFin)
+  afficherAlertPasValide() {
+    let alert = this.alertCtrl.create({
+      title: "Dates non valide",
+      message: "Vos dates ne sont pas valides. Veuillez mettre une date de debut antérieur à la date de fin",
+      buttons: ['OK']
+    });
+    alert.present();
+  }//afficherAlertPasValide
+
   //Pour la page des demandes
 
   //Alert pour les dates qui sont dans le passé
@@ -28,17 +39,7 @@ export class AlertsToasts {
       buttons: ['Fermer']
     });
     alert.present();
-  }//faireAlertePasOk
-
-  //Alerts pour les demandes dont les dates ne sont pas cohérentes (dateDebut > dateFin)
-  faireAlertePasOkDate() {
-    let alert = this.alertCtrl.create({
-      title: 'Demande non enregistrée',
-      subTitle: 'Vos dates ne sont pas cohérentes.',
-      buttons: ['Fermer']
-    });
-    alert.present();
-  }//faireAlertePasOk
+  }//faireAlertePasOkDatePassee
 
   //Alerts pour les demandes pas enregistrées
   faireAlertePasOk() {
@@ -71,8 +72,8 @@ export class AlertsToasts {
       buttons: ["ok"]
     });
     prompt.present();
-  }
-  
+  }//faireAlertConnexionEchouee
+
   //Toast modification enregistrée
   faireToastModificationEnregistree() {
     let toast = this.toastCtrl.create({
@@ -81,7 +82,7 @@ export class AlertsToasts {
       cssClass: "yourCssClassName",
     });
     toast.present();
-  }
+  }//faireToastModificationEnregistree
 
   //Page login
 
@@ -94,7 +95,7 @@ export class AlertsToasts {
       buttons: ['OK']
     });
     alert.present();
-  }
+  }//faireAlertModeHorsLigne
 
   confirmerDemandeNouveauMotDePasse() {
     let alert = this.alertCtrl.create({
@@ -122,5 +123,6 @@ export class AlertsToasts {
     });
     alert.present();
   }//afficherErreurDeCOnnexion
+
 }
 

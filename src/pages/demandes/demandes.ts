@@ -29,7 +29,8 @@ export class DemandesPage {
   isCheckDate: boolean;
   isCheckDatePasse: boolean;
 
-  constructor(public toastCtrl: ToastController, public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService, private AlertsToasts: AlertsToasts) {
+  constructor(public toastCtrl: ToastController, public navCtrl: NavController, public navParams: NavParams, 
+              public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService, private AlertsToasts: AlertsToasts) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     this.isCheckDate = true;
     this.isCheckDatePasse = true;
@@ -95,7 +96,7 @@ export class DemandesPage {
       }
     });
     alert.present();
-  }
+  }//faireChoixTypeJournee
 
   faireChoixDemande(idTypeDemande) {
     let alert = this.alertCtrl.create();
@@ -296,7 +297,7 @@ export class DemandesPage {
                 this.AlertsToasts.faireAlertePasOkDatePassee();
               }
             } else {
-              this.AlertsToasts.faireAlertePasOkDate();
+              this.AlertsToasts.afficherAlertPasValide();
             }
           }
         }
@@ -365,7 +366,7 @@ export class DemandesPage {
                 this.AlertsToasts.faireAlertePasOkDatePassee();
               }
             } else {
-              this.AlertsToasts.faireAlertePasOkDate();
+              this.AlertsToasts.afficherAlertPasValide();
             }
           }
         }
@@ -437,7 +438,7 @@ export class DemandesPage {
                     this.AlertsToasts.faireAlertePasOkDatePassee();
                   }
                 } else {
-                  this.AlertsToasts.faireAlertePasOkDate();
+                  this.AlertsToasts.afficherAlertPasValide();
                 }
               }
             }
@@ -502,7 +503,7 @@ export class DemandesPage {
                     this.AlertsToasts.faireAlertePasOkDatePassee();
                   }
                 } else {
-                  this.AlertsToasts.faireAlertePasOkDate();
+                  this.AlertsToasts.afficherAlertPasValide();
                 }
               }
             }
@@ -534,7 +535,7 @@ export class DemandesPage {
           this.AlertsToasts.faireAlertePasOk();
         }
       });
-  }//enregsitrerDemande
+  }//modifierDemande
 
   //Récupère la liste des demandes
   getDemandes() {
@@ -584,6 +585,5 @@ export class DemandesPage {
     } else {
       this.isCheckDatePasse = false;
     }
-
   }//faireCheckDatePassee
 }

@@ -8,6 +8,7 @@ import 'rxjs/add/operator/map';
 import { ApiBddService } from '../providers/api-bdd-service';
 import { ConnectivityService } from '../providers/connectivity-service';
 import { ApiPdfService } from '../providers/api-pdf-service';
+import { AlertsToasts } from '../providers/alerts-toasts';
 
 //Models
 import {Horaire} from '../models/horaire';
@@ -22,7 +23,8 @@ export class AffichageValidationHoraireService {
    isHorsLigne = false;
    affichageToday : string;
 
-  constructor( private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService, public pdfCtrl : ApiPdfService, private connectivityService: ConnectivityService) {
+  constructor( private alertCtrl: AlertController, public platform : Platform, private abiBddCtrl: ApiBddService, 
+               public pdfCtrl : ApiPdfService, private connectivityService: ConnectivityService, private AlertsToasts: AlertsToasts) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     this.affichageToday =  new Date().getFullYear() + '-' + ('0' + ( new Date().getMonth() + 1)).slice(-2) + '-' + ('0' +  new Date().getDate()).slice(-2)
 
@@ -196,7 +198,7 @@ afficherDateMaladie(horaire){
             handler: data => {
                console.log('Oui clicked');
                if(data.dateDebut >= data.dateFin){
-                    this.afficherAlertPasValide();
+                    this.AlertsToasts.afficherAlertPasValide();
                }else{
                   if(!this.isHorsLigne){//Si on est pas hors ligne -> OK
                       this.validationHoraire(horaire.id, '', '','maladie');
@@ -218,15 +220,6 @@ afficherDateMaladie(horaire){
       });
       alert.present();
 }//afficherDateMaladie
-
-afficherAlertPasValide(){
-  let alert = this.alertCtrl.create({
-      title: "Dates non valide",
-      message: "Vos dates ne sont pas valides ! Veuillez mettre une date de debut antérieur à la date de fin",
-        buttons: ['OK']
-      });
-      alert.present();
-}//afficherAlertPasValide
 
 afficherDateAccident(horaire){
   let alert = this.alertCtrl.create({
@@ -259,7 +252,7 @@ afficherDateAccident(horaire){
                console.log(data.dateDebut +" "+ data.dateFin);
                if(data.dateDebut >= data.dateFin){
                  console.log(data.dateDebut +" "+ data.dateFin);
-                    this.afficherAlertPasValide();
+                    this.AlertsToasts.afficherAlertPasValide();
                }else{
                     if(!this.isHorsLigne){//Si on est pas hors ligne -> OK
                         this.validationHoraire(horaire.id, '', '','accident');
