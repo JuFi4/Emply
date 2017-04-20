@@ -1,4 +1,3 @@
-
 import { Component, Input} from '@angular/core';
 import{NavController, NavParams, AlertController} from 'ionic-angular';
 import {Calendar} from 'ionic-native';
@@ -29,8 +28,7 @@ import {Maladie} from '../../models/maladie';
   selector: 'page-meshoraires',
   templateUrl: 'meshoraires.html'
 })
-export class MeshorairesPage {
-  
+export class MeshorairesPage {  
   moisListe: Mois[];
   moisSelectionne : Mois;
   semaines : Semaine[]
@@ -43,27 +41,20 @@ export class MeshorairesPage {
   jour : Jour;
   selJour : any = [];
   annee : any = []; 
-  affichageH : Boolean;
-  //horairesFuturs : Horaire[]; // JULIANA :  Voici le tableau qui contient les horaires futurs, il est chargé par this.gethorairesFuturs(), appellé dans le constructeur
-  horaireDuJour : Horaire[]; // Tableau qui contient les horaires du jour selectionné
-  inputDisabled : Boolean;    
+  inputDisabled : boolean;    
   dateCourrante = new Date();
   annneeCourrante = new Date().getFullYear(); // Année courrante
   anneeSelectionne : number; 
-  moisCourant = new Date().getMonth();
-  pasHeure : boolean;
-  isDisabledDay : boolean;
+  moisCourant = new Date().getMonth();  
   isHorsLigne : boolean;
-  isVacances : boolean;
-  isMaladie : boolean;
-  isCongeSansSolde : boolean;
-  isFormation : boolean;
-  isPaternite : boolean;
-  isRecuperation : boolean;
-  isAutreDemande : boolean;
-  isAccident : boolean;
-  isCongePaternite : boolean;
-  nomCalendrierEvent = "Travail";
+
+   horairesDuJour : Horaire[]; // Tableau qui contient les horaires du jour selectionné
+   demandesDuJour : Demande[]; // Tableau qui contient les demandes du jour selectionné  
+   isMaladie = false;
+   isAccident = false;
+   hasHoraire = false;
+   affichageDetailH = false;
+   maladieDuJour : Maladie;
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService,
     public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) {   
@@ -71,82 +62,28 @@ export class MeshorairesPage {
      this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' ||connectivityService.isOffline();
      this.moisService.getSemaine().then(semaines => this.semaines = semaines);
      this.moisService.getMois().then(moisListe => this.moisListe = moisListe).then(result => this.selectionnerMois());
-     this.affichageH = false;
-     this.pasHeure = true;
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante   
-
-     //console.log(window.localStorage.getItem('syncCalendar')); 
-     //this.setAutoImport();// On instancie l'autoImport par rapport à la valeur sauvegardée
-     //console.log("autoImport  " + this.autoImport);
-     //console.log("syncCalendar  " + this.syncCalendar);
-     //console.log(window.localStorage.getItem('syncCalendar')); 
 
      // On fixe les heures, minutes et secondes de la date actuelle à 0
      this.dateCourrante.setHours(0);
      this.dateCourrante.setMinutes(0);
-     this.dateCourrante.setSeconds(0);     
-   
+     this.dateCourrante.setSeconds(0);       
 
      // Méthodes à lancer au chargement de la page
      this.supprimerAnciennesSauvegares(); //Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone    
-     //this.gererCalendrierSmartphone();    //Prépare les éléments nécéssaires pour la gestion du calendrier smartphone   
-     //this.gethorairesFuturs(); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier 
 }//constructor
 
     ionViewDidLoad() {
       console.log('Hello MesHoraires Page');      
     }//ionViewDidLoad
 
-
-  /* saveAutoImportChange(){
-     window.localStorage.setItem('autoImport', this.autoImport.toString());  // Création de la sauvegarde locale de ces horaires (mois et annee) 
-     if(this.autoImport){ // Si on a coché "oui"
-      let alert = this.alertCtrl.create({ // On affiche une alert pour savoir par quel nom appeller les events
-          title: "Nom de l'évenement",
-          message: "Entrez le nom par lequel vous souhaitez appeller vos heures de travail dans votre calendrier : ",
-          inputs: [
-            {
-              name: 'nomEvent',         
-              value : this.nomCalendrierEvent,
-            }          
-          ],
-          buttons: [   
-            {
-              text: 'OK',
-              handler: data => {
-                 this.nomCalendrierEvent = data.nomEvent;//On defini ce nom comme nom pour les event
-                 window.localStorage.setItem('autoImportNomEvent', data.nomEvent);//On enregsitre
-                 this.gethorairesFuturs(true);//On relance le chargement des horaires futurs pour qu'ils se synchronisent
-              }
-            }
-          ]
-        });
-        alert.present();
-     } else { // On a coché non
-        this.supprimerCalendrierEvents();
-     }
-   }//saveAutoImportChange
-   */
-
-   /* setAutoImport(){ // Si on a coché la case dans "paramètre"
-      if(window.localStorage.getItem('autoImport') == "true"){ 
-        this.autoImport = true;
-        if(window.localStorage.getItem('syncCalendar') == "true") { // Si la case vient d'être cochée
-          this.syncCalendar = true;
-          window.localStorage.setItem('syncCalendar', "false"); // On passe à false
-        }
-           
-      }
-    }//setAutoImport*/
-
     selectionnerMois(){
         this.moisSelectionne = this.moisListe[this.moisCourant]; 
-        console.log("this.moisSelectionne " + this.moisSelectionne.nom);
         this.afficherMois();
     }//selectionnerMois
 
     afficherMois(){          
-     this.affichageH = false; // On désactive le détail du jour
+    this.affichageDetailH = false; // On désactive le détail du jour
      this.jours.length = 0;
      this.joursMoisPrecedent.length = 0;
      let premierJoursMois = new Date(this.anneeSelectionne, this.moisSelectionne.moisId, 0).getDay(); // On défini quel est le 1er jours du mois (code de 0 à 6 qui défini quel est le jour de la semaine)
@@ -165,7 +102,6 @@ export class MeshorairesPage {
      // On remplis "des jours du mois d'avant" les permiers jours de la semaine qui ne sont pas de ce mois
      // DOIT ETRE DANS UN TABLEAU SEPARÉ DE jours : c'est très important pour la gestion des indexes
      for(let i = 0; i < premierJoursMois; i++){
-        //this.jours.push(permierJourMoisPrecedentAafficher);
         this.joursMoisPrecedent.push(new Jour(permierJourMoisPrecedentAafficher, null));
         permierJourMoisPrecedentAafficher++; 
      }
@@ -177,7 +113,7 @@ export class MeshorairesPage {
         this.jour = new Jour(i, new Date(this.anneeSelectionne, this.moisSelectionne.moisId, i));
         if(this.moisSelectionne.moisId == this.moisCourant && i == this.dateCourrante.getDate()){ //Si le jour est aujourd'hui
           console.log("Date" + this.dateCourrante);
-          this.jour.setIsAujourdhui(); //On dit que c'est aujourd'hui
+          this.jour.isAujourdhui = true; //On dit que c'est aujourd'hui
           this.detailHoraire(this.jour) // On affiche son détail
         }
         this.jours.push(this.jour);
@@ -188,8 +124,21 @@ export class MeshorairesPage {
     //Récupère la liste des horaires pour l'année et le mois passés en paramètre
     getControleMensuel(annee, mois){
       if(!this.isHorsLigne){ // Si on a internet
-        this.horairesDuMois = []; // On récupère les horaires pour ce mois
-        this.abiBddCtrl.getHorairesMensuels(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe(
+        // 1) on récupres les horaires
+        // 2) Ensuite : on récupère les maladies/ accidents pour ce mois
+        // 3) Ensuite: on récupàre les demandes validées pour ce mois
+        // 4) Ensuite : on traite tout ça
+        this.getHorairesMensuels(annee, mois).then(result => this.getMaladiesParMois(annee, mois)).then(result => this.getDemandesParMois(annee, mois)).then(result => this.traiterControleMensuel(annee, mois, false));
+      } else {//Mode hors ligne : traitement des données avec l'indicateur hors ligne
+         this.traiterControleMensuel(annee, mois, true);     
+      }         
+    }//getControleMensuel
+
+    // Retourne une Promise toujours résolue pour gérer l'asynchronicité
+    getHorairesMensuels(annee, mois){
+      return new Promise((resolve, reject) => {
+          this.horairesDuMois = []; // On récupère les horaires pour ce mois
+          this.abiBddCtrl.getHorairesMensuels(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe(
           data => {  
             if(data) { // Si les données sont bien chargées 
                 for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données des horaires formatées
@@ -201,38 +150,52 @@ export class MeshorairesPage {
                       );                    
                        this.jours[dateHoraire.getDate()-1].addHoraire(horaire);//On ajoute l'horaire au jours auquel il a lieu
                   }//for
-                  this.maladiesDuMois = []; // On récupère les maladies pour ce mois
-                  this.abiBddCtrl.getMaladiesParMois(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe(
-                    data => {  
-                      if(data) { // Si les données sont bien chargées 
-                          for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données demandes formatées
-                              this.maladiesDuMois.push(new Maladie(data[i].id, new Date(data[i].dateDebut), new Date(data[i].dateFin), (data[i].isAccident === "1" ? true : false)));                              
-                          }//for
-                          this.demandesDuMois = []; // On récupére les demandes pour ce mois
-                          this.abiBddCtrl.getDemandesParMois(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe(
-                            data => {   
-                              if(data) { // Si les données sont bien chargées 
-                                  for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données demandes formatées
-                                      this.demandesDuMois.push(new Demande(data[i].id, new Date(data[i].dateDebut), new Date(data[i].dateFin), data[i].motif,  data[i].isJourneeComplete, "", data[i].id_typeDemande, data[i].nom_typeDemande));
-                                  }//for    
-                                  this.traiterControleMensuel(annee, mois, false);  
-                                  return;//On sort
-                                } else { // Erreur: Si on a pas pu charger, on affiche quand même les horaires et maladies chargés
-                                    this.traiterControleMensuel(annee, mois, false);  
-                                }            
-                            });
-                        } else { // Erreur: Si on a pas pu charger, on affiche quand même les horaires chargés
-                           this.traiterControleMensuel(annee, mois, false);  
-                        }               
-                    });
-              } else { // Erreur: Si on a pas pu charger les horaires, les affiche comme en mode hors ligne
-                 this.traiterControleMensuel(annee, mois, true);
+                  resolve(true); // On résout la promise à true
+              } else {       
+                 resolve(false);  // On résout la promise à false  
               }              
           }); 
-      } else {//Mode hors ligne : traitement des données avec l'indicateur hors ligne
-         this.traiterControleMensuel(annee, mois, true);
-      }         
+      });
     }//getHorairesMensuels
+
+    // Retourne une Promise toujours résolue pour gérer l'asynchronicité
+   getMaladiesParMois(annee, mois){
+      return new Promise((resolve, reject) => {
+       this.maladiesDuMois = []; //On initialise l'array
+        this.abiBddCtrl.getMaladiesParMois(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe(
+           data => {  
+               if(data) { // Si les données sont bien chargées 
+                  for(let i = 0; i < data.length; i++){ //Remplissage du tableau maladies avec les données demandes formatées
+                    console.log(data[i]);
+                      // Bug très étranger à régler
+                      //let mal = new Maladie(test.id, new Date(test.dateDebut), new Date(test.dateFin), test.isAccident);
+                      //this.maladiesDuMois.push(new Maladie(data[i].id, new Date(data[i].dateDebut), new Date(data[i].dateFin), data[i].isAccident));                              
+                   }//for
+                    resolve(true); // On résout la promise à true
+               } else {
+                   resolve(false); // On résout la promise à false 
+              }              
+          });
+       });
+   }//getMaladiesParMois
+
+   // Retourne une Promise toujours résolue pour gérer l'asynchronicité
+   getDemandesParMois(annee, mois){
+     return new Promise((resolve, reject) => {
+        this.demandesDuMois = []; //On initialise l'array
+        this.abiBddCtrl.getDemandesParMois(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee, mois).subscribe(
+            data => {   
+              if(data) { // Si les données sont bien chargées 
+                   for(let i = 0; i < data.length; i++){ //Remplissage du tableau demandes avec les données demandes formatées
+                       this.demandesDuMois.push(new Demande(data[i].id, new Date(data[i].dateDebut), new Date(data[i].dateFin), data[i].motif,  data[i].isJourneeComplete, "", data[i].id_typeDemande, data[i].nom_typeDemande));
+                   }//for    
+                  resolve(true); // On résout la promise à true
+               } else {
+                 resolve(false); // On résout la promise à false     
+               }            
+          });       
+     });
+   }//getDemandesParMois
 
   // Traitement des données du controle mensuel 
   traiterControleMensuel(annee, mois, isHorsLigne){   
@@ -243,7 +206,7 @@ export class MeshorairesPage {
           }
       }//for
       window.localStorage.setItem("getControleMensuel_"+ annee +"_"+ mois, JSON.stringify(this.jours));//On enregsitre
-    } else{ //Si on est hors-ligne: on récupère les jours enregistrés en local*/
+    } else { //Si on est hors-ligne: on récupère les jours enregistrés en local*/
       let savedJours : Jour[];
       savedJours= JSON.parse(window.localStorage.getItem("getControleMensuel_"+ annee +"_"+ mois));//On récuèr les jours sauvegardés      
       if(savedJours != null && savedJours.length > 0) {//Si ces jours existement 
@@ -255,258 +218,37 @@ export class MeshorairesPage {
     }
   }//traiterControleMensuel
 
-
-    setMaladieOnJour(jour : Jour) : boolean {
+   setMaladieOnJour(jour : Jour) : boolean {
+     let output = false;
       for(let i = 0; i < this.maladiesDuMois.length; i++){
         if(jour.date.setHours(0) >= this.maladiesDuMois[i].dateDebut.setHours(0) && jour.date.setHours(0) <= this.maladiesDuMois[i].dateFin.setHours(0)){ // Si on était malade ce jours là
-            jour.hasHoraire = false; //On annule l'horaire
-            if(this.maladiesDuMois[i].isAccident){
-              jour.setIsAccident();
-            } else {
-              jour.setIsMaladie();
-            }
+          jour.setMaladie(this.maladiesDuMois[i]);
+            output = true;
         }
       }
-      return false;
-    }//setMaladieOnJour
+      return output;
+   }//setMaladieOnJour
 
     setDemandeOnJour(jour : Jour) : boolean {
       for(let i = 0; i < this.demandesDuMois.length; i++){
-        if(jour.date.setHours(0) >= this.demandesDuMois[i].dateDebut.setHours(0) && jour.date.setHours(0) <= this.demandesDuMois[i].dateFin.setHours(0)){ // Si on avais une demande pour ce jours là
-            jour.hasHoraire = false; //On annule l'horaire pour ce jour
-            switch(parseInt(this.demandesDuMois[i].id_typeDemande)) {
-              case 1:
-                  jour.setIsVacance();
-                  break;
-              case 2:
-                  jour.setIsFormation();
-                  break;
-              case 3:
-                  jour.setIsPaternite();
-                  break;
-              case 4:
-                  jour.setIsCongeSansSolde();
-                  break;
-              case 5:
-                  jour.setIsRecuperation();
-                  break;
-              case 6:
-                  jour.setIsAutreDemande();
-                  break;
-              case 7:
-                  jour.setIsDemenagement();
-                  break;
-              case 8: 
-                  jour.setIsDemenagement();
-                  break;
-              case 9:
-                  jour.setIsMilitaire();
-                  break;
-              case 10:
-                  jour.setIsMaternite();
-                  break;
-              case 11:
-                  jour.setIsConge();    
-              
-          }
-          return true;
+        // On règle les heures, minutes et secondes à zéro pour que la comparaison fonctionne
+        jour.date.setHours(0);
+        jour.date.setMinutes(0);
+        jour.date.setSeconds(0);
+        this.demandesDuMois[i].dateDebut.setHours(0) ;
+        this.demandesDuMois[i].dateDebut.setMinutes(0);
+        this.demandesDuMois[i].dateDebut.setSeconds(0);
+        this.demandesDuMois[i].dateFin.setHours(0);
+        this.demandesDuMois[i].dateFin.setMinutes(0);
+        this.demandesDuMois[i].dateFin.setSeconds(0);
+
+        if(jour.date >= this.demandesDuMois[i].dateDebut && jour.date <= this.demandesDuMois[i].dateFin){ // Si on avais une demande pour ce jours là
+            jour.addDemande(this.demandesDuMois[i]); //On ajoute la demande ce jour  
+            return true;
         }
       }
       return false;
-    }//setDemandeOnJour
-
-  /*public gethorairesFuturs(){       
-    if(!this.isHorsLigne){ // Si on a internet
-              this.abiBddCtrl.getHorairesFuturs(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
-                data => {  
-                  if(data) { // Si les données sont bien chargées 
-                      console.log("PAs d'erreur");
-                      let dataToString = JSON.stringify(data); //On passe les données en string de JSON pour pouvoir les comparer avec la sauvegarde      
-                      let isNewData =   dataToString != window.localStorage.getItem('getHorairesFuturs'); // On compare les horaires stockés avec les nouveaux horaires chargés
-                       console.log("isNewData : " + isNewData);
-                      if(isNewData){ // Si il y a des changement
-                          window.localStorage.setItem('getHorairesFuturs', dataToString);//On sauvegarde les nouveaux horaires en local         
-                          this.enregsitrerReceptionHoraire();// On lance l'enregsitrement de l'accusé de récéption                  
-                           //Récupèration des données de l'établissement de l'utilisateur pour pouvoir l'indiquer dans les nouveau envents calendrier 
-                            this.abiBddCtrl.getEtablissement(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(etablissement => {
-                                if(etablissement) { // OK  
-                                    this.etablissement = <Etablissement>etablissement[0];  // On enregsitre l'établissement
-                                     window.localStorage.setItem('etablissement', JSON.stringify(this.etablissement));//On sauvegarde l'établissement en local
-                                } 
-                                this.traiterHorairesFuturs(data, true); // On peut maintenant traiter les horaires avec l'indicateur de nouvelles données
-                          });                          
-                                            
-                      } else { // On peut traiter directement les horaires en disant qu'il n'y a pas de nouvelles données, sauf si on doit synchroniser le calendrier                  
-                          this.traiterHorairesFuturs(data, this.syncCalendar); 
-                      }
-                      // Dans tous les cas: on  programme une notification locale pour les horaires en attente de validation
-                      this.enregistrerNotificationAttenteValidation();
-                      // Dans tous les cas: on  programme une notification locale pour la validation mensuelle
-                      this.enregistrerNotificationMensuelle();         
-                    } else { 
-                        console.log("Erreur");
-                    }              
-                }); 
-        } else { // Mode hors ligne 
-            //Si l'établissement est défini en local storage                      
-            if(window.localStorage.getItem('etablissement') != null && window.localStorage.getItem('etablissement')  != 'undefined'){
-                this.etablissement = <Etablissement>JSON.parse(window.localStorage.getItem('etablissement'));//On récupère l'établissement
-            }
-            // Traitement des horaires à partir des données sauvegardés : mode hors-ligne, ou synchronisation du calendrier au cas ou les horaires n'ont pas changés
-            this.traiterHorairesFuturs(JSON.parse(window.localStorage.getItem('getHorairesFuturs')), this.syncCalendar);      
-        }
-    }//gethorairesFuturs*/
-
-   /* enregsitrerReceptionHoraire(){
-       // On laisse le subscribe vide car on ne traite pas le cas ou la requête ne fonctionne pas
-      this.abiBddCtrl.setValVueHoraire(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(); 
-    }//enregsitrerReceptionHoraire*/
-
-
-   /* traiterHorairesFuturs(data, isNewData){
-      this.horairesFuturs = [] // On instancie le tableau des horaires futures
-      let verifierCalendrierEvents = (data.length > 0) ? false : true; // On instancie la vérification des horaire futurs à false, SAUF si le tableau des nouveaux horaires est vide
-      for(let i = 0; i < data.length; i++){ //Remplissage du tableau horaires avec les données des horaires formatées
-        let dateHoraire = new Date(data[i].date);
-        let horaire =  new Horaire(data[i].id, 
-          dateHoraire,         
-          new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[i].heureDebut, data[i].minuteDebut),
-          new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[i].heureFin, data[i].minuteFin)
-        );            
-        this.horairesFuturs.push(horaire);  // On ajoute l'horaire dans le tableau
-
-        this.enregistrerNotification(horaire);// On enregsitre la notification
-
-        // Si les horaires ont été modifiés par rapport à la copie locale, on enregsitre l'horaire dans le calendrier du smartphone si besoin
-        // -> inutile de fair toute cela si ls horaires n'ont pas changé car  et l'event dans le calendrier pour cet horaire aura forcément déja été crée
-         if(isNewData && this.autoImport){       
-               this.enregsitrerDansCalendrierSmartphone(horaire); // On enregsitrer dans le calendrier du smartphone
-               verifierCalendrierEvents = true;          
-        } else {
-           console.log("Aucune modification des horaires - pas besoin de vérifier  les events");
-        } 
-      } //For
-
-      if(verifierCalendrierEvents){ // A l fin e la boucle: si on est dans un cas où le calendrier à pu être modifié
-          this.updateCalendrierEvents(); // Vérifie si certains anciens events ont disparus et sauve la liste actuallisée 
-      }
-    }//traiterHorairesFuturs*/
-
-    // Supprime tous les events futurs programmés dans le calendrier
-   /* supprimerCalendrierEvents(){
-       console.log("supprimerCalendrierEvents");
-      for(let i = 0; i < this.calendrierEvents.length; i++){ //On boucle sur les events enregsitrée
-        console.log("On supprime " + this.calendrierEvents[i].startDate);
-           Calendar.deleteEvent( // On supprime l'event du calendrier
-              this.calendrierEvents[i].title,
-              this.calendrierEvents[i].location,
-              this.calendrierEvents[i].notes,
-              this.calendrierEvents[i].startDate,
-              this.calendrierEvents[i].endDate);  
-      }//for    
-      this.calendrierEvents = []; // On vide l'array des calendrier Events
-      window.localStorage.setItem('calendrierEvents', JSON.stringify(this.calendrierEvents));// On enregsitre la modification en local storage 
-    }//supprimerCalendrierEvents*/
-
-    // Compare la liste des events mise à jour avec l'ancienne liste, et effectue les suppressions nécéssaires dans le calendrier du smartphone
-    /*updateCalendrierEvents(){
-      for(let i = 0; i < this.calendrierEvents.length; i++){ //On boucle sur les anciens events
-         if(this.eventStateInList(this.calendrierEvents[i], this.calendrierEventsUpdate) === -2){  // Si l'ancien even n'est pas dans la liste mise à jour
-          console.log("On supprime : " + this.calendrierEvents[i].id + " : " + this.calendrierEvents[i].startDate+ " : " + this.calendrierEvents[i].endDate);  
-           Calendar.deleteEvent( // On supprime l'event du calendrier
-              this.calendrierEvents[i].title,
-              this.calendrierEvents[i].location,
-              this.calendrierEvents[i].notes,
-              this.calendrierEvents[i].startDate,
-              this.calendrierEvents[i].endDate);
-         }
-      }//for    
-      console.log(this.calendrierEvents);  
-      console.log(this.calendrierEventsUpdate);  
-      this.calendrierEvents = this.calendrierEventsUpdate; // On replace a liste par celle mise à jour 
-      this.calendrierEventsUpdate = []; // On vide la liste des uptate events
-      window.localStorage.setItem('calendrierEvents', JSON.stringify(this.calendrierEvents));// On enregsitre la liste en local storage  
-    }//updateCalendrierEvents
-
-    enregsitrerDansCalendrierSmartphone(horaire: Horaire){
-        let location ="";
-        let note = "";
-        if(this.etablissement != null){ //Si on a bien un établissement
-            location = this.etablissement.nom+", "+this.etablissement.adresse + (this.etablissement.adresseInfo != null ? ", "+this.etablissement.adresseInfo : "")  + ", " + this.etablissement.codePostal+", "+this.etablissement.localite;
-            note =  "Téléphone direction: "+this.etablissement.telDirection + "\nEmail: "+this.etablissement.email;
-        } 
-        // On formate un CalendrierEvent pour cet horaire 
-       let event = new CalendrierEvent(this.nomCalendrierEvent, 
-           location,
-           note,
-           horaire.heureDebut, 
-           horaire.heureFin, 
-           horaire.id
-       );       
-       let eventState  = this.eventStateInList(event, this.calendrierEvents);
-       console.log("Event  : "+ event.id + " -> "+ eventState);
-       if(eventState === -2 || eventState >= 0){ // L'event n'existe pas, ou qu'il a changé: on le créer           
-          if(eventState >= 0){//Si l'event existe déja, mais à une date différente : on supprime celui qui est enregsitré
-            console.log("On supprime l'event : " + event.startDate);
-            Calendar.deleteEvent( // On supprime l'event du calendrier
-              this.calendrierEvents[eventState].title,
-              this.calendrierEvents[eventState].location,
-              this.calendrierEvents[eventState].notes,
-              this.calendrierEvents[eventState].startDate,
-              this.calendrierEvents[eventState].endDate).then(
-                (msg) => { // Une fois que l'event a bien été supprimé : on va le re-créer
-                  console.log("Delete OK " ) ;
-                  Calendar.createEvent(event.title, event.location, event.notes, event.startDate, event.endDate).then(  // On enregsitre l'évenement dans le calendrier
-                    (msg) => { console.log("Création OK"); }, // On enregsitre l'évenement dans le calendrier
-                    (err) => { console.log("Creation erreur " +err); }
-                  );   
-              }, // On enregsitre l'évenement dans le calendrier
-                (err) => { console.log("Delete erreur " + err) }   
-              );
-          } else {//Sinon
-              // On créer / re-créer l'event
-              console.log("On créer l'event : " + event.startDate);
-              Calendar.createEvent(event.title, event.location, event.notes, event.startDate, event.endDate).then(  // On enregsitre l'évenement dans le calendrier
-                    (msg) => { console.log("Création OK"); },
-                    (err) => { console.log("Creation erreur " +err); }
-              );    
-          }    
-       }   
-      this.calendrierEventsUpdate.push(event); // Dans tous les cas:  on enregsitre l'event dans la liste mise à jour
-    }//enregsitrerDansCalendrierSmartphone
-
-    // Prépare les éléments nécéssaires pour la gestion du calendrier smartphone
-     gererCalendrierSmartphone(){             
-        this.calendrierEvents = []; // Instanciation de l'array qui contient les events déja enregsitrés
-        this.calendrierEventsUpdate = []; // Instanciation de l'array qui stock les nouveau events
-        try{
-              let data = JSON.parse(window.localStorage.getItem('calendrierEvents')); // On récupère les events précédement crées depuis la mémoire locale
-              console.log(data);
-              for(let i = 0; i < data.length; i++){
-                  let event = new CalendrierEvent(data[i].title, data[i].location, data[i].notes, new Date(data[i].startDate), new Date(data[i].endDate), data[i].id);
-                  if(event.endDate >= this.dateCourrante){ // Si l'event à lieux aujourd'hui ou dans le futur
-                      this.calendrierEvents.push(event)//On le prend dans la liste d'events
-                  }
-              }
-        } catch(Exception){}           
-        if(window.localStorage.getItem('autoImportNomEvent') != "undefined" && window.localStorage.getItem('autoImportNomEvent') != null){
-          this.nomCalendrierEvent = window.localStorage.getItem('autoImportNomEvent');//On récupère le nom par leqeul on veut sauver les events
-      }
-    }//gererCalendrier
-
-    eventStateInList(event : CalendrierEvent, liste : CalendrierEvent[]) : number{
-      for(let i = 0; i < liste.length; i++){
-          if(liste[i].id === event.id){
-              if(liste[i].startDate.getTime() === event.startDate.getTime() 
-                  && liste[i].endDate.getTime() === event.endDate.getTime()){
-                return -1; // L'event existe, avec les mêmes dates : retourne -1
-              } else {
-                return i; // L'event existe, mais à des dates différents on retourne son index
-              }
-          }
-      }
-      return -2; // L'event n'existe pas : retourne -2
-    }//eventStateInList*/
+    }//setDemandeOnJour  
 
     // Supprime les sauvegardes locales trop anciennes pour ne pas surcharger le téléphone
     supprimerAnciennesSauvegares(){
@@ -519,33 +261,39 @@ export class MeshorairesPage {
       }     
     }//supprimerAnciennesSauvegares   
 
-    // Enregsitre la notification locale pour l'horaire passé en paramètre
-  /*  enregistrerNotification(horaire : Horaire){
-        if(horaire.heureFin > new Date()){ // Si l'horaire est dans le futur (on ne va pas enregistrer des notif pour un horaire passé !)          
-          this.notificationsLocalesCtrl.scheduleNotificationFinDeService(horaire); // On enregsitre la notification locale
-        } else {
-          console.log("On enregsitre pas de notification pour cet horaire : " + horaire.heureFin);
-        }
-    }//enregistrerNotification
-
-    // Enregsitre la notification locale mensuelle pour la date passée en paramètre
-    enregistrerNotificationMensuelle(){
-        this.notificationsLocalesCtrl.scheduleNotificationValidationMensuelle(); // On enregsitre la notification locale de fin de mois        
-    }//enregistrerNotification
-
-    enregistrerNotificationAttenteValidation() {
-        this.notificationsLocalesCtrl.scheduleNotificationAttenteValidation();
-    }//enregistrerNotificationAttenteValidation*/
+    // Remise à zéro des paramètres du détail d'un horaire
+    resetDetailHoraire(){
+      this.isMaladie = false;
+      this.isAccident = false;
+      this.hasHoraire = false;
+      this.horairesDuJour = []
+      this.demandesDuJour = []
+      this.affichageDetailH = true;
+      this.maladieDuJour = null;
+    }//resetDetailHoraire
     
     detailHoraire(jour : Jour){
+      this.resetDetailHoraire(); //  DRY ;)
       console.log(jour);
-      this.horaireDuJour = jour.tbHoraire;  
-      console.log(this.horaireDuJour);
-      this.affichageH = true;
+      if(jour.hasHoraire){ this.horairesDuJour = jour.tbHoraire; this.hasHoraire = true;}
+      if(jour.hasDemande) {  this.demandesDuJour = jour.tbDemande; }
+      if(jour.isAccident) { this.isAccident = true;  }
+      if(jour.isMaladie){ this.isMaladie = true; }
+      if(jour.enMaladie != null ) { this.maladieDuJour = jour.enMaladie;}
+      console.log("jour.hasDemande : " + jour.hasDemande);
+      console.log(jour.tbDemande);
+
       this.selJour = jour.jour; 
-      console.log(jour.isMaladie);
-      this.pasHeure = false;
-      if(this.horaireDuJour.length <= 0){
+
+      // ??????? POURQUOI ?????
+      // OÙ EST LE DRY ?????????????????????????????
+      // ??????????????????????????????????????????
+
+      //----------------------------------------------
+      // PERSONNE FAIT CA !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      /*if(this.horaireDuJour.length <= 0){
           this.isMaladie = false;
           this.isAccident = false;
           this.isCongeSansSolde = false;
@@ -657,13 +405,12 @@ export class MeshorairesPage {
           this.isVacances = false;
           this.pasHeure =  false;
       } 
-  
+  */
         
    }//DetailHoraire
 
 
     goToMoisPrecedent(){
-      console.log("mois d'avant");
       // On regarde quel est le mois précédent (par rapport au moisId)
       let idMois = this.moisSelectionne.moisId - 1;
       // Si on est en janvier, c'est décembre (ID 11), et on change également d'année (décrément)
@@ -677,7 +424,6 @@ export class MeshorairesPage {
     }//goToMoisPrecedent
 
     goToMoisSuivant(){
-      console.log("mois d'après");
       // On regarde quel est le mois suivante (par rapport au moisId)
       let idMois = this.moisSelectionne.moisId +1;
       // Si on est en décembre, c'est janvier (ID 0), et on change également d'année (incrément)
@@ -700,7 +446,6 @@ export class MeshorairesPage {
         this.goToMoisPrecedent();
       }
     }//changerMois
-
 
    isAnneeBissextile(annee){
       return new Date(annee, 2, 0).getDate() == 29

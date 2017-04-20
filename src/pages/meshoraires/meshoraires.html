@@ -15,7 +15,9 @@
     <ion-title>Mes horaires</ion-title>
    </ion-toolbar>
 </ion-header>
-<ion-content padding><!--
+<ion-content padding>
+
+<!--
 <ion-item>
   <ion-label>Choisir un mois</ion-label> 
     <ion-select [(ngModel)]= "mois" (ngModelChange)= "onChange(mois)">
@@ -28,7 +30,9 @@
     <ion-label>Synchroniser les nouveaux horaires dans le calendrier</ion-label>
     <ion-checkbox [(ngModel)]="autoImport"  (click)="saveAutoImportChange()" [disabled] ="isHorsLigne"></ion-checkbox>
   </ion-item>-->
+
 <div *ngIf = "annee && moisSelectionne"  (swipe)="changerMois($event)">
+
 <div class="month"> 
   <ul>
     <button  class="prev" ion-button (click)="goToMoisPrecedent()">&#10094;</button>
@@ -47,8 +51,6 @@
     <span>{{semaine.nom}}</span></li>
 </ul>
 
-
-
 <ul class="days"> 
   <li  *ngFor ="let i of joursMoisPrecedent">
    <button class="detailJour" ion-button disabled="true" > 
@@ -56,62 +58,47 @@
    </button>
   </li>
   <li  *ngFor ="let i of jours">
-   <button class="detailJour" ion-button (click)="detailHoraire(i)"         
-        [class.hasHoraire]="i.hasHoraire"
-        [class.isAujourdhui]="i.isAujourdhui"
+   <button class="detailJour" ion-button (click)="detailHoraire(i)"        
         [class.isMaladie]="i.isMaladie"
-        [class.isAccident]="i.isAccident"
-        [class.isVacance]="i.isVacance"
-        [class.isFormation]="i.isFormation"
-        [class.isPaternite]="i.isPaternite"
-        [class.isCongeSansSolde]="i.isCongeSansSolde"
-        [class.isRecuperation]="i.isRecuperation"
-        [class.isAutreDemande]="i.isAutreDemande"> 
+        [class.isAccident]="i.isAccident"      
+        [class.hasDemande]="i.hasDemande && !i.hasHoraire" 
+        [class.hasHoraire]="i.hasHoraire"
+        [class.isAujourdhui]="i.isAujourdhui">     
      {{i.jour}}    
    </button>
   </li>
 </ul>
+</div>
 
+<div *ngIf="affichageDetailH">
 
-</div>
-<div *ngIf="affichageH">
-  <h3 class = "titreH" >Vos horaires du {{selJour}}</h3> 
- <ul>
- <li *ngFor = "let hjours of horaireDuJour">
-  <ion-item>
-      <ion-label>Horaire début :</ion-label> <ion-input disabled ="true" required [(ngModel)]="hjours.affichageHeureDebut" name = "debut"></ion-input>
-  </ion-item>
-  <ion-item >
-      <ion-label>Horaire fin :</ion-label> <ion-input  disabled ="true" required [(ngModel)]="hjours.affichageHeureFin" name = "fin"></ion-input>   
-  </ion-item>
-  </li>
-  </ul> 
-<div *ngIf = "pasHeure">
-  <h2 class = "messagePasH"> Vous n'avez pas d'heure aujourd'hui</h2>
-</div>
-<div *ngIf = "isMaladie">
-  <h2 class = "messagePasH"> Vous êtes en congé maladie/accident, rétablissez vous bien</h2>
-</div>
-<div *ngIf = "isAccident">
-  <h2 class = "messagePasH"> Vous êtes en congé maladie/accident, rétablissez vous bien</h2>
-</div>
-<div *ngIf = "isCongeSansSolde">
-  <h2 class = "messagePasH"> Vous avez pris un congé sans solde</h2>
-</div>
-<div *ngIf = "isFormation">
-  <h2 class = "messagePasH"> Vous êtes en formations</h2>
-</div>
-<div *ngIf = "isVacances">
-  <h2 class = "messagePasH"> Vous êtes en vacances</h2>
-</div>
-<div *ngIf = "isCongePaternite">
-  <h2 class = "messagePasH"> Vous êtes en congé paternité</h2>
-</div>
-<div *ngIf = "isRecuperation">
-  <h2 class = "messagePasH"> Vous êtes en congé de récupération</h2>
-</div>
-<div *ngIf = "isAutreDemande">
-  <h2 class = "messagePasH"> Vous êtes actuellement en congé </h2>
-</div>
+  <div *ngIf = "hasHoraire">
+    <h2 class = "titreH"> Horaires du {{selJour}}</h2>
+      <ul>
+        <li *ngFor = "let hjours of horairesDuJour">
+          <ion-item>
+              <ion-label>Horaire début : {{ hjours.affichageHeureDebut }}</ion-label>
+          </ion-item>
+          <ion-item >
+              <ion-label>Horaire fin : {{hjours.affichageHeureFin}} </ion-label>  
+          </ion-item>
+          </li>
+      </ul> 
+  </div>
+
+  <div *ngFor = "let demande of demandesDuJour">
+    <h2 class = "titreH"> {{ demande.nom_typeDemande }} </h2>
+    <ion-item>Date de début : {{ demande.affichageDateDebut }}  </ion-item>
+     <ion-item>Date de fin : {{ demande.affichageDateFin }} </ion-item>
+  </div>
+
+  <div *ngIf = "isMaladie"><h2 class = "titreH"> Congé maladie</h2>
+    <ion-item>Du {{ maladieDuJour.affichageDateDebut }} au {{ maladieDuJour.affichageDateFin }}</ion-item>
+  </div>
+  
+
+  <div *ngIf = "isAccident"><h2 class = "titreH"> Congé accident</h2>
+    <ion-item>Du {{ maladieDuJour.affichageDateDebut }} au {{ maladieDuJour.affichageDateFin }}</ion-item>
+  </div>
 </div>
 </ion-content>

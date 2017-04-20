@@ -1,29 +1,26 @@
 
-import {Horaire} from '../models/horaire'
+import {Horaire} from '../models/horaire';
+import {Demande} from '../models/demande';
+import {Maladie} from '../models/Maladie';
+
 export class Jour {
     jour: number;
     date : Date;
     tbHoraire : Horaire[];
+    tbDemande : Demande[];
+    enMaladie : Maladie;
     hasHoraire = false;
+    hasDemande = false;
+    isAujourdhui = false;
     isMaladie = false;
     isAccident = false;
-    isVacance = false;
-    isFormation = false;
-    isPaternite = false;
-    isCongeSansSolde = false;
-    isRecuperation = false;
-    isAutreDemande = false;
-    isAujourdhui = false;
-    isConge = false;
-    isMilitaire = false;
-    isMaternite = false;
-    isDeces = false;
-    isDemenagement = false;   
     
     constructor(jour, date : Date){
         this.tbHoraire = [];
+        this.tbDemande = [];
         this.jour = jour;
         this.date = date;
+        this.enMaladie = null;
     }//constructor
 
     addHoraire(horaire : Horaire){
@@ -31,18 +28,18 @@ export class Jour {
         this.hasHoraire = true;
     }//addHoraire
 
-    setIsMaladie(){ this.isMaladie = true; }
-    setIsAccident(){ this.isAccident = true; }
-    setIsVacance(){ this.isVacance = true; }
-    setIsPaternite(){ this.isPaternite = true; }
-    setIsFormation(){ this.isFormation = true; }
-    setIsCongeSansSolde(){ this.isCongeSansSolde = true; }
-    setIsRecuperation(){ this.isRecuperation = true; }
-    setIsAutreDemande(){ this.isAutreDemande = true; }
-    setIsAujourdhui(){ this.isAujourdhui = true; }
-    setIsMilitaire(){this.isMilitaire = true;}
-    setIsMaternite(){this.isMaternite = true;}
-    setIsDeces(){this.isDeces = true;}
-    setIsDemenagement(){this.isDemenagement = true;}
-    setIsConge(){this.isConge = true;}
+     setMaladie(maladie : Maladie){
+        this.enMaladie = maladie;
+        this.hasHoraire = false;
+        if(maladie.isAccident) { this.isAccident = true } else { this.isMaladie = true }
+    }//addHoraire
+
+     addDemande(demande : Demande){
+        this.tbDemande.push(demande);   
+        this.hasDemande = true;     
+        if(demande.isJourneeComplete) { //Si c'est une journée complete : on annule l'horaire et on met la jour comme "demande"
+            this.hasHoraire = false; 
+        }
+    }//addDemande
+
 }//Jour

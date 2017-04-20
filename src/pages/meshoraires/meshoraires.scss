@@ -185,27 +185,7 @@ body {font-family: Verdana, sans-serif;}
     background:deepskyblue;
 }
 
-.isVacance{   
-    background:violet;
-}
-
-.isPaternite{   
-    background:violet;
-}
-
-.isFormation{   
-    background:violet;
-}
-
-.isCongeSansSolde{   
-    background: violet;
-}
-
-.isRecuperation{   
-    background:violet;
-}
-
-.isAutreDemande{   
+.hasDemande{   
     background:violet;
 }
 
@@ -233,14 +213,9 @@ body {font-family: Verdana, sans-serif;}
     color: white !important
 }
 
-//message
-.messagePasH{
-    color: grey;
-    font-size: 15px;
-}
-
 .titreH{
+    padding-top: 10px;
     color: grey;
-    font-size: 18px;
+    font-size: 17px;
 
 }
