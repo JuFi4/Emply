@@ -34,12 +34,12 @@ export class DemandesPage {
     this.isCheckDatePasse = true;
     this.getDemandes();
 
-    
+
     // EXEMPLE D'APPEL DE LA METHODE enregsitrerDemande()
-    // Demande journée complète
+    // Demande journée complète => 1
     //this.enregsitrerDemande(2, "2017-05-01", "2017-05-01", 1, "salut") ;
 
-    //Demande journée pas complète
+    //Demande journée pas complète => 0
     //this.enregsitrerDemande(2, "2017-05-03 14:30", "2017-05-03 15:30", 0, "salut");
 
     // Vu que tu dois mettre les heures et les minutes, tu peux concatener tout ça de cette manière :
@@ -57,58 +57,26 @@ export class DemandesPage {
   }//ionViewDidLoad
 
   saisirDemande() {
-    this.faireChoixDemande();
+    this.faireChoixTypeJournee();
   }//saisirDemande
 
-  faireChoixDemande() {
+  faireChoixTypeJournee() {
     let alert = this.alertCtrl.create();
-    alert.setTitle('Choix de la demande');
+    alert.setTitle('Choississez le type de congé');
     alert.addInput({
       type: 'radio',
-      label: 'Demande de vacances/férié',
+      label: 'Journée complète',
       id: '1',
-      value: 'demandeVacances',
-      name: 'vacances',
+      value: 'complete',
+      name: 'complete',
       checked: true
     });
     alert.addInput({
       type: 'radio',
-      label: 'Congé de formation',
+      label: 'Demi-journée',
       id: '2',
-      value: 'congeFormation',
-      name: 'formation',
-      checked: false
-    });
-    alert.addInput({
-      type: 'radio',
-      label: 'Congé paternité',
-      id: '3',
-      value: 'congePaternite',
-      name: 'paternite',
-      checked: false
-    });
-    alert.addInput({
-      type: 'radio',
-      label: 'Congé sans solde',
-      id: '4',
-      value: 'congeNoSolde',
-      name: 'nosolde',
-      checked: false
-    });
-    alert.addInput({
-      type: 'radio',
-      label: 'Demande de récupération',
-      id: '5',
-      value: 'congeRec',
-      name: 'recuperation',
-      checked: false
-    });
-    alert.addInput({
-      type: 'radio',
-      label: 'Autre demande',
-      id: '6',
-      value: 'autreDemande',
-      name: 'autre',
+      value: 'demi',
+      name: 'demi',
       checked: false
     });
     alert.addButton('Annuler');
@@ -117,20 +85,163 @@ export class DemandesPage {
       handler: data => {
         this.radioOpen = false;
         this.radioResult = data;
-        if (data === "demandeVacances") {
-          this.faireDemandeVacances();
-        } else if (data === 'congeFormation') {
-          this.faireDemandeConge(2);
-        } else if (data === "congePaternite") {
-          this.faireDemandeConge(3);
-        } else if (data === "congeNoSolde") {
-          this.faireDemandeConge(4);
-        } else if (data === "congeRec") {
-          this.faireDemandeRecuperation();
-        } else if (data === "autreDemande") {
-          this.faireDemandeInconnue();
+        if (data === "complete") {
+          this.faireChoixDemande(1);
+        } else if (data === 'demi') {
+          this.faireChoixDemande(0);
+        } else {
+          console.log("RIEN!!!!!");
         }
-        else {
+      }
+    });
+    alert.present();
+  }
+
+  faireChoixDemande(idTypeDemande) {
+    let alert = this.alertCtrl.create();
+    alert.setTitle('Choix de la demande');
+    alert.addInput({
+      type: 'radio',
+      label: 'Demande de congé',
+      id: '2',
+      value: 'demandeConge',
+      name: 'conge',
+      checked: true
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Demande de vacances',
+      id: '3',
+      value: 'demandeVacances',
+      name: 'vacances',
+      checked: false
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Congé militaire',
+      id: '4',
+      value: 'demandeMilitaire',
+      name: 'militaire',
+      checked: false
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Congé de formation',
+      id: '5',
+      value: 'demandeFormation',
+      name: 'formation',
+      checked: false
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Demande de congé maternité',
+      id: '6',
+      value: 'demandeMaternite',
+      name: 'maternite',
+      checked: false
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Congé pour décès',
+      id: '7',
+      value: 'demandeDeces',
+      name: 'deces',
+      checked: false
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Congé pour déménagement',
+      id: '8',
+      value: 'demandeDemenagement',
+      name: 'demenagement',
+      checked: false
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Autre Congé',
+      id: '9',
+      value: 'demandeAutre',
+      name: 'autre',
+      checked: false
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Congé paternité',
+      id: '10',
+      value: 'demandePaternite',
+      name: 'paternite',
+      checked: false
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Congé sans solde',
+      id: '11',
+      value: 'demandeSansSolde',
+      name: 'sansSolde',
+      checked: false
+    });
+    alert.addInput({
+      type: 'radio',
+      label: 'Demande de récupération',
+      id: '12',
+      value: 'demandeRecuperation',
+      name: 'recuperation',
+      checked: false
+    });
+    alert.addButton('Annuler');
+    alert.addButton({
+      text: 'Confirmer',
+      handler: data => {
+        this.radioOpen = false;
+        this.radioResult = data;
+        //Pour les journées complètes
+        if (data === "demandeConge" && idTypeDemande === 1) {
+          this.faireDemandeConge(2);
+        } else if (data === 'demandeVacances' && idTypeDemande === 1) {
+          this.faireDemandeConge(3);
+        } else if (data === "demandeMilitaire" && idTypeDemande === 1) {
+          this.faireDemandeConge(4);
+        } else if (data === "demandeFormation" && idTypeDemande === 1) {
+          this.faireDemandeConge(5);
+        } else if (data === "demandeMaternite" && idTypeDemande === 1) {
+          this.faireDemandeConge(6);
+        } else if (data === "demandeDeces" && idTypeDemande === 1) {
+          this.faireDemandeConge(7);
+        } else if (data === "demandeDemenagement" && idTypeDemande === 1) {
+          this.faireDemandeConge(8);
+        } else if (data === "demandeAutre" && idTypeDemande === 1) {
+          this.faireDemandeConge(9);
+        } else if (data === "demandePaternite" && idTypeDemande === 1) {
+          this.faireDemandeConge(10);
+        } else if (data === "demandeSansSolde" && idTypeDemande === 1) {
+          this.faireDemandeConge(11);
+        } else if (data === "demandeRecuperation" && idTypeDemande === 1) {
+          this.faireDemandeConge(12);
+
+          //Pour les demi journées
+        } else if (data === "demandeConge" && idTypeDemande === 0) {
+          this.faireDemandeDemiConge(2);
+        } else if (data === 'demandeVacances' && idTypeDemande === 0) {
+          this.faireDemandeDemiConge(3);
+        } else if (data === "demandeMilitaire" && idTypeDemande === 0) {
+          this.faireDemandeDemiConge(4);
+        } else if (data === "demandeFormation" && idTypeDemande === 0) {
+          this.faireDemandeDemiConge(5);
+        } else if (data === "demandeMaternite" && idTypeDemande === 0) {
+          this.faireDemandeDemiConge(6);
+        } else if (data === "demandeDeces" && idTypeDemande === 0) {
+          this.faireDemandeDemiConge(7);
+        } else if (data === "demandeDemenagement" && idTypeDemande === 0) {
+          this.faireDemandeDemiConge(8);
+        } else if (data === "demandeAutre" && idTypeDemande === 0) {
+          this.faireDemandeDemiConge(9);
+        } else if (data === "demandePaternite" && idTypeDemande === 0) {
+          this.faireDemandeDemiConge(10);
+        } else if (data === "demandeSansSolde" && idTypeDemande === 0) {
+          this.faireDemandeDemiConge(11);
+        } else if (data === "demandeRecuperation" && idTypeDemande === 0) {
+          this.faireDemandeDemiConge(12);
+        } else {
           console.log("RIEN!!!!!");
         }
       }
@@ -138,22 +249,21 @@ export class DemandesPage {
     alert.present();
   }//faireChoixDemande
 
-  faireDemandeVacances() {
+  faireDemandeConge(id) {
     var today = new Date();
     var ajd = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
-    console.log('fairedemande');
     let prompt = this.alertCtrl.create({
-      title: 'Demande de vacances et/ou férié',
-      message: "Entrez vos dates et votre motif de demande de vacances/férié : ",
+      title: 'Demande de congé',
+      message: "Entrez vos dates de la demande que vous avez séléctionnée : ",
       inputs: [
         {
-          name: 'DateDebVac',
-          value:ajd,
+          name: 'DateDeb',
           type: 'Date',
-          id: 'dateDeb',
+          value: ajd,
+          id: 'dateDeb'
         },
         {
-          name: 'DateFinVac',
+          name: 'DateFin',
           type: 'Date',
           value: ajd,
           id: 'dateFin'
@@ -174,12 +284,13 @@ export class DemandesPage {
         {
           text: 'Confirmer',
           handler: data => {
-            this.faireCheckDate(data.DateDebVac, data.DateFinVac); //Vérifier que les dates ne soient pas incohérentes
+            this.faireCheckDate(data.DateDeb, data.DateFin); //Vérifier que les dates ne soient pas incohérentes
             if (this.isCheckDate) {
-              this.faireCheckDatePassee(data.DateDebVac); // Vérifier que les dates ne sont pas dans le passé
+              this.faireCheckDatePassee(data.DateDeb); //Vérifier que les dates ne sont pas dans le passé
               if (this.isCheckDatePasse) {
-                //this.enregsitrerDemande(1, data.DateDebVac, data.DateFinVac, data.Motif);
-                console.log(1, data.DateDebVac, data.DateFinVac, data.Motif);
+                console.log('Confirmer');
+                this.enregsitrerDemande(id, data.DateDeb, data.DateFin, 1,  data.Motif);
+                console.log(id, data.DateDeb, data.DateFin, data.Motif);
                 this.getDemandes();
               } else {
                 this.faireAlertePasOkDatePassee();
@@ -192,132 +303,41 @@ export class DemandesPage {
       ]
     });
     prompt.present();
-  }//faireDemandeVacances
+  }//faireDemandeConge
 
-  faireDemandeConge(id) {
+  faireDemandeDemiConge(id) {
     var today = new Date();
     var ajd = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
     let prompt = this.alertCtrl.create({
       title: 'Demande de congé',
-      message: "Entrez vos dates de la demande de congé que vous avez séléctionnée : ",
+      message: "Entrez vos dates de la demande que vous avez séléctionnée : ",
       inputs: [
         {
-          name: 'DateDebRec',
+          name: 'DateDeb',
           type: 'Date',
           value: ajd,
           id: 'dateDeb'
         },
         {
-          name: 'DateFinRec',
-          type: 'Date',
-          value: ajd,
-          id: 'dateFin'
-        },
-      ],
-      buttons: [
-        {
-          text: 'Annuler',
-          handler: data => {
-            console.log('Annuler');
-          }
+          name: 'HeureDebut',
+          type: 'Time',
+          //value: ajd,
+          id: 'heureDeb'
         },
         {
-          text: 'Confirmer',
-          handler: data => {
-            this.faireCheckDate(data.DateDebRec, data.DateFinRec); //Vérifier que les dates ne soient pas incohérentes
-            if (this.isCheckDate) {
-              this.faireCheckDatePassee(data.DateDebRec); //Vérifier que les dates ne sont pas dans le passé
-              if (this.isCheckDatePasse) {
-                console.log('Confirmer');
-                //this.enregsitrerDemande(id, data.DateDebRec, data.DateFinRec, "");
-                console.log(id, data.DateDebRec, data.DateFinRec);
-                this.getDemandes();
-              } else {
-                this.faireAlertePasOkDatePassee();
-              }
-            } else {
-              this.faireAlertePasOkDate();
-            }
-          }
-        }
-      ]
-    });
-    prompt.present();
-  }//faireDemandeRecuperation
-
-  faireDemandeRecuperation() {
-    var today = new Date();
-    var ajd = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
-    let prompt = this.alertCtrl.create({
-      title: 'Demande de récupération',
-      message: "Entrez vos dates de la demande de récupération : ",
-      inputs: [
-        {
-          name: 'DateDebRec',
-          type: 'Date',
-          value: ajd,
-          id: 'dateDeb'
-        },
-        {
-          name: 'DateFinRec',
-          type: 'Date',
-          value: ajd,
-          id: 'dateFin'
-        },
-      ],
-      buttons: [
-        {
-          text: 'Annuler',
-          handler: data => {
-            console.log('Annuler');
-          }
-        },
-        {
-          text: 'Confirmer',
-          handler: data => {
-            this.faireCheckDate(data.DateDebRec, data.DateFinRec); //Vérifier que les dates ne soient pas incohérentes
-            if (this.isCheckDate) {
-              this.faireCheckDatePassee(data.DateDebRec);// Vérifier que les dates ne sont pas dans le passé
-              if (this.isCheckDatePasse) {
-                console.log('Confirmer');
-               // this.enregsitrerDemande(5, data.DateDebRec, data.DateFinRec, "");
-                console.log(5, data.DateDebRec, data.DateFinRec);
-                this.getDemandes();
-              } else {
-                this.faireAlertePasOkDatePassee();
-              }
-            } else {
-              this.faireAlertePasOkDate();
-            }
-
-          }
-        }
-      ]
-    });
-    prompt.present();
-  }//faireDemandeRecuperation
-
-  faireDemandeInconnue() {
-    var today = new Date();
-    var ajd = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
-    let prompt = this.alertCtrl.create({
-      title: 'Demande spéciale',
-      message: "Entrez vos dates et le motif de la demande : ",
-      inputs: [
-        {
-          name: 'DateDebInconnue',
-          type: 'Date',
-          value: ajd,
-          id: 'dateDeb'
-        },
-        {
-          name: 'DateFinRecInconne',
+          name: 'DateFin',
           type: 'Date',
           value: ajd,
           id: 'dateFin'
         },
         {
-          name: 'MotifInconnue',
+          name: 'HeureFin',
+          type: 'Time',
+          // value: ajd,
+          id: 'heureFin'
+        },
+        {
+          name: 'Motif',
           placeholder: 'Motif de la demande',
           id: 'motif'
         },
@@ -332,13 +352,13 @@ export class DemandesPage {
         {
           text: 'Confirmer',
           handler: data => {
-            this.faireCheckDate(data.DateDebInconnue, data.DateFinRecInconne); //Vérifier que les dates ne soient pas incohérentes
+            this.faireCheckDate(data.DateDeb, data.DateFin); //Vérifier que les dates ne soient pas incohérentes
             if (this.isCheckDate) {
-              this.faireCheckDatePassee(data.DateDebInconnue); //Vérifier que les dates ne sont pas dans le passé
+              this.faireCheckDatePassee(data.DateDeb); //Vérifier que les dates ne sont pas dans le passé
               if (this.isCheckDatePasse) {
                 console.log('Confirmer');
-                //this.enregsitrerDemande(6, data.DateDebInconnue, data.DateFinRecInconne, data.MotifInconnue);
-                console.log(6, data.DateDebInconnue, data.DateFinRecInconne, data.MotifInconnue);
+                this.enregsitrerDemande(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif);
+                console.log(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif);
                 this.getDemandes();
               } else {
                 this.faireAlertePasOkDatePassee();
@@ -351,7 +371,7 @@ export class DemandesPage {
       ]
     });
     prompt.present();
-  }//faireDemandeInconnue
+  }//faireDemandeDemiConge
 
   enregsitrerDemande(typeDemId, dateDebut: string, dateFin: string, isJourneeComplete, motif: string) {
     this.abiBddCtrl.setDemande(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), typeDemId, dateDebut, dateFin, isJourneeComplete, motif).subscribe(
@@ -367,69 +387,130 @@ export class DemandesPage {
   }//enregsitrerDemande
 
   modifierDemandeAlert(demande) {
-    var jjDeb = ('0' + demande.dateDebut.getDate()).slice(-2);
-    var mmDeb = ('0' + (demande.dateDebut.getMonth() + 1)).slice(-2);
-    var yyyyDeb = demande.dateDebut.getFullYear()
-    var dateDebValue = yyyyDeb + '-' + mmDeb + '-' + jjDeb;
-
-    var jjFin = ('0' + demande.dateFin.getDate()).slice(-2);
-    var mmFin = ('0' + (demande.dateFin.getMonth() + 1)).slice(-2);
-    var yyyyFin = demande.dateFin.getFullYear()
-    var dateFinValue = yyyyFin + '-' + mmFin + '-' + jjFin;
-
-    if (demande.statut === 'new' || demande.statut === 'modify') { // Traiter la modification lorsque la demande est "new" ou "modify"
-      let prompt = this.alertCtrl.create({
-        title: 'Modification des dates la demande',
-        subTitle: 'Type de demande :' + demande.nom_typeDemande,
-        inputs: [
-          {
-            name: 'NewDebut',
-            value: dateDebValue,
-            id: 'dateDebNew',
-            type: 'Date',
-          },
-          {
-            name: 'DateFinNew',
-            value: dateFinValue,
-            id: 'dateFinNew',
-            type: 'Date'
-          },
-          {
-            name: 'MotifNew',
-            placeholder: 'Motif de la modification',
-            id: 'motif',
-            value: demande.motif,
-          },
-        ],
-        buttons: [
-          {
-            text: 'Annuler',
-            handler: data => {
-              console.log('Annuler');
-            }
-          },
-          {
-            text: 'Confirmer',
-            handler: data => {
-              console.log('Confirmer');
-              this.faireCheckDate(data.NewDebut, data.DateFinNew); //Vérifier que les dates ne soient pas incohérentes
-              if (this.isCheckDate) {
-                this.faireCheckDatePassee(data.NewDebut);//Vérifier que les dates ne sont pas dans le passé
-                if (this.isCheckDatePasse) {
-                  console.log(demande.id, data.NewDebut, data.DateFinNew, data.MotifNew);
-                  //this.modifierDemande(demande.id, data.NewDebut, data.DateFinNew, data.MotifNew);
-                  this.getDemandes();
+    var dateDebValue = demande.dateDebut.getFullYear() + '-' + ('0' + (demande.dateDebut.getMonth() + 1)).slice(-2) + '-' + ('0' + demande.dateDebut.getDate()).slice(-2);
+    var dateFinValue = demande.dateFin.getFullYear() + '-' + ('0' + (demande.dateFin.getMonth() + 1)).slice(-2) + '-' + ('0' + demande.dateFin.getDate()).slice(-2);
+    if (demande.statut === 'new' || demande.statut === 'modify') {
+      if (demande.isJourneeComplete) { // Traiter la modification lorsque la demande est "new" ou "modify"
+        let prompt = this.alertCtrl.create({
+          title: 'Modification des dates la demande',
+          subTitle: 'Type de demande :' + demande.nom_typeDemande,
+          inputs: [
+            {
+              name: 'DateDebutNew',
+              value: dateDebValue,
+              id: 'dateDebNew',
+              type: 'Date',
+            },
+            {
+              name: 'DateFinNew',
+              value: dateFinValue,
+              id: 'dateFinNew',
+              type: 'Date'
+            },
+            {
+              name: 'MotifNew',
+              placeholder: 'Motif de la modification',
+              id: 'motif',
+              value: demande.motif,
+            },
+          ],
+          buttons: [
+            {
+              text: 'Annuler',
+              handler: data => {
+                console.log('Annuler');
+              }
+            },
+            {
+              text: 'Confirmer',
+              handler: data => {
+                console.log('Confirmer');
+                this.faireCheckDate(data.DateDebutNew, data.DateFinNew); //Vérifier que les dates ne soient pas incohérentes
+                if (this.isCheckDate) {
+                  this.faireCheckDatePassee(data.DateDebutNew);//Vérifier que les dates ne sont pas dans le passé
+                  if (this.isCheckDatePasse) {
+                    console.log(demande.id, data.DateDebutNew, data.DateFinNew, 1, data.MotifNew);
+                    this.modifierDemande(demande.id, data.DateDebutNew, data.DateFinNew, 1, data.MotifNew);
+                    this.getDemandes();
+                  } else {
+                    this.faireAlertePasOkDatePassee();
+                  }
                 } else {
-                  this.faireAlertePasOkDatePassee();
+                  this.faireAlertePasOkDate();
                 }
-              } else {
-                this.faireAlertePasOkDate();
               }
             }
-          }
-        ]
-      });
-      prompt.present();
+          ]
+        });
+        prompt.present();
+      } else if (!demande.isJourneeComplete) {
+        let prompt = this.alertCtrl.create({
+          title: 'Modification des dates la demande',
+          subTitle: 'Type de demande :' + demande.nom_typeDemande,
+          inputs: [
+       {
+              name: 'DateDebutNew',
+              value: dateDebValue,
+              id: 'dateDebNew',
+              type: 'Date',
+            },
+            {
+              name: 'HeureDebutNew',
+              type: 'Time',
+              value: demande.HeureDebut,
+              id: 'heureDebutNew'
+            },
+            {
+              name: 'DateFinNew',
+              value: dateFinValue,
+              id: 'dateFinNew',
+              type: 'Date'
+            },
+            {
+              name: 'HeureFinNew',
+              type: 'Time',
+              value: demande.heureFin,
+              id: 'heureFinNew'
+            },
+            {
+              name: 'MotifNew',
+              placeholder: 'Motif de la modification',
+              id: 'motif',
+              value: demande.motif,
+            },
+          ],
+          buttons: [
+            {
+              text: 'Annuler',
+              handler: data => {
+                console.log('Annuler');
+              }
+            },
+            {
+              text: 'Confirmer',
+              handler: data => {
+                console.log('Confirmer');
+                this.faireCheckDate(data.DateDebutNew, data.DateFinNew); //Vérifier que les dates ne soient pas incohérentes
+                if (this.isCheckDate) {
+                  this.faireCheckDatePassee(data.DateDebutNew);//Vérifier que les dates ne sont pas dans le passé
+                  if (this.isCheckDatePasse) {
+                    console.log(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew);
+                    this.modifierDemande(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew);
+                    this.getDemandes();
+                  } else {
+                    this.faireAlertePasOkDatePassee();
+                  }
+                } else {
+                  this.faireAlertePasOkDate();
+                }
+              }
+            }
+          ]
+        });
+        prompt.present();
+      } else {
+        console.log("pas possible=> demande pas journée complète ni demi journée");
+      }
     } else { // Traiter le cas ou la demande a déjà été validée par le gérant
       let alert = this.alertCtrl.create({
         title: 'Votre demande a déjà été traité, vous ne pouvez pas la modifier',
@@ -437,6 +518,7 @@ export class DemandesPage {
       });
       alert.present();
     }
+
   }//modifierDemandeAlert
 
   modifierDemande(demId, dateDebut: string, dateFin: string, isJourneeComplete, motif: string) {
