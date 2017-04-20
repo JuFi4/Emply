@@ -19,6 +19,7 @@ export class MonprofilPage {
   user: any = [];
   inputDisabled: boolean;
   isHorsLigne: boolean;
+  isMdpok : boolean;
 
   constructor(public toastCtrl: ToastController, public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService, public alertCtrl: AlertController, private connectivityService: ConnectivityService, private AlertsToasts: AlertsToasts) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
@@ -97,7 +98,8 @@ export class MonprofilPage {
         {
           text: 'Confirmer',
           handler: data => {
-            if (this.faireCheck(data.mdpNew, data.mdpNew2)) {
+            this.faireCheck(data.mdpNew, data.mdpNew2);
+            if (this.isMdpok) {
               this.modifierMotDePasse(data.mdpActuel, data.mdpNew);
               console.log('Changement ok');
             } else {
@@ -110,19 +112,14 @@ export class MonprofilPage {
     prompt.present();
   }//faireChangementMDP
 
-  // TODO Céline: coder cette fonction
-  faireCheck(MDP1, MDP2): boolean {
+  faireCheck(MDP1, MDP2){
     console.log('doCheck');
     if (MDP1 === MDP2) {
-      console.log('true');
-      return true;
+      this.isMdpok = true;
     } else {
-      console.log('false');
-      return false;
+      this.isMdpok = false;
     }
   }//faireCheck
-
-
 
   modifierMotDePasse(MDPOld, MDPNew) {
     /* TODO CELINE : : traiter la modification du mot de passe :

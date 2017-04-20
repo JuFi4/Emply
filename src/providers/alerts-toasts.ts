@@ -51,6 +51,16 @@ export class AlertsToasts {
     alert.present();
   }//faireAlertePasOk
 
+  //Alerts pour les demandes pas enregistrées
+  faireAlerteHeuresPasOk() {
+    let alert = this.alertCtrl.create({
+      title: 'Demande non enregistrée',
+      subTitle: 'Vos heures ne sont pas cohérentes',
+      buttons: ['Fermer']
+    });
+    alert.present();
+  }//faireAlerteHeuresPasOk
+
   //Toast pour les demandes enregistrées
   faireToastOk() {
     let toast = this.toastCtrl.create({

@@ -28,12 +28,14 @@ export class DemandesPage {
   isHorsLigne: boolean;
   isCheckDate: boolean;
   isCheckDatePasse: boolean;
+  isCheckHeure : boolean;
 
   constructor(public toastCtrl: ToastController, public navCtrl: NavController, public navParams: NavParams, 
               public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService, private AlertsToasts: AlertsToasts) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     this.isCheckDate = true;
     this.isCheckDatePasse = true;
+    this.isCheckHeure = true;
     this.getDemandes();
 
     // EXEMPLE D'APPEL DE LA METHODE enregsitrerDemande()
@@ -359,9 +361,14 @@ export class DemandesPage {
               this.faireCheckDatePassee(data.DateDeb); //Vérifier que les dates ne sont pas dans le passé
               if (this.isCheckDatePasse) {
                 console.log('Confirmer');
-                this.enregsitrerDemande(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif);
-                console.log(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif);
-                this.getDemandes();
+                this.faireCheckheure(data.HeureDebut, data.HeureFin); //Vérifier que les heures ne soient pas incohérentes
+                if(this.isCheckHeure){
+                  this.enregsitrerDemande(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif);
+                  console.log(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif);
+                  this.getDemandes();
+                }else{
+                  this.AlertsToasts.faireAlerteHeuresPasOk();
+                }
               } else {
                 this.AlertsToasts.faireAlertePasOkDatePassee();
               }
@@ -496,9 +503,14 @@ export class DemandesPage {
                 if (this.isCheckDate) {
                   this.faireCheckDatePassee(data.DateDebutNew);//Vérifier que les dates ne sont pas dans le passé
                   if (this.isCheckDatePasse) {
-                    console.log(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew);
-                    this.modifierDemande(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew);
-                    this.getDemandes();
+                    this.faireCheckheure(data.HeureDebutNew, data.HeureFinNew); //Vérifier que les heures ne soient pas incohérentes
+                    if(this.isCheckHeure){
+                      console.log(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew);
+                      this.modifierDemande(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew);
+                      this.getDemandes();
+                    } else{
+                      this.AlertsToasts.faireAlerteHeuresPasOk();
+                    }
                   } else {
                     this.AlertsToasts.faireAlertePasOkDatePassee();
                   }
@@ -569,11 +581,20 @@ export class DemandesPage {
   }//getDemandes
 
   faireCheckDate(dateDebutCheck, dateFinCheck) { //Vérifier que les dates ne soient pas incohérentes
-    console.log("je me fait check");
+    console.log("je me fait check pour les dates");
     if (dateDebutCheck <= dateFinCheck) {
       this.isCheckDate = true;
     } else {
       this.isCheckDate = false;
+    }
+  }//faireCheckDate
+
+  faireCheckheure(heureDebutCheck, heureFinCheck) { //Vérifier que les heures ne soient pas incohérentes
+    console.log("je me fait check pour les heures");
+    if (heureDebutCheck < heureFinCheck) {
+      this.isCheckHeure = true;
+    } else {
+      this.isCheckHeure = false;
     }
   }//faireCheckDate
 
