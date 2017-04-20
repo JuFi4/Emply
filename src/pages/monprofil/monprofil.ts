@@ -19,7 +19,8 @@ export class MonprofilPage {
   user: any = [];
   inputDisabled: boolean;
   isHorsLigne: boolean;
-  isMdpok : boolean;
+  isMdpok: boolean;
+  isMailOk: boolean;
 
   constructor(public toastCtrl: ToastController, public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService, public alertCtrl: AlertController, private connectivityService: ConnectivityService, private AlertsToasts: AlertsToasts) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
@@ -98,11 +99,12 @@ export class MonprofilPage {
         {
           text: 'Confirmer',
           handler: data => {
-            this.faireCheck(data.mdpNew, data.mdpNew2);
+            this.faireCheck(data.mdpNew.trim(), data.mdpNew2.trim());
             if (this.isMdpok) {
-              this.modifierMotDePasse(data.mdpActuel, data.mdpNew);
+              this.modifierMotDePasse(data.mdpActuel.trim(), data.mdpNew.trim());
               console.log('Changement ok');
             } else {
+              this.AlertsToasts.faireAlertMdpPasValide();
               console.log('Changement pas ok');
             }
           }
@@ -112,7 +114,7 @@ export class MonprofilPage {
     prompt.present();
   }//faireChangementMDP
 
-  faireCheck(MDP1, MDP2){
+  faireCheck(MDP1, MDP2) {
     console.log('doCheck');
     if (MDP1 === MDP2) {
       this.isMdpok = true;
@@ -167,14 +169,29 @@ export class MonprofilPage {
         {
           text: 'Confirmer',
           handler: data => {
-            this.modifierEmail(data.newMail);
-            console.log('Changement confirmé');
+            this.verifierMail(data.newMail.trim());
+            if (this.isMailOk) {
+              this.modifierEmail(data.newMail.trim());
+              console.log('Changement confirmé');
+            } else{
+              this.AlertsToasts.faireAlertMailPasValide();
+            }
           }
         }
       ]
     });
     prompt.present();
   }//faireChangementMail
+
+  verifierMail(newMail) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    console.log(re.test(newMail));
+    if (re.test(newMail) === true) {
+      this.isMailOk = true;
+    } else {
+      this.isMailOk = false;
+    }
+  }
 
   modifierEmail(newMail) {
     console.log("modifierEmail");

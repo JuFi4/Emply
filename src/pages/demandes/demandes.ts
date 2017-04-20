@@ -292,7 +292,7 @@ export class DemandesPage {
               this.faireCheckDatePassee(data.DateDeb); //Vérifier que les dates ne sont pas dans le passé
               if (this.isCheckDatePasse) {
                 console.log('Confirmer');
-                this.enregsitrerDemande(id, data.DateDeb, data.DateFin, 1,  data.Motif);
+                this.enregsitrerDemande(id, data.DateDeb, data.DateFin, 1,  data.Motif.trim());
                 console.log(id, data.DateDeb, data.DateFin, data.Motif);
                 this.getDemandes();
               } else {
@@ -363,7 +363,7 @@ export class DemandesPage {
                 console.log('Confirmer');
                 this.faireCheckheure(data.HeureDebut, data.HeureFin); //Vérifier que les heures ne soient pas incohérentes
                 if(this.isCheckHeure){
-                  this.enregsitrerDemande(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif);
+                  this.enregsitrerDemande(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif.trim());
                   console.log(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif);
                   this.getDemandes();
                 }else{
@@ -439,7 +439,7 @@ export class DemandesPage {
                   this.faireCheckDatePassee(data.DateDebutNew);//Vérifier que les dates ne sont pas dans le passé
                   if (this.isCheckDatePasse) {
                     console.log(demande.id, data.DateDebutNew, data.DateFinNew, 1, data.MotifNew);
-                    this.modifierDemande(demande.id, data.DateDebutNew, data.DateFinNew, 1, data.MotifNew);
+                    this.modifierDemande(demande.id, data.DateDebutNew, data.DateFinNew, 1, data.MotifNew.trim());
                     this.getDemandes();
                   } else {
                     this.AlertsToasts.faireAlertePasOkDatePassee();
@@ -506,7 +506,7 @@ export class DemandesPage {
                     this.faireCheckheure(data.HeureDebutNew, data.HeureFinNew); //Vérifier que les heures ne soient pas incohérentes
                     if(this.isCheckHeure){
                       console.log(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew);
-                      this.modifierDemande(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew);
+                      this.modifierDemande(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew.trim());
                       this.getDemandes();
                     } else{
                       this.AlertsToasts.faireAlerteHeuresPasOk();

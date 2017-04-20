@@ -94,6 +94,26 @@ export class AlertsToasts {
     toast.present();
   }//faireToastModificationEnregistree
 
+  //Alert pour une adresse mail pas valide
+  faireAlertMailPasValide(){
+    let prompt = this.alertCtrl.create({
+      title: 'Modification échouée',
+      message: "Veuillez entrer une adresse email valide",
+      buttons: ["ok"]
+    });
+    prompt.present();
+  }//faireAlertMailPasValide
+
+  //Alert pour un mdp pas valide
+  faireAlertMdpPasValide(){
+    let prompt = this.alertCtrl.create({
+      title: 'Modification échouée',
+      message: "Votre nouveau mot de passe et sa confirmation ne sont pas identiques.",
+      buttons: ["ok"]
+    });
+    prompt.present();
+  }//faireAlertMdpPasValide
+
   //Page login
 
   faireAlertModeHorsLigne() {
