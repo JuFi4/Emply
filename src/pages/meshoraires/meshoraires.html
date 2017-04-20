@@ -71,34 +71,35 @@
 </div>
 
 <div *ngIf="affichageDetailH">
-
-  <div *ngIf = "hasHoraire">
-    <h2 class = "titreH"> Horaires du {{selJour}}</h2>
-      <ul>
-        <li *ngFor = "let hjours of horairesDuJour">
-          <ion-item>
-              <ion-label>Horaire début : {{ hjours.affichageHeureDebut }}</ion-label>
-          </ion-item>
-          <ion-item >
-              <ion-label>Horaire fin : {{hjours.affichageHeureFin}} </ion-label>  
-          </ion-item>
-          </li>
-      </ul> 
-  </div>
+  <h2 class = "titreH"> Détail du {{selJour}}</h2>
+  
+  <div *ngIf = "hasHoraire">    
+     <h2 class = "sstitreH"> Horaires</h2>
+      <div *ngFor = "let hjours of horairesDuJour">
+        <ion-item> Horaire début : {{ hjours.affichageHeureDebut }}</ion-item>
+        <ion-item > Horaire fin : {{hjours.affichageHeureFin}}  </ion-item>
+    </div>
+     <br>
+  </div> 
 
   <div *ngFor = "let demande of demandesDuJour">
-    <h2 class = "titreH"> {{ demande.nom_typeDemande }} </h2>
+    <h2 class = "sstitreH"> Absence : {{ demande.nom_typeDemande }} </h2>
     <ion-item>Date de début : {{ demande.affichageDateDebut }}  </ion-item>
      <ion-item>Date de fin : {{ demande.affichageDateFin }} </ion-item>
   </div>
 
-  <div *ngIf = "isMaladie"><h2 class = "titreH"> Congé maladie</h2>
-    <ion-item>Du {{ maladieDuJour.affichageDateDebut }} au {{ maladieDuJour.affichageDateFin }}</ion-item>
+  <div *ngIf = "isMaladie"><h2 class = "sstitreH"> Absence : Maladie</h2>
+    <ion-item>Date de début : {{ maladieDuJour.affichageDateDebut }}</ion-item>
+    <ion-item>Date de fin : {{ maladieDuJour.affichageDateFin }}</ion-item>
   </div>
   
 
-  <div *ngIf = "isAccident"><h2 class = "titreH"> Congé accident</h2>
-    <ion-item>Du {{ maladieDuJour.affichageDateDebut }} au {{ maladieDuJour.affichageDateFin }}</ion-item>
+  <div *ngIf = "isAccident"><h2 class = "sstitreH"> Absence : Accident</h2>
+    <ion-item>Date de début : {{ maladieDuJour.affichageDateDebut }}</ion-item>
+    <ion-item>Date de fin : {{ maladieDuJour.affichageDateFin }}</ion-item>
+  </div>
+
+   <div *ngIf = "isJourVide"><h2 class ="sstitreNoH"> Aucune entrée pour ce jour</h2>
   </div>
 </div>
 </ion-content>

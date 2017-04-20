@@ -56,6 +56,7 @@ export class MeshorairesPage {
    hasHoraire = false;
    affichageDetailH = false;
    maladieDuJour : Maladie;
+   isJourVide = true;
 
    constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService,
     public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) {   
@@ -109,16 +110,16 @@ export class MeshorairesPage {
 
      let nbJoursMois = this.moisSelectionne.nbJour; // On fixe le nombre de jours en fonction du mois
      if(this.moisSelectionne.moisId == 1 && this.isAnneeBissextile(this.anneeSelectionne)) { nbJoursMois++; } // Si c'est le mois de février et que l'année est bissextile, on ajoute 1 jours
+    
      // On remplis les jours du mois 
      for(let i = 1; i <= nbJoursMois; i++){
-        this.jour = new Jour(i, new Date(this.anneeSelectionne, this.moisSelectionne.moisId, i));
-        if(this.moisSelectionne.moisId == this.moisCourant && i == this.dateCourrante.getDate()){ //Si le jour est aujourd'hui
-          console.log("Date" + this.dateCourrante);
-          this.jour.isAujourdhui = true; //On dit que c'est aujourd'hui
-          this.detailHoraire(this.jour) // On affiche son détail
-        }
-        this.jours.push(this.jour);
-     }
+        this.jours.push(new Jour(i, new Date(this.anneeSelectionne, this.moisSelectionne.moisId, i)));
+     }//for
+
+      if(this.moisSelectionne.moisId == this.moisCourant){ // Si le mois à afficher est le mois courant
+          this.jours[this.dateCourrante.getDate()-1].isAujourdhui = true; // On définie le jour d'aujourd'hui
+       }
+
      this.getControleMensuel(this.anneeSelectionne, this.moisSelectionne.moisId+1);
     }//afficherMois
      
@@ -129,7 +130,11 @@ export class MeshorairesPage {
         // 2) Ensuite : on récupère les maladies/ accidents pour ce mois
         // 3) Ensuite: on récupàre les demandes validées pour ce mois
         // 4) Ensuite : on traite tout ça
-        this.getHorairesMensuels(annee, mois).then(result => this.getMaladiesParMois(annee, mois)).then(result => this.getDemandesParMois(annee, mois)).then(result => this.traiterControleMensuel(annee, mois, false));
+        this.getHorairesMensuels(annee, mois)
+          .then(result => this.getMaladiesParMois(annee, mois))
+            .then(result => this.getDemandesParMois(annee, mois))
+              .then(result => this.traiterControleMensuel(annee, mois, false));
+      
       } else {//Mode hors ligne : traitement des données avec l'indicateur hors ligne
          this.traiterControleMensuel(annee, mois, true);     
       }         
@@ -217,6 +222,10 @@ export class MeshorairesPage {
         console.log("On garde les jours vides ");
       }
     }
+    console.log("mois : " + mois + " this.dateCourrante.getMonth() :" + this.dateCourrante.getMonth());
+    if(mois == this.dateCourrante.getMonth()+1){ // Si le mois qu'on traite est le mois courant
+      this.detailHoraire(this.jours[this.dateCourrante.getDate()-1]); // On affiche le détail du jours courant
+    }
   }//traiterControleMensuel
 
    setMaladieOnJour(jour : Jour) : boolean {
@@ -271,143 +280,20 @@ export class MeshorairesPage {
       this.demandesDuJour = []
       this.affichageDetailH = true;
       this.maladieDuJour = null;
+      this.isJourVide = true;
     }//resetDetailHoraire
     
     detailHoraire(jour : Jour){
+      console.log("detailHoraire " + jour);
       this.resetDetailHoraire(); //  DRY ;)
-      console.log(jour);
-      if(jour.hasHoraire){ this.horairesDuJour = jour.tbHoraire; this.hasHoraire = true;}
-      if(jour.hasDemande) {  this.demandesDuJour = jour.tbDemande; }
-      if(jour.isAccident) { this.isAccident = true;  }
-      if(jour.isMaladie){ this.isMaladie = true; }
-      if(jour.enMaladie != null ) { this.maladieDuJour = jour.enMaladie;}
+      if(jour.hasHoraire){ this.horairesDuJour = jour.tbHoraire; this.hasHoraire = true; this.isJourVide = false;}
+      if(jour.hasDemande) {  this.demandesDuJour = jour.tbDemande; this.isJourVide = false;}
+      if(jour.isAccident) { this.isAccident = true;  this.isJourVide = false;}
+      if(jour.isMaladie){ this.isMaladie = true; this.isJourVide = false;}
+      if(jour.enMaladie != null ) { this.maladieDuJour = jour.enMaladie; this.isJourVide = false;}
       console.log("jour.hasDemande : " + jour.hasDemande);
       console.log(jour.tbDemande);
-
       this.selJour = jour.jour; 
-
-      // ??????? POURQUOI ?????
-      // OÙ EST LE DRY ?????????????????????????????
-      // ??????????????????????????????????????????
-
-      //----------------------------------------------
-      // PERSONNE FAIT CA !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-      /*if(this.horaireDuJour.length <= 0){
-          this.isMaladie = false;
-          this.isAccident = false;
-          this.isCongeSansSolde = false;
-          this.isFormation = false;
-          this.isCongePaternite = false;
-          this.isRecuperation = false;
-          this.isAutreDemande = false;
-          this.isVacances = false;
-          this.pasHeure =  true;
-      }
-
-
-      if(jour.isMaladie){
-        console.log("malade");
-        this.isMaladie = true;
-         this.isAccident = false;
-         this.isCongeSansSolde = false;
-          this.isFormation = false;
-          this.isCongePaternite = false;
-          this.isRecuperation = false;
-          this.isAutreDemande = false;
-          this.isVacances = false;
-          this.pasHeure =  false;
-      }
-      if(jour.isAccident){
-        console.log("accident");
-         this.isMaladie = false;
-         this.isAccident = true;
-         this.isCongeSansSolde = false;
-          this.isFormation = false;
-          this.isCongePaternite = false;
-          this.isRecuperation = false;
-          this.isAutreDemande = false;
-          this.isVacances = false;
-          this.pasHeure =  false;
-      }
-      
-      if(jour.isCongeSansSolde){
-        console.log("congé sans solde")
-         this.isMaladie = false;
-         this.isAccident = false;
-         this.isCongeSansSolde = true;
-         this.isFormation = false;
-         this.isCongePaternite = false;
-         this.isRecuperation = false;
-         this.isAutreDemande = false;
-         this.isVacances = false;
-         this.pasHeure =  false;
-      }
-      
-      if(jour.isFormation){
-        console.log("congé de formation");
-          this.isMaladie = false;
-          this.isAccident = false;
-          this.isCongeSansSolde = false;
-          this.isFormation = true;
-          this.isCongePaternite = false;
-          this.isRecuperation = false;
-          this.isAutreDemande = false;
-          this.isVacances = false;
-          this.pasHeure =  false;
-      }
-      
-      if(jour.isPaternite){
-        console.log("conge paternite");
-          this.isMaladie = false;
-          this.isAccident = false;
-          this.isCongeSansSolde = false;
-          this.isFormation = false;
-          this.isCongePaternite = true;
-          this.isRecuperation = false;
-          this.isAutreDemande = false;
-          this.isVacances = false;
-          this.pasHeure =  false;
-      }
-      
-       if(jour.isRecuperation){
-        console.log("recup");
-          this.isMaladie = false;
-          this.isAccident = false;
-          this.isCongeSansSolde = false;
-          this.isFormation = false;
-          this.isCongePaternite = false;
-          this.isRecuperation = true;
-          this.isAutreDemande = false;
-          this.isVacances = false;
-          this.pasHeure =  false;
-      }
-      if(jour.isVacance){
-          this.isMaladie = false;
-          this.isAccident = false;
-          this.isCongeSansSolde = false;
-          this.isFormation = false;
-          this.isCongePaternite = false;
-          this.isRecuperation = false;
-          this.isAutreDemande = false;
-          this.isVacances = true;
-          this.pasHeure =  false;
-      }
-      
-      if(jour.isAutreDemande){
-          this.isMaladie = false;
-          this.isAccident = false;
-          this.isCongeSansSolde = false;
-          this.isFormation = false;
-          this.isCongePaternite = false;
-          this.isRecuperation = false;
-          this.isAutreDemande = true;
-          this.isVacances = false;
-          this.pasHeure =  false;
-      } 
-  */
-        
    }//DetailHoraire
 
 

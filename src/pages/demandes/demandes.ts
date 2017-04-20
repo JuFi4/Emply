@@ -293,8 +293,7 @@ export class DemandesPage {
               if (this.isCheckDatePasse) {
                 console.log('Confirmer');
                 this.enregsitrerDemande(id, data.DateDeb, data.DateFin, 1,  data.Motif.trim());
-                console.log(id, data.DateDeb, data.DateFin, data.Motif);
-                this.getDemandes();
+                console.log(id, data.DateDeb, data.DateFin, data.Motif);                
               } else {
                 this.AlertsToasts.faireAlertePasOkDatePassee();
               }
@@ -365,7 +364,6 @@ export class DemandesPage {
                 if(this.isCheckHeure){
                   this.enregsitrerDemande(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif.trim());
                   console.log(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif);
-                  this.getDemandes();
                 }else{
                   this.AlertsToasts.faireAlerteHeuresPasOk();
                 }
@@ -381,19 +379,6 @@ export class DemandesPage {
     });
     prompt.present();
   }//faireDemandeDemiConge
-
-  enregsitrerDemande(typeDemId, dateDebut: string, dateFin: string, isJourneeComplete, motif: string) {
-    this.abiBddCtrl.setDemande(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), typeDemId, dateDebut, dateFin, isJourneeComplete, motif).subscribe(
-      data => {
-        if (data) {  // OK         
-          console.log("Demande enregsitrée"); // Traiter le cas où c'est ok : un toast par exemple
-          this.AlertsToasts.faireToastOk();
-        } else { // Erreur
-          console.log("Enregsitrement échoue : token ou ID"); // Traiter le cas oû c'est pas OK : une alerte...
-          this.AlertsToasts.faireAlertePasOk();
-        }
-      });
-  }//enregsitrerDemande
 
   modifierDemandeAlert(demande) {
     var dateDebValue = demande.dateDebut.getFullYear() + '-' + ('0' + (demande.dateDebut.getMonth() + 1)).slice(-2) + '-' + ('0' + demande.dateDebut.getDate()).slice(-2);
@@ -440,7 +425,6 @@ export class DemandesPage {
                   if (this.isCheckDatePasse) {
                     console.log(demande.id, data.DateDebutNew, data.DateFinNew, 1, data.MotifNew);
                     this.modifierDemande(demande.id, data.DateDebutNew, data.DateFinNew, 1, data.MotifNew.trim());
-                    this.getDemandes();
                   } else {
                     this.AlertsToasts.faireAlertePasOkDatePassee();
                   }
@@ -507,7 +491,6 @@ export class DemandesPage {
                     if(this.isCheckHeure){
                       console.log(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew);
                       this.modifierDemande(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew.trim());
-                      this.getDemandes();
                     } else{
                       this.AlertsToasts.faireAlerteHeuresPasOk();
                     }
@@ -535,6 +518,20 @@ export class DemandesPage {
 
   }//modifierDemandeAlert
 
+   enregsitrerDemande(typeDemId, dateDebut: string, dateFin: string, isJourneeComplete, motif: string) {
+    this.abiBddCtrl.setDemande(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), typeDemId, dateDebut, dateFin, isJourneeComplete, motif).subscribe(
+      data => {
+        if (data) {  // OK         
+          console.log("Demande enregsitrée"); // Traiter le cas où c'est ok : un toast par exemple
+          this.AlertsToasts.faireToastOk();
+        } else { // Erreur
+          console.log("Enregsitrement échoue : token ou ID"); // Traiter le cas oû c'est pas OK : une alerte...
+          this.AlertsToasts.faireAlertePasOk();
+        }
+        this.getDemandes();//On recharge les demandes
+      });
+  }//enregsitrerDemande
+
   modifierDemande(demId, dateDebut: string, dateFin: string, isJourneeComplete, motif: string) {
     // setDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, motif:string
     this.abiBddCtrl.modDemande(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), demId, dateDebut, dateFin, isJourneeComplete, motif).subscribe(
@@ -546,6 +543,7 @@ export class DemandesPage {
           console.log("Enregsitrement échoue : token ou ID"); // Traiter le cas oû c'est pas OK : une alerte...
           this.AlertsToasts.faireAlertePasOk();
         }
+        this.getDemandes();//On recharge les demandes
       });
   }//modifierDemande
 
