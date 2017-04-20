@@ -6,7 +6,7 @@ export interface Utilisateur {
     suppAdresse : string;
     codePostal : number;
     ville : string;
-    telFix : string;
-    telMobile: string;
+    telFix : number;
+    telMobile: number;
     email : string;
 }

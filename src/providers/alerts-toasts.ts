@@ -63,32 +63,64 @@ export class AlertsToasts {
 
   //Pour le profil
 
-  //Alert pour les modifications validées
-  faireAlertOK() {
+  //Alert connexion echouée
+  faireAlertConnexionEchouee() {
     let prompt = this.alertCtrl.create({
-      title: 'Modification validée',
-      //message: "Modification validée",
-      buttons: [
-        {
-          text: 'Fermer',
-        }
-      ]
+      title: 'Erreur de connexion',
+      message: "Problème de connexion",
+      buttons: ["ok"]
     });
     prompt.present();
-  }//faireAlertOK
-
-  //Alert pour les modifications non validées
-  faireAlertEchoue() {
-    let prompt = this.alertCtrl.create({
-      title: 'Modification échouée, veuillez recommencer',
-      //message: "Modification échouée, veuillez recommencer",
-      buttons: [
-        {
-          text: 'Fermer',
-        }
-      ]
+  }
+  
+  //Toast modification enregistrée
+  faireToastModificationEnregistree() {
+    let toast = this.toastCtrl.create({
+      message: `Modifications enregistrées`,
+      duration: 2000,
+      cssClass: "yourCssClassName",
     });
-    prompt.present();
-  }//faireAlertEchoue
+    toast.present();
+  }
 
+  //Page login
+
+  faireAlertModeHorsLigne() {
+    let alert = this.alertCtrl.create({
+      title: 'Mode hors ligne',
+      message: 'Vous êtes actuellement en mode hors ligne.\n '
+      + 'Vous pouvez vous connecter avec le dernier compte utilisé et consulter les données chargées lors de votre dernière utilisation.\n '
+      + ' Vous ne pourrez pas charger de nouvelles données, ni enregsitrer de modifications.',
+      buttons: ['OK']
+    });
+    alert.present();
+  }
+
+  confirmerDemandeNouveauMotDePasse() {
+    let alert = this.alertCtrl.create({
+      title: 'Demande exécutée',
+      subTitle: 'Votre nouveau mot de passe a été envoyé sur votre boîte mail.',
+      buttons: ['Retour']
+    });
+    alert.present();
+  }//confirmerDemandeNouveauMotDePasse
+
+  alerterMailInexistant() {
+    let alert = this.alertCtrl.create({
+      title: 'Le mail saisi ne correspond à aucun utilisateur',
+      buttons: ['Retour']
+    });
+    alert.present();
+  }//alerterMailInexistant
+
+  afficherErreurDeCOnnexion() {
+    console.log("Connexion échouée : mauvais mail ou mot de passe");
+    let alert = this.alertCtrl.create({
+      title: 'Erreur',
+      subTitle: 'Utilisateur et/ou mot de passe incorrect(s).',
+      buttons: ['Retour']
+    });
+    alert.present();
+  }//afficherErreurDeCOnnexion
 }
+

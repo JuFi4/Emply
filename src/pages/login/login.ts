@@ -16,6 +16,7 @@ import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
 import { ApiPdfService } from '../../providers/api-pdf-service';
 import { AffichageValidationHoraireService } from '../../providers/affichage-validation-horaire-service';
+import { AlertsToasts } from '../../providers/alerts-toasts';
 
 //Models
 import {Horaire} from '../../models/horaire';
@@ -43,7 +44,8 @@ export class LoginPage {
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public platform : Platform, 
-        private validationCtrl : AffichageValidationHoraireService, private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, private connectivityService: ConnectivityService, public pdfCtrl : ApiPdfService) {        
+        private validationCtrl : AffichageValidationHoraireService, private abiBddCtrl: ApiBddService, private loadingCtrl: LoadingController, 
+        private connectivityService: ConnectivityService, public pdfCtrl : ApiPdfService, private AlertsToasts: AlertsToasts) {        
       
      // Définition de la d'accueil par défaut
      this.rootPage = AccueilPage; 
@@ -104,14 +106,7 @@ export class LoginPage {
   checkNetwork() {   
     if(this.connectivityService.isOffline()){
        window.localStorage.setItem('noNetwork', '1');
-       let alert = this.alertCtrl.create({
-          title: 'Mode hors ligne',
-          message: 'Vous êtes actuellement en mode hors ligne.\n '
-                  + 'Vous pouvez vous connecter avec le dernier compte utilisé et consulter les données chargées lors de votre dernière utilisation.\n '
-                  + ' Vous ne pourrez pas charger de nouvelles données, ni enregsitrer de modifications.',
-              buttons: ['OK']
-            });
-      alert.present();
+       this.AlertsToasts.faireAlertModeHorsLigne();
     } else {
       window.localStorage.setItem('noNetwork', '0');
     }
@@ -151,10 +146,10 @@ export class LoginPage {
                 data2 => {        
                     if(data2) { // OK    
                       console.log('Mail existant');
-                      this.confirmerDemandeNouveauMotDePasse();
+                      this.AlertsToasts.confirmerDemandeNouveauMotDePasse();
                     } else { // Erreur
                       console.log("Mail inexistant");
-                      this.alerterMailInexistant();
+                      this.AlertsToasts.alerterMailInexistant();
                     }
                 }
             ); 
@@ -164,23 +159,6 @@ export class LoginPage {
   });
   alert.present();
  }//nouveauMotDePasse
-
-confirmerDemandeNouveauMotDePasse(){
-      let alert = this.alertCtrl.create({
-      title: 'Demande exécutée',
-      subTitle: 'Votre nouveau mot de passe a été envoyé sur votre boîte mail.',
-      buttons: ['Retour']
-    });
-    alert.present();
-  }//confirmerDemandeNouveauMotDePasse
-
- alerterMailInexistant(){
-      let alert = this.alertCtrl.create({
-      title: 'Le mail saisi ne correspond à aucun utilisateur',
-      buttons: ['Retour']
-    });
-    alert.present();
-  }//alerterMailInexistant
 
   connecter() {
     // On passe trim() sur utilisateur et mot de passe pour enlever les éventuels espaces blancs
@@ -204,7 +182,7 @@ confirmerDemandeNouveauMotDePasse(){
                         
                         this.connexionOk();
                       } else { // Erreur
-                        this.afficherErreurDeCOnnexion();                        
+                        this.AlertsToasts.afficherErreurDeCOnnexion();                        
                       }
                   }
               ); 
@@ -212,7 +190,7 @@ confirmerDemandeNouveauMotDePasse(){
         if(window.localStorage.getItem('dernierUtilisateur') === this.utilisateur && window.localStorage.getItem('dernierMotDePasse') === this.motDePasse){
           this.connexionOk();
         } else {
-          this.afficherErreurDeCOnnexion();      
+          this.AlertsToasts.afficherErreurDeCOnnexion();      
         }
     }
   }//connecter
@@ -242,16 +220,6 @@ confirmerDemandeNouveauMotDePasse(){
      this.navCtrl.push(this.rootPage, {utilisateur: this.utilisateur});
   }//connexionOk
 
-
-  afficherErreurDeCOnnexion(){
-    console.log("Connexion échouée : mauvais mail ou mot de passe");
-    let alert = this.alertCtrl.create({
-      title: 'Erreur',
-      subTitle: 'Utilisateur et/ou mot de passe incorrect(s).',
-      buttons: ['Retour']
-    });
-    alert.present();
-  }//afficherErreurDeCOnnexion
 
   instancierNotificationsPush(){
    this.deviceToken = null;

@@ -37,10 +37,10 @@
       <ion-label>Ville :</ion-label> <ion-input type = "text" [disabled] ="inputDisabled" required [(ngModel)]="user.ville" name = "ville"></ion-input>
    </ion-item>
    <ion-item>
-      <ion-label>Telephone Fixe :</ion-label> <ion-input type = "text" [disabled] ="inputDisabled" required [(ngModel)]="user.telFix" name = "telFix"></ion-input>
+      <ion-label>Telephone Fixe :</ion-label> <ion-input type = "number" [disabled] ="inputDisabled" required [(ngModel)]="user.telFix" name = "telFix"></ion-input>
    </ion-item>
    <ion-item>
-      <ion-label>Telephone Mobile :</ion-label> <ion-input type = "text" [disabled] ="inputDisabled" required [(ngModel)]="user.telMobile" name = "telMobile"></ion-input>-->
+      <ion-label>Telephone Mobile :</ion-label> <ion-input type = "number" [disabled] ="inputDisabled" required [(ngModel)]="user.telMobile" name = "telMobile"></ion-input>-->
    </ion-item>
    <button ion-button type="submit" [hidden]="!inputDisabled"  [disabled] ="isHorsLigne" (click)= "modifier()" block>Modifier mes données</button>
    <button ion-button type="submit"[hidden]="inputDisabled"  [disabled] ="isHorsLigne"  (click)= "enregistrer()" block  color="secondary">Enregistrer</button> 
