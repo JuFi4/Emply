@@ -5,6 +5,7 @@ import { AlertController } from 'ionic-angular';
 // Providers
 import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
+import { AlertsToasts } from '../../providers/alerts-toasts';
 
 //Models
 import { Utilisateur } from '../../models/utilisateur';
@@ -19,7 +20,7 @@ export class MonprofilPage {
   inputDisabled : boolean;	
   isHorsLigne : boolean;
 
-  constructor(public toastCtrl : ToastController, public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService,  public alertCtrl: AlertController, private connectivityService: ConnectivityService) {
+  constructor(public toastCtrl : ToastController, public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService,  public alertCtrl: AlertController, private connectivityService: ConnectivityService, private AlertsToasts: AlertsToasts) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     if(!this.isHorsLigne){ // Mode normal : vérification de la connexion en ligne
       abiBddCtrl.getProfil(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
@@ -115,7 +116,7 @@ export class MonprofilPage {
               this. modifierMotDePasse(data.mdpActuel, data.mdpNew);
               console.log('Changement ok');
             }else{
-              this.faireAlertEchoue();
+              this.AlertsToasts.faireAlertEchoue();
             }
           }
         }
@@ -155,10 +156,10 @@ export class MonprofilPage {
       data => {
            if(data) {  // OK         
               console.log("Modifications mot de passe enregsitrées");
-              this.faireAlertOK();
+              this.AlertsToasts.faireAlertOK();
              } else { // Erreur
                  console.log("Connexion échouée : mauvais mot de passe, token ou ID");
-                 this.faireAlertEchoue();
+                 this.AlertsToasts.faireAlertEchoue();
              }
         });
   }//modifierMotDePasse
@@ -209,39 +210,13 @@ export class MonprofilPage {
        data => {
            if(data) { // OK     
               console.log("Modifications de l'adresse email enregsitrées");
-              this.faireAlertOK();
+              this.AlertsToasts.faireAlertOK();
               this.user.mail = newMail; // Affichage du nouvel email
              } else { // Erreur
                  console.log("Connexion échouée : mauvais mot de passe, token ou ID");
-                 this.faireAlertEchoue();
+                 this.AlertsToasts.faireAlertEchoue();
              }
         });
   }//modifierEmail
-
-  faireAlertOK(){
-      let prompt = this.alertCtrl.create({
-      title: 'Modification validée',
-      //message: "Modification validée",
-      buttons: [
-        {
-          text: 'Fermer',
-        }
-      ]
-    });
-    prompt.present();
-  }//faireAlertOK
-
-  faireAlertEchoue(){
-      let prompt = this.alertCtrl.create({
-      title: 'Modification échouée, veuillez recommencer',
-      //message: "Modification échouée, veuillez recommencer",
-      buttons: [
-        {
-          text: 'Fermer',
-        }
-      ]
-    });
-    prompt.present();
-  }//faireAlertEchoue
 
 }//MonprofilPage

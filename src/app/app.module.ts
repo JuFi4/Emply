@@ -22,6 +22,7 @@ import { ConnectivityService } from '../providers/connectivity-service';
 import { ApiPdfService } from '../providers/api-pdf-service';
 import {AffichageValidationHoraireService} from '../providers/affichage-validation-horaire-service';
 import {SyncHorairesService} from '../providers/sync-horaires-service';
+import {AlertsToasts} from '../providers/alerts-toasts';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import {SyncHorairesService} from '../providers/sync-horaires-service';
     ApiPdfService, 
     MoisService,
     AffichageValidationHoraireService,
-    SyncHorairesService
+    SyncHorairesService,
+    AlertsToasts
     ]
 })
 export class AppModule {}

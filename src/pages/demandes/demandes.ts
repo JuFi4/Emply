@@ -6,6 +6,7 @@ import { ToastController } from 'ionic-angular';
 // Providers
 import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
+import { AlertsToasts } from '../../providers/alerts-toasts';
 
 //models
 import { Demande } from '../../models/demande';
@@ -28,12 +29,11 @@ export class DemandesPage {
   isCheckDate: boolean;
   isCheckDatePasse: boolean;
 
-  constructor(public toastCtrl: ToastController, public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) {
+  constructor(public toastCtrl: ToastController, public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService, private AlertsToasts: AlertsToasts) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     this.isCheckDate = true;
     this.isCheckDatePasse = true;
     this.getDemandes();
-
 
     // EXEMPLE D'APPEL DE LA METHODE enregsitrerDemande()
     // Demande journée complète => 1
@@ -293,10 +293,10 @@ export class DemandesPage {
                 console.log(id, data.DateDeb, data.DateFin, data.Motif);
                 this.getDemandes();
               } else {
-                this.faireAlertePasOkDatePassee();
+                this.AlertsToasts.faireAlertePasOkDatePassee();
               }
             } else {
-              this.faireAlertePasOkDate();
+              this.AlertsToasts.faireAlertePasOkDate();
             }
           }
         }
@@ -308,6 +308,7 @@ export class DemandesPage {
   faireDemandeDemiConge(id) {
     var today = new Date();
     var ajd = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+    var heureAjd = today.getHours().toString();
     let prompt = this.alertCtrl.create({
       title: 'Demande de congé',
       message: "Entrez vos dates de la demande que vous avez séléctionnée : ",
@@ -321,7 +322,7 @@ export class DemandesPage {
         {
           name: 'HeureDebut',
           type: 'Time',
-          //value: ajd,
+          value: heureAjd,
           id: 'heureDeb'
         },
         {
@@ -333,7 +334,7 @@ export class DemandesPage {
         {
           name: 'HeureFin',
           type: 'Time',
-          // value: ajd,
+          value: heureAjd,
           id: 'heureFin'
         },
         {
@@ -361,10 +362,10 @@ export class DemandesPage {
                 console.log(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif);
                 this.getDemandes();
               } else {
-                this.faireAlertePasOkDatePassee();
+                this.AlertsToasts.faireAlertePasOkDatePassee();
               }
             } else {
-              this.faireAlertePasOkDate();
+              this.AlertsToasts.faireAlertePasOkDate();
             }
           }
         }
@@ -378,10 +379,10 @@ export class DemandesPage {
       data => {
         if (data) {  // OK         
           console.log("Demande enregsitrée"); // Traiter le cas où c'est ok : un toast par exemple
-          this.faireToastOk();
+          this.AlertsToasts.faireToastOk();
         } else { // Erreur
           console.log("Enregsitrement échoue : token ou ID"); // Traiter le cas oû c'est pas OK : une alerte...
-          this.faireAlertePasOk();
+          this.AlertsToasts.faireAlertePasOk();
         }
       });
   }//enregsitrerDemande
@@ -433,10 +434,10 @@ export class DemandesPage {
                     this.modifierDemande(demande.id, data.DateDebutNew, data.DateFinNew, 1, data.MotifNew);
                     this.getDemandes();
                   } else {
-                    this.faireAlertePasOkDatePassee();
+                    this.AlertsToasts.faireAlertePasOkDatePassee();
                   }
                 } else {
-                  this.faireAlertePasOkDate();
+                  this.AlertsToasts.faireAlertePasOkDate();
                 }
               }
             }
@@ -498,10 +499,10 @@ export class DemandesPage {
                     this.modifierDemande(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew);
                     this.getDemandes();
                   } else {
-                    this.faireAlertePasOkDatePassee();
+                    this.AlertsToasts.faireAlertePasOkDatePassee();
                   }
                 } else {
-                  this.faireAlertePasOkDate();
+                  this.AlertsToasts.faireAlertePasOkDate();
                 }
               }
             }
@@ -527,10 +528,10 @@ export class DemandesPage {
       data => {
         if (data) {  // OK         
           console.log("Modification enregsitrée"); // Traiter le cas où c'est ok : un toast par exemple
-          this.faireToastOk();
+          this.AlertsToasts.faireToastOk();
         } else { // Erreur
           console.log("Enregsitrement échoue : token ou ID"); // Traiter le cas oû c'est pas OK : une alerte...
-          this.faireAlertePasOk();
+          this.AlertsToasts.faireAlertePasOk();
         }
       });
   }//enregsitrerDemande
@@ -585,43 +586,4 @@ export class DemandesPage {
     }
 
   }//faireCheckDatePassee
-
-  //Alertes pour les checks
-
-  faireToastOk() {
-    let toast = this.toastCtrl.create({
-      message: `Demande enregistrée`,
-      duration: 2000,
-      cssClass: "yourCssClassName",
-    });
-    toast.present();
-  }//faireToastOk
-
-  faireAlertePasOk() {
-    let alert = this.alertCtrl.create({
-      title: 'Demande non enregistrée',
-      subTitle: 'Recommencez votre demande.',
-      buttons: ['Fermer']
-    });
-    alert.present();
-  }//faireAlertePasOk
-
-  faireAlertePasOkDate() {
-    let alert = this.alertCtrl.create({
-      title: 'Demande non enregistrée',
-      subTitle: 'Vos dates ne sont pas cohérentes.',
-      buttons: ['Fermer']
-    });
-    alert.present();
-  }//faireAlertePasOk
-
-  faireAlertePasOkDatePassee() {
-    let alert = this.alertCtrl.create({
-      title: 'Demande non enregistrée',
-      subTitle: 'Vos dates sont dans le passé.',
-      buttons: ['Fermer']
-    });
-    alert.present();
-  }//faireAlertePasOk
-
 }
