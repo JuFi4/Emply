@@ -17,7 +17,8 @@ import {Jour} from '../../models/jour';
 import {CalendrierEvent} from '../../models/calendrierEvent';
 import {Etablissement} from '../../models/etablissement';
 import {Demande} from '../../models/demande';
-import {Maladie} from '../../models/maladie';
+import {Maladie} from '../../models/Maladie';
+
 /*
   Generated class for the Meshoraires page.
 
@@ -169,7 +170,7 @@ export class MeshorairesPage {
                     console.log(data[i]);
                       // Bug très étranger à régler
                       //let mal = new Maladie(test.id, new Date(test.dateDebut), new Date(test.dateFin), test.isAccident);
-                      //this.maladiesDuMois.push(new Maladie(data[i].id, new Date(data[i].dateDebut), new Date(data[i].dateFin), data[i].isAccident));                              
+                      this.maladiesDuMois.push(new Maladie(data[i].id, new Date(data[i].dateDebut), new Date(data[i].dateFin), data[i].isAccident));                              
                    }//for
                     resolve(true); // On résout la promise à true
                } else {
