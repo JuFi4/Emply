@@ -84,19 +84,17 @@
 
   <div *ngFor = "let demande of demandesDuJour">
     <h2 class = "sstitreH"> Absence : {{ demande.nom_typeDemande }} </h2>
-    <ion-item>Date de début : {{ demande.affichageDateDebut }}  </ion-item>
-     <ion-item>Date de fin : {{ demande.affichageDateFin }} </ion-item>
+     <ion-item *ngIf="demande.isJourneeComplete">Du {{ demande.affichageDateDebut }} au {{ demande.affichageDateFin }} </ion-item>
+     <ion-item *ngIf="!demande.isJourneeComplete">De {{ demande.affichageHeureDebut }} à {{ demande.affichageHeureFin }} </ion-item>
   </div>
 
   <div *ngIf = "isMaladie"><h2 class = "sstitreH"> Absence : Maladie</h2>
-    <ion-item>Date de début : {{ maladieDuJour.affichageDateDebut }}</ion-item>
-    <ion-item>Date de fin : {{ maladieDuJour.affichageDateFin }}</ion-item>
+    <ion-item>Du {{ maladieDuJour.affichageDateDebut }} au {{ maladieDuJour.affichageDateFin }}</ion-item>
   </div>
   
 
   <div *ngIf = "isAccident"><h2 class = "sstitreH"> Absence : Accident</h2>
-    <ion-item>Date de début : {{ maladieDuJour.affichageDateDebut }}</ion-item>
-    <ion-item>Date de fin : {{ maladieDuJour.affichageDateFin }}</ion-item>
+    <ion-item>Du {{ maladieDuJour.affichageDateDebut }} au {{ maladieDuJour.affichageDateFin }}</ion-item>
   </div>
 
    <div *ngIf = "isJourVide"><h2 class ="sstitreNoH"> Aucune entrée pour ce jour</h2>

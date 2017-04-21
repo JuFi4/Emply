@@ -29,8 +29,6 @@ export class Demande {
         if(!isJourneeComplete){
             this.affichageHeureDebut = ('0' + (dateDebut.getHours())).slice(-2) + ':' + ('0' + dateDebut.getMinutes()).slice(-2);
             this.affichageHeureFin =  ('0' + (dateFin.getHours())).slice(-2) + ':' + ('0' + dateFin.getMinutes()).slice(-2);
-            this.affichageDateDebut+= " à " +  this.affichageHeureDebut;
-            this.affichageDateFin+= " à " + this.affichageHeureFin;
         }
         if(this.statut === "new" || this.statut === "modify"){ this.isNew = true;}
         else if(this.statut === "accept" || this.statut === "modifyAccept") { this.isAccept = true;}

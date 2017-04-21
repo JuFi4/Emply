@@ -26,9 +26,13 @@
   <ion-list>
       <ion-item *ngFor="let demande of demandes" text-wrap [class.isNew]="demande.isNew" [class.isAccept]="demande.isAccept" [class.isRefuse]="demande.isRefuse">
             <ion-label> {{demande.nom_typeDemande}}</ion-label>
-            <ion-label style="float: left; width: 500px;">
+            <ion-label *ngIf="demande.isJourneeComplete"  style="float: left; width: 500px;">              
               Du {{demande.affichageDateDebut}}    
               au {{demande.affichageDateFin}}     
+            </ion-label>
+            <ion-label *ngIf="!demande.isJourneeComplete"  style="float: left; width: 500px;">              
+              Le {{demande.affichageDateDebut}}    
+              de  {{demande.affichageHeureDebut}} à {{demande.affichageHeureFin}}
             </ion-label> 
             <ion-label style="text-align: right">
               <button ion-button icon-only ion-button type="submit" [disabled] ="!demande.isNew || isHorsLigne" (click)="modifierDemandeAlert(demande)" >
