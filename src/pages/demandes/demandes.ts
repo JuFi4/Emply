@@ -328,12 +328,6 @@ export class DemandesPage {
           id: 'heureDeb'
         },
         {
-          name: 'DateFin',
-          type: 'Date',
-          value: ajd,
-          id: 'dateFin'
-        },
-        {
           name: 'HeureFin',
           type: 'Time',
           value: heureAjd,
@@ -355,24 +349,19 @@ export class DemandesPage {
         {
           text: 'Confirmer',
           handler: data => {
-            this.faireCheckDate(data.DateDeb, data.DateFin); //Vérifier que les dates ne soient pas incohérentes
-            if (this.isCheckDate) {
               this.faireCheckDatePassee(data.DateDeb); //Vérifier que les dates ne sont pas dans le passé
               if (this.isCheckDatePasse) {
                 console.log('Confirmer');
                 this.faireCheckheure(data.HeureDebut, data.HeureFin); //Vérifier que les heures ne soient pas incohérentes
                 if(this.isCheckHeure){
-                  this.enregsitrerDemande(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif.trim());
-                  console.log(id, data.DateDeb +" "+ data.HeureDebut, data.DateFin +" "+ data.HeureFin, 0,data.Motif);
+                  this.enregsitrerDemande(id, data.DateDeb +" "+ data.HeureDebut, data.DateDeb +" "+ data.HeureFin, 0,data.Motif.trim());
+                  console.log(id, data.DateDeb +" "+ data.HeureDebut, data.DateDeb +" "+ data.HeureFin, 0,data.Motif);
                 }else{
                   this.AlertsToasts.faireAlerteHeuresPasOk();
                 }
               } else {
                 this.AlertsToasts.faireAlertePasOkDatePassee();
               }
-            } else {
-              this.AlertsToasts.afficherAlertPasValide();
-            }
           }
         }
       ]
@@ -454,12 +443,6 @@ export class DemandesPage {
               id: 'heureDebutNew'
             },
             {
-              name: 'DateFinNew',
-              value: dateFinValue,
-              id: 'dateFinNew',
-              type: 'Date'
-            },
-            {
               name: 'HeureFinNew',
               type: 'Time',
               value: demande.heureFin,
@@ -483,23 +466,18 @@ export class DemandesPage {
               text: 'Confirmer',
               handler: data => {
                 console.log('Confirmer');
-                this.faireCheckDate(data.DateDebutNew, data.DateFinNew); //Vérifier que les dates ne soient pas incohérentes
-                if (this.isCheckDate) {
                   this.faireCheckDatePassee(data.DateDebutNew);//Vérifier que les dates ne sont pas dans le passé
                   if (this.isCheckDatePasse) {
                     this.faireCheckheure(data.HeureDebutNew, data.HeureFinNew); //Vérifier que les heures ne soient pas incohérentes
                     if(this.isCheckHeure){
-                      console.log(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew);
-                      this.modifierDemande(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateFinNew + " " + data.HeureFinNew, 0, data.MotifNew.trim());
+                      console.log(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateDebutNew + " " + data.HeureFinNew, 0, data.MotifNew);
+                      this.modifierDemande(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateDebutNew + " " + data.HeureFinNew, 0, data.MotifNew.trim());
                     } else{
                       this.AlertsToasts.faireAlerteHeuresPasOk();
                     }
                   } else {
                     this.AlertsToasts.faireAlertePasOkDatePassee();
                   }
-                } else {
-                  this.AlertsToasts.afficherAlertPasValide();
-                }
               }
             }
           ]
