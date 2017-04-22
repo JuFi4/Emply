@@ -310,7 +310,10 @@ export class DemandesPage {
   faireDemandeDemiConge(id) {
     var today = new Date();
     var ajd = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
-    var heureAjd = today.getHours().toString();
+    var heureDebut = ('0' + ( today.getHours())).slice(-2) + ':' + ('0' +  today.getMinutes()).slice(-2);
+    var heureFin = ('0' + (today.getHours() + 1)).slice(-2)  + ':' + ('0' + today.getMinutes()).slice(-2);
+    console.log(heureDebut);
+    console.log(heureFin);
     let prompt = this.alertCtrl.create({
       title: 'Demande de congé',
       message: "Entrez vos dates de la demande que vous avez séléctionnée : ",
@@ -324,13 +327,13 @@ export class DemandesPage {
         {
           name: 'HeureDebut',
           type: 'Time',
-          value: heureAjd,
+          value: heureDebut,
           id: 'heureDeb'
         },
         {
           name: 'HeureFin',
           type: 'Time',
-          value: heureAjd,
+          value: heureFin,
           id: 'heureFin'
         },
         {
@@ -372,6 +375,8 @@ export class DemandesPage {
   modifierDemandeAlert(demande) {
     var dateDebValue = demande.dateDebut.getFullYear() + '-' + ('0' + (demande.dateDebut.getMonth() + 1)).slice(-2) + '-' + ('0' + demande.dateDebut.getDate()).slice(-2);
     var dateFinValue = demande.dateFin.getFullYear() + '-' + ('0' + (demande.dateFin.getMonth() + 1)).slice(-2) + '-' + ('0' + demande.dateFin.getDate()).slice(-2);
+    var heureDebut = ('0' + ( demande.dateDebut.getHours())).slice(-2) + ':' + ('0' +  demande.dateDebut.getMinutes()).slice(-2);
+    var heureFin = ('0' + (demande.dateFin.getHours())).slice(-2) + ':' + ('0' + demande.dateFin.getMinutes()).slice(-2);
     if (demande.statut === 'new' || demande.statut === 'modify') {
       if (demande.isJourneeComplete) { // Traiter la modification lorsque la demande est "new" ou "modify"
         let prompt = this.alertCtrl.create({
@@ -439,13 +444,13 @@ export class DemandesPage {
             {
               name: 'HeureDebutNew',
               type: 'Time',
-              value: demande.HeureDebut,
+              value: heureDebut,
               id: 'heureDebutNew'
             },
             {
               name: 'HeureFinNew',
               type: 'Time',
-              value: demande.heureFin,
+              value: heureFin,
               id: 'heureFinNew'
             },
             {
@@ -566,8 +571,11 @@ export class DemandesPage {
   }//faireCheckDate
 
   faireCheckheure(heureDebutCheck, heureFinCheck) { //Vérifier que les heures ne soient pas incohérentes
+    var today = new Date();
+    var ajd = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+    var heureActuelle = ('0' + ( today.getHours())).slice(-2) + ':' + ('0' +  today.getMinutes()).slice(-2);
     console.log("je me fait check pour les heures");
-    if (heureDebutCheck < heureFinCheck) {
+    if (heureDebutCheck < heureFinCheck && heureDebutCheck >= heureActuelle) {
       this.isCheckHeure = true;
     } else {
       this.isCheckHeure = false;

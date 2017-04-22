@@ -55,7 +55,7 @@ export class AlertsToasts {
   faireAlerteHeuresPasOk() {
     let alert = this.alertCtrl.create({
       title: 'Demande non enregistrée',
-      subTitle: 'Vos heures ne sont pas cohérentes',
+      subTitle: 'Vos heures ne sont pas cohérentes ou dans le passé',
       buttons: ['Fermer']
     });
     alert.present();
