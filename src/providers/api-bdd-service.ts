@@ -211,27 +211,51 @@ export class ApiBddService {
    }//getDetailHoraire*/
 
    //retourne le numéro de l'établissement de l'employé connecté 
-   getIdEtablissement(userId : string){ 
-     var url =this.baseUrl + 'type=getIdEtablissement&userId=' + encodeURI(userId);
+   getIdEtablissement(userId : string, token : string, idDep : string){ 
+     var url =this.baseUrl + 'type=getIdEtablissement&userId=' + encodeURI(userId)+'&token=' + encodeURI(token) +'&idDep=' + encodeURI(idDep);
      console.log("getEtablissement "+ url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//getIdEtablissement
 
    //retourne les heures que l'employé à effectué  
-   getInfosSolde(userId : string, dateDebut : string, dateFin : string){ 
-     var url =this.baseUrl + 'type=getInfosSolde&userId=' + encodeURI(userId) + '&dateDebut' + encodeURI(dateDebut) + '&dateFin' + encodeURI(dateFin);
+   getInfosSolde(userId : string, dateDebut : string, dateFin : string, token : string){ 
+     var url =this.baseUrl + 'type=getInfosSolde&userId=' + encodeURI(userId) + '&token' + encodeURI(token) + '&dateDebut' + encodeURI(dateDebut) + '&dateFin' + encodeURI(dateFin);
      console.log("getInfoSolde "+ url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//getIdEtablissement
 
    //retourne les informations sur l'établissement et l'employé 
-   getInfosHeuresMois(userId : string, mois : string, annee : string, idEta : string){ 
-     var url =this.baseUrl + 'type=getInfosHeuresMois&userId=' + encodeURI(userId) + '&mois=' + encodeURI(mois) + '&annee=' + encodeURI(annee) + '&idEta=' + encodeURI(idEta);
+   getInfosHeuresMois(userId : string, mois : string, annee : string, idEta : string, token : string){ 
+     var url =this.baseUrl + 'type=getInfosHeuresMois&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&mois=' + encodeURI(mois) + '&annee=' + encodeURI(annee) + '&idEta=' + encodeURI(idEta);
      console.log("getInfosHeuresMois "+ url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//getIdEtablissement
+
+   //retourne les informations sur l'établissement et l'employé 
+   getCalculerSoldeEmployee(userId : string, mois : string, annee : string, idEta : string, token : string){ 
+     var url =this.baseUrl + 'type=calculerSoldeEmployee&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&mois=' + encodeURI(mois) + '&annee=' + encodeURI(annee) + '&idEta=' + encodeURI(idEta);
+     console.log("calculerSoldeEmployee "+ url);
+     var response = this.http.get(url).map(res => res.json());
+     return response; 
+   }//getIdEtablissement
+
+  //retourne le numéro de l'établissement de l'employé connecté 
+   getTypeHoraireContrat(userId : string, token : string){ 
+     var url =this.baseUrl + 'type=getTypeHoraireContrat&userId=' + encodeURI(userId)+'&token=' + encodeURI(token);
+     console.log("getTypeHoraireContrat "+ url);
+     var response = this.http.get(url).map(res => res.json());
+     return response; 
+   }//getTypeHoraireContrat
+
+  //retourne le numéro de l'établissement de l'employé connecté 
+   getIdDepartement(userId : string, token : string){ 
+     var url =this.baseUrl + 'type=getIdDepartement&userId=' + encodeURI(userId)+'&token=' + encodeURI(token);
+     console.log("getIdDepartement "+ url);
+     var response = this.http.get(url).map(res => res.json());
+     return response; 
+   }//getIdDepartement
 
 }//ApiBddService

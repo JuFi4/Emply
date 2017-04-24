@@ -1,19 +1,26 @@
 export class InfosEtablissement {
-    jourEffectifConge : String;
+    jourEffectifConge : number;
     jourEffectifHeure : String;
     droitConge : String;
-    droitVacancesMois : String;
-    droitVacanceAnnee : String;
+    droitVacancesMois : number;
+    droitVacanceAnnee :number;
     droitJourFerieMois : String;
-    droitJourFerieAnnee : String;
-    heureSemaine : String;
+    droitJourFerieAnnee : number;
+    heureSemaine : number;
     totalSemaine : String;
-    heureMois : String;
+    heureMois : number;
     solde : String;
+    jourPrisVac : number;
+    jourPrisFer : number;
 
-    constructor(droitVacanceAnnee : String, droitJourFerieAnnee : String,){
+    constructor(droitVacanceAnnee : number, droitJourFerieAnnee : number, heureMois : number, 
+                heureSemaine : number, jourPrisVac : number, jourPrisFer : number){
             this.droitVacanceAnnee = droitVacanceAnnee;
             this.droitJourFerieAnnee = droitJourFerieAnnee;
+            this.heureMois = heureMois;
+            this.heureSemaine = heureSemaine;
+            this.jourPrisFer = jourPrisFer;
+            this.jourPrisVac = jourPrisVac;
     }//constructor
 
-}//Maladie
+}//InfoEtablissement

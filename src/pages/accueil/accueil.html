@@ -17,29 +17,25 @@
 <ion-content padding>
     
     <ion-label>Votre tableau de bord :</ion-label>
-    <ion-item>
-    <ion-label color="primary" stacked>Nombre d'heures à effectuer dans le mois : </ion-label>
-    <ion-input type = "text" name = "nbHeuresAFaire" [disabled] ="inputDisabled" ></ion-input>
+    <ion-item class = "color1">
+    <ion-label class="white" stacked>Contrat :  </ion-label>
+    <ion-input class="white" type = "text" name = "nbHeuresAFaire" [disabled] ="inputDisabled" required [(ngModel)]="affichageHS">H/Semaine</ion-input>
     </ion-item>
-    <ion-item>
-    <ion-label color="primary" stacked>Nombre d'heures effectuées jusqu'à aujourd'hui : </ion-label>
-    <ion-input type = "text" name = "nbHeuresEffectuees" [disabled] ="inputDisabled"></ion-input>
+    <ion-item class = "color2">
+    <ion-label class="white" stacked>Nombre d'heures effectuées : </ion-label>
+    <ion-input class="white" type = "text" name = "nbHeuresEffectuees" [disabled] ="inputDisabled"></ion-input>
     </ion-item>
-    <ion-item>
-    <ion-label color="primary" stacked>Nombre d'heures supplémentaires : </ion-label>
-    <ion-input type = "text" name = "nbHeuresSupp"[disabled] ="inputDisabled"></ion-input>
+    <ion-item class = "color3">
+    <ion-label class="white" stacked>Heures supplémentaires : </ion-label>
+    <ion-input class="white" type = "text" name = "nbHeuresSupp"[disabled] ="inputDisabled" required [(ngModel)]="heureSupp"></ion-input>
     </ion-item>
-    <ion-item>
-    <ion-label color="primary" stacked>Nombre de jours de vacances : </ion-label>
-    <ion-input type = "text" [disabled] ="inputDisabled" required [(ngModel)]="vacancesAnnee"></ion-input>
+    <ion-item class = "color4">
+    <ion-label class="white" stacked>Vacances disponible : </ion-label>
+    <ion-input class="white" type = "text" [disabled] ="inputDisabled" required [(ngModel)]="affichageConge"></ion-input>
     </ion-item>
-    <ion-item>
-    <ion-label color="primary" stacked>Nombre de jours de vacances à prendre : </ion-label>
-    <ion-input type = "text" name = "nbJoursVacancesAPrendre"[disabled] ="inputDisabled"></ion-input>
-    </ion-item>
-    <ion-item>
-    <ion-label color="primary" stacked>Nombre de jours férier à prendre : </ion-label>
-    <ion-input type = "text" name = "nbJoursVacancesAPrendre"[disabled] ="inputDisabled" required [(ngModel)]="jourFerierAnnee"></ion-input>
+    <ion-item class = "color5">
+    <ion-label class="white" stacked>Jours fériés disponible : </ion-label>
+    <ion-input class="white" type = "text" name = "nbJoursVacancesAPrendre"[disabled] ="inputDisabled" required [(ngModel)]="afficherFerier"></ion-input>
     </ion-item>
 </ion-content>
 

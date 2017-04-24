@@ -5,6 +5,8 @@ import { NavController, NavParams, AlertController, LoadingController } from 'io
 import {InfoHeureUser} from '../../models/infoHeureUser';
 import {userEta} from '../../models/userEta';
 import {InfosEtablissement} from '../../models/infosEtablissement';
+import {InfosContrat} from "../../models/infosContrat";
+import {SoldeEmploye} from "../../models/SoldeEmploye";
 
 //import du provider
 import { ApiBddService } from '../../providers/api-bdd-service';
@@ -29,9 +31,18 @@ export class AccueilPage {
   idEtablissement;
   dataInfo;
   annneeCourrante = new Date().getFullYear(); // Année courrante
-  moisCourant = new Date().getMonth();
-  vacancesAnnee : String;
-  jourFerierAnnee : String;
+  moisCourant = new Date().getMonth()+1;
+  jourCourant = new Date().getDay();
+  vacancesAnnee : number;
+  jourFerierAnnee : number;
+  idDepartement : String;
+  infosContrat : InfosContrat;
+  soldeEmploye : SoldeEmploye;
+  heureSupp : number;
+  nbHeureParSem : number;
+  affichageHS : String;
+  affichageConge : String;
+  afficherFerier : String;
   
 
 
@@ -54,24 +65,43 @@ export class AccueilPage {
   getStats(){
     return new Promise((resolve, reject) => {
       console.log("getStats");
-      this.apiBddService.getIdEtablissement(window.localStorage.getItem('id')).subscribe(
-                              eta => {
-                                if(eta) { // OK   
+      
+      this.apiBddService.getIdDepartement(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD')).subscribe(
+                              dep => {
+                                if(dep) { // OK   
                                    // @ VANESSA : OK : tout se range bien dans this.idEtablissement
-                                  this.idEtablissement = eta;
-                                  console.log("idEtablissement : " + this.idEtablissement);
-                                // window.localStorage.setItem('getEtablissement', JSON.stringify(this.entablissement));
+                                  this.idDepartement = dep;
+                                  window.localStorage.setItem('getDepartement', JSON.stringify(this.idDepartement));
+                                  console.log("idDepartement : " + window.localStorage.getItem('getDepartement'));
                                 } else { // Erreur
                                   console.log("Pas ok");
                               }
                         });
 
 
-        this.apiBddService.getInfosSolde(window.localStorage.getItem('id'), "2017-01-01","2017-12-31").subscribe(
+      this.apiBddService.getIdEtablissement(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),window.localStorage.getItem('getDepartement')).subscribe(
+                              eta => {
+                                if(eta) { // OK   
+                                   // @ VANESSA : OK : tout se range bien dans this.idEtablissement
+                                  this.idEtablissement = eta;
+                                  console.log("idEtablissement : " + this.idEtablissement);
+                                  window.localStorage.setItem('getEtablissement', JSON.stringify(this.idEtablissement));
+                                } else { // Erreur
+                                  console.log("Pas ok");
+                              }
+                        });
+
+
+        this.apiBddService.getInfosSolde(window.localStorage.getItem('id'), this.annneeCourrante+"-01-01",this.annneeCourrante+"-12-31",window.localStorage.getItem('tokenBDD'),).subscribe(
                   dataInfoSolde => {
                         if(dataInfoSolde) { // OK     
                            // @ VANESSA : OK : tout se range bien dans ton objet
-                            this.dataInfoUser = new InfoHeureUser(dataInfoSolde.brut.time,dataInfoSolde.totalPause.time,dataInfoSolde.net.time, dataInfoSolde.conges) 
+                            this.dataInfoUser = new InfoHeureUser(
+                              dataInfoSolde.brut.time,
+                              dataInfoSolde.totalPause.time,
+                              dataInfoSolde.net.time, 
+                              dataInfoSolde.conges
+                            ) 
                             console.log("dataInfoUser");
                             console.log(this.dataInfoUser);  
                             window.localStorage.setItem('getInfoEta', JSON.stringify(this.dataInfoUser));
@@ -81,27 +111,67 @@ export class AccueilPage {
         });
 
 
-    this.apiBddService.getInfosHeuresMois(window.localStorage.getItem('id'),"4", "2017", this.idEtablissement).subscribe(
+    this.apiBddService.getInfosHeuresMois(window.localStorage.getItem('id'),''+this.moisCourant,''+this.annneeCourrante,window.localStorage.getItem('getEtablissement'),window.localStorage.getItem('tokenBDD') ).subscribe(
                               dataInfo => {
-                                // @ VANESSA : OK : tout se range bien dans ton objet, par contre j'ai récupéré le "time" comme tu m'avais dit, mais je ne comprend pas bien à quoi il correspond
-                                // Pour droitvacances_annee j'ai : hours:"840", minutes:"57", seconds:"36", time:35.04 et ke trouve que c'est assez bizare : je ne vois pas quelle est l'unité de mesure du "time" !!
-                                // Donc j'espère que Joel t'a expliqué ce que c'est car je ne comprend pas trop !!
-                                // Si jamais tu as besoin d'autres champs je pense que tu as compris comment ça fonctionne (il n'y jamais le "[0]", et si jamais tu  me dis ;)
                                 if(dataInfo) { // OK
                                   console.log(dataInfo)  
                                   this.infoEta = new InfosEtablissement(
                                         dataInfo.droitvacances_annee.time,
                                         dataInfo.droitjoursferies_annee,
+                                        dataInfo.heures_mois,
+                                        dataInfo.heures_semaine,
+                                        dataInfo.jourprisvacances,
+                                        dataInfo.jourprisferies,
                                   )                                                                   
                                   console.log("dataInfo");
                                   console.log(this.infoEta.droitVacanceAnnee);
                                   this.vacancesAnnee = this.infoEta.droitVacanceAnnee;
                                   this.jourFerierAnnee = this.infoEta.droitJourFerieAnnee;
+                                  this.nbHeureParSem = this.infoEta.heureSemaine;
+                                  var heureFerier = this.infoEta.droitJourFerieAnnee - this.infoEta.jourPrisFer;
+                                  var heureVac = this.vacancesAnnee - this.infoEta.jourPrisVac;
+                                  this.affichageHS = this.nbHeureParSem +" H/Semaine";
+                                  console.log("affichage "+this.affichageHS);
+                                  this.affichageConge = heureVac +"/"+this.vacancesAnnee;
+                                  console.log("affichage "+this.affichageConge);
+                                  this.afficherFerier = heureFerier +"/"+ this.jourFerierAnnee 
                                   window.localStorage.setItem('getInfoEta', JSON.stringify(this.dataInfo));
                                 } else { // Erreur
                                   console.log("Pas ok");
                                 }
                         });
+
+       this.apiBddService.getTypeHoraireContrat(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD')).subscribe(
+                              typeContratH => {
+                                if(typeContratH) { // OK
+                                  console.log(typeContratH)  
+                                  this.infosContrat = new InfosContrat(
+                                        typeContratH[0].type,
+                                        typeContratH[0].nbHeure,
+                                  )                                                                   
+                                  console.log("typeContratH");
+                                } else { // Erreur
+                                  console.log("Pas ok");
+                                }
+                        });
+          
+          this.apiBddService.getCalculerSoldeEmployee(window.localStorage.getItem('id'),''+this.moisCourant, ''+this.annneeCourrante, window.localStorage.getItem('getEtablissement'),window.localStorage.getItem('tokenBDD')).subscribe(
+                              soldeEmploye => {
+                                if(soldeEmploye) { // OK
+                                  console.log(soldeEmploye)  
+                                  this.soldeEmploye = new SoldeEmploye(
+                                        soldeEmploye.solde_conges,
+                                        soldeEmploye.solde_feries,
+                                        soldeEmploye.solde_heures.time,
+                                        soldeEmploye.solde_vacances,
+                                  )
+                                  this.heureSupp = this.soldeEmploye.soldeHeure;                                                                   
+                                  console.log("soldeEmploye");
+                                } else { // Erreur
+                                  console.log("Pas ok");
+                                }
+                        });
+
        resolve("Fini");
       });
   }//getStats
