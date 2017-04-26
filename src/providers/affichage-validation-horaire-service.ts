@@ -42,7 +42,7 @@ afficherNotificationFinDeService(horaireToString){
 afficherAlertFinDeService(horaire : Horaire){
      let alert = this.alertCtrl.create({
         title: "Validation des heures de service",
-        message: "Avez-vous bien travailler  le "+ horaire.affichageDate + " de "+ horaire.affichageHeureDebut + " à " + horaire.affichageHeureFin + "? ",
+        message: "Avez-vous bien travaillé  le "+ horaire.affichageDate + " de "+ horaire.affichageHeureDebut + " à " + horaire.affichageHeureFin + "? ",
         buttons: [
           {
             text: 'Non',            
@@ -110,7 +110,8 @@ afficherAlertFinDeService(horaire : Horaire){
              text: 'Absent',
              handler: () =>{
                console.log("Absent click")   
-               this.validationHoraire(horaire.id, '', '','absent');  // On enregsitre l'absence dans la BDD        
+               this.validationHoraire(horaire.id, '', '','absent');  // On enregsitre l'absence dans la BDD 
+               this.AlertsToasts.faireToastModificationEnregistree();       
             }
           },
           {
@@ -199,19 +200,24 @@ afficherDateMaladie(horaire){
                console.log('Oui clicked');
                if(data.dateDebut >= data.dateFin){
                     this.AlertsToasts.afficherAlertPasValide();
-               }else{
-                  if(!this.isHorsLigne){//Si on est pas hors ligne -> OK
+                    if(data.dateDebut < this.affichageToday){
+                      this.AlertsToasts.afficherAlerteDatePasse();
+                    }else{
+                      if(!this.isHorsLigne){//Si on est pas hors ligne -> OK
                       this.validationHoraire(horaire.id, '', '','maladie');
                       this.abiBddCtrl.setMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "0", horaire.id).subscribe(
                             data => {
                               if(data) { // OK     
                                 console.log("OK");
+                                this.AlertsToasts.faireToastModificationEnregistree();
                               } else { // Erreur
                                 console.log("Pas ok");
+                                this.AlertsToasts.faireAlertConnexionEchouee();
                         }
                       });
-                  } else {
-                    this.afficherMessageHorsLigne();
+                    } else {
+                      this.afficherMessageHorsLigne();
+                    }
                   }
                }
             }

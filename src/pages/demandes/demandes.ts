@@ -257,7 +257,7 @@ export class DemandesPage {
     var ajd = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
     let prompt = this.alertCtrl.create({
       title: 'Demande de congé',
-      message: "Entrez vos dates de la demande que vous avez séléctionnée : ",
+      message: "Entrez les dates de la demande : ",
       inputs: [
         {
           name: 'DateDeb',
@@ -316,7 +316,7 @@ export class DemandesPage {
     console.log(heureFin);
     let prompt = this.alertCtrl.create({
       title: 'Demande de congé',
-      message: "Entrez vos dates de la demande que vous avez séléctionnée : ",
+      message: "Entrez les dates de la demande : ",
       inputs: [
         {
           name: 'DateDeb',
@@ -381,7 +381,7 @@ export class DemandesPage {
       if (demande.isJourneeComplete) { // Traiter la modification lorsque la demande est "new" ou "modify"
         let prompt = this.alertCtrl.create({
           title: 'Modification des dates la demande',
-          subTitle: 'Type de demande :' + demande.nom_typeDemande,
+          subTitle: 'Type de demande : ' + demande.nom_typeDemande,
           inputs: [
             {
               name: 'DateDebutNew',
@@ -433,7 +433,7 @@ export class DemandesPage {
       } else if (!demande.isJourneeComplete) {
         let prompt = this.alertCtrl.create({
           title: 'Modification des dates la demande',
-          subTitle: 'Type de demande :' + demande.nom_typeDemande,
+          subTitle: 'Type de demande : ' + demande.nom_typeDemande,
           inputs: [
        {
               name: 'DateDebutNew',

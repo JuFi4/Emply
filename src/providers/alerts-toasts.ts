@@ -29,6 +29,15 @@ export class AlertsToasts {
     alert.present();
   }//afficherAlertPasValide
 
+  afficherAlerteDatePasse(){
+    let alert = this.alertCtrl.create({
+      title: "Dates non valide",
+      message: "Vos dates ne sont pas valides. Veuillez mettre des dates qui ne sont pas dans le passé.",
+      buttons: ['OK']
+    });
+    alert.present();
+  }
+
   //Pour la page des demandes
 
   //Alert pour les dates qui sont dans le passé
@@ -153,6 +162,15 @@ export class AlertsToasts {
     });
     alert.present();
   }//afficherErreurDeCOnnexion
+
+  faireToastSynchronisation(){
+    let toast = this.toastCtrl.create({
+      message: `Synchronisation activée`,
+      duration: 2000,
+      cssClass: "yourCssClassName",
+    });
+    toast.present();
+  }
 
 }
 

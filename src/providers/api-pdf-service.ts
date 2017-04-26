@@ -50,7 +50,7 @@ export class ApiPdfService {
       console.log(url);
       fileTransfer.download(url, dest).then((entry) => {
           console.log('download complete: ' + entry.toURL()); 
-          this.afficherMessageOK("Le ficher PDF de vos horaires à bien été téléchargé dans le dossier de stockage de votre téléphone", entry.toURL());        
+          this.afficherMessageOK("Le ficher PDF de vos horaires a bien été téléchargé dans le dossier de stockage de votre téléphone", entry.toURL());        
         }, (error) => {
           console.log(error);
           this.afficherErreur();

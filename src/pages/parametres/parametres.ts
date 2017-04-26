@@ -6,6 +6,7 @@ import { Calendar } from 'ionic-native';
 // Providers
 import { ConnectivityService } from '../../providers/connectivity-service';
 import { SyncHorairesService } from '../../providers/sync-horaires-service';
+import { AlertsToasts } from '../../providers/alerts-toasts';
 
 //Modele
 import { CalendrierEvent } from '../../models/calendrierEvent';
@@ -39,7 +40,7 @@ export class ParametresPage {
   is180 = false;
   isNull = false; // choix pour désactiver => minute à -1
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private connectivityService: ConnectivityService, public alertCtrl: AlertController, private syncHoraireCtrl : SyncHorairesService) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private connectivityService: ConnectivityService, public alertCtrl: AlertController, private syncHoraireCtrl : SyncHorairesService, private AlertsToasts: AlertsToasts) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     this.autoImport = this.setAutoImport();
     this.importMinutes();
@@ -71,7 +72,8 @@ export class ParametresPage {
               console.log(this.nomCalendrierEvent + " je suis le nom du calendrier");              
               window.localStorage.setItem('autoImportNomEvent', data.nomEvent);                
               console.log("j'ai été enregistré " + data.nomEvent);
-              this.syncCalendrierSmartphone(); //On synchronose le calendrier 
+              this.syncCalendrierSmartphone(); //On synchronise le calendrier 
+              this.AlertsToasts.faireToastSynchronisation();   
             }
           }
         ]
@@ -106,6 +108,7 @@ export class ParametresPage {
   sauverMinutes(valeur) { // valeur = -1 si désactiver
     this.minute = valeur;
     window.localStorage.setItem('importeMinutes', this.minute);//On enregsitre
+    this.AlertsToasts.faireToastModificationEnregistree();
   }//sauverMinutes
 
   // Supprime tous les events futurs programmés dans le calendrier
