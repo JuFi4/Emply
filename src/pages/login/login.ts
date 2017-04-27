@@ -146,9 +146,11 @@ export class LoginPage {
                 data => {        
                     if(data) { // OK    
                       console.log('Mail existant');
+                      console.log("Retour de l'api si le mail existe :" + data);
                       this.AlertsToasts.confirmerDemandeNouveauMotDePasse();
                     } else { // Erreur
                       console.log("Mail inexistant");
+                      console.log("Retour de l'api si le mail existe pas:" + data);
                       this.AlertsToasts.alerterMailInexistant();
                     }
                 }
