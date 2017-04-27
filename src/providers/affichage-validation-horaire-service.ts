@@ -198,11 +198,8 @@ afficherDateMaladie(horaire){
             text: 'Valider',
             handler: data => {
                console.log('Oui clicked');
-               if(data.dateDebut >= data.dateFin){
-                    this.AlertsToasts.afficherAlertPasValide();
-                    if(data.dateDebut < this.affichageToday){
-                      this.AlertsToasts.afficherAlerteDatePasse();
-                    }else{
+               if(data.dateDebut <= data.dateFin){     
+                    if(data.dateDebut >= this.affichageToday){
                       if(!this.isHorsLigne){//Si on est pas hors ligne -> OK
                       this.validationHoraire(horaire.id, '', '','maladie');
                       this.abiBddCtrl.setMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), data.dateDebut, data.dateFin, "0", horaire.id).subscribe(
@@ -213,12 +210,16 @@ afficherDateMaladie(horaire){
                               } else { // Erreur
                                 console.log("Pas ok");
                                 this.AlertsToasts.faireAlertConnexionEchouee();
-                        }
-                      });
-                    } else {
+                              }   
+                            });
+                      } else {
                       this.afficherMessageHorsLigne();
+                      }
+                    }else{
+                      this.AlertsToasts.afficherAlerteDatePasse();
                     }
-                  }
+               }else{
+                  this.AlertsToasts.afficherAlertPasValide();
                }
             }
           }           
