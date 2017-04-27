@@ -23,5 +23,5 @@
             <ion-label style="text-align: right">de {{horaire.affichageHeureDebut}} à {{horaire.affichageHeureFin}}</ion-label>
       </ion-item>
   </ion-list>
-  <button ion-button block outline (click)="telechargerPDF()">Télécharger PDF</button>
+  <button ion-button block outline [disabled] ="isHorsLigne" (click)="telechargerPDF()">Télécharger PDF</button>
 </ion-content>

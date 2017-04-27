@@ -43,14 +43,16 @@ horairesAttenteValidation : Horaire[];
                 data => {  
                   if(data) { // Si les données sont bien chargées 
                       console.log("Les horaires en attente de validation ont été chargés.");
+                      window.localStorage.setItem('getHorairesAttenteValidation', JSON.stringify(data));//On sauvegarde les données en local    
                       this.traiterHorairesAttenteValidation(data);      
                   } else { 
-                      console.log("Les horaires en attente de validation n'ont pas été chargés.");
+                      console.log("Les horaires en attente de validation n'ont pas été chargés.");//TODO Céline : afficher erreur
                   }              
                 }); 
     } else { // Mode hors ligne 
-            // Traitement des horaires à partir des données sauvegardés : mode hors-ligne, ou synchronisation du calendrier au cas ou les horaires n'ont pas changés
-            console.log("Tu es hors ligne"); 
+            // Traitement des horaires à partir des données sauvegardés            
+             this.traiterHorairesAttenteValidation(JSON.parse(window.localStorage.getItem('getHorairesAttenteValidation')));   
+             console.log("Tu es hors ligne"); 
     }
   } //getHorairesAttenteValidation
 

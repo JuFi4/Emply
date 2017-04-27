@@ -5,7 +5,7 @@ import { NavController, NavParams } from 'ionic-angular';
 // Providers
 import { ApiPdfService } from '../../providers/api-pdf-service';
 import { SyncHorairesService } from '../../providers/sync-horaires-service';
-
+import { ConnectivityService } from '../../providers/connectivity-service';
 
 //Models
 import {Horaire} from '../../models/horaire';
@@ -22,9 +22,11 @@ import {Horaire} from '../../models/horaire';
 export class MeshorairesfutursPage {
 
   horairesFuturs : Horaire[];
+  isHorsLigne: boolean;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public pdfCtrl: ApiPdfService, private syncHoraireCtrl : SyncHorairesService) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public pdfCtrl: ApiPdfService, private syncHoraireCtrl : SyncHorairesService, private connectivityService: ConnectivityService) {
     // Méthodes à lancer au chargement de la page
+    this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     this.getHorairesFuturs(); // On charge les horaires futurs
   }
 
@@ -34,8 +36,7 @@ export class MeshorairesfutursPage {
 
   getHorairesFuturs() {
     console.log("Coucou les horaires futurs");
-      this.syncHoraireCtrl.gethorairesFuturs();
-      this.horairesFuturs = this.syncHoraireCtrl.horairesFuturs;
+      this.syncHoraireCtrl.gethorairesFuturs().then(result => this.horairesFuturs = this.syncHoraireCtrl.horairesFuturs);     
       console.log(this.horairesFuturs);    
   }
 
