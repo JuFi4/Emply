@@ -143,8 +143,8 @@ export class LoginPage {
         text: 'Envoyer',
         handler: data => {
           this.abiBddCtrl.setNewPassword(data.mail).subscribe(
-                data2 => {        
-                    if(data2) { // OK    
+                data => {        
+                    if(data) { // OK    
                       console.log('Mail existant');
                       this.AlertsToasts.confirmerDemandeNouveauMotDePasse();
                     } else { // Erreur
