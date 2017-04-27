@@ -37,6 +37,7 @@ horairesAttenteValidation : Horaire[];
   }
 
   getHorairesAttenteValidation () {
+    console.log("getHorairesAttenteValidation")  ;
     if(!this.isHorsLigne){ // Si on a internet
               this.abiBddCtrl.getHorairesAttenteValidation(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
                 data => {  
@@ -49,11 +50,11 @@ horairesAttenteValidation : Horaire[];
                 }); 
     } else { // Mode hors ligne 
             // Traitement des horaires à partir des données sauvegardés : mode hors-ligne, ou synchronisation du calendrier au cas ou les horaires n'ont pas changés
-            console.log("Tu es hors ligne")      
+            console.log("Tu es hors ligne"); 
     }
   } //getHorairesAttenteValidation
 
-  traiterHorairesAttenteValidation(data){
+  traiterHorairesAttenteValidation(data){    
       this.horairesAttenteValidation = [] // On instancie le tableau des horaires en attente de validation
       //let verifierCalendrierEvents = (data.length > 0) ? false : true; // On instancie la vérification des horaire en attente de validation à false, SAUF si le tableau des nouveaux horaires est vide
       for(let i = 0; i < data.length; i++){ //Remplissage du tableau avec les données des horaires formatées
@@ -70,7 +71,7 @@ horairesAttenteValidation : Horaire[];
 
   afficherValidationAttenteAlert(horaire : Horaire) {
       // TODO: corriger pour que ça ouvre la bonne alerte qui permettera de valider l'horaire dans la BDD et mettre la valeur de tra_valide à 1
-      this.affichageValidation.afficherAlertFinDeService(horaire);
+      this.affichageValidation.afficherAlertFinDeService(horaire).then(result => this.getHorairesAttenteValidation());
   }
 
 }
