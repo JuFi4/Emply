@@ -259,13 +259,14 @@ export class SyncHorairesService {
         }
     }//enregistrerNotification
 
-    // Enregsitre la notification locale mensuelle pour la date passée en paramètre
+    // Enregsitre la notification locale mensuelle
     private enregistrerNotificationMensuelle(){
         this.notificationsLocalesCtrl.scheduleNotificationValidationMensuelle(); // On enregsitre la notification locale de fin de mois        
     }//enregistrerNotification
 
     private enregistrerNotificationAttenteValidation() {
-        this.notificationsLocalesCtrl.scheduleNotificationAttenteValidation();
-    }//enregistrerNotificationAttenteValidation
+        this.notificationsLocalesCtrl.scheduleNotificationAttenteValidation(); //On enregistre la notification locale alertant que ç'est bientôt la fin de mois et qu'il faut valider les horaires en attente de validation
+        console.log("La notif locale du 28 est bien programmée :D");
+  }//enregistrerNotificationAttenteValidation
 
 }//SyncHorairesService

@@ -82,7 +82,7 @@ export class NotificationsLocalesService {
     }//scheduleNotificationValidationMensuelle 
 
     // Gère l'envois différé de la notification locale d'avertissement pour les horaires toujours en attente de validation
-  // L'ID de cette notification est toujours de -1 : permet de la reconnaitre par rapport aux notifications de fin de service
+  // L'ID de cette notification est toujours de -1 : permet de la reconnaitre par rapport aux notifications de fin de service et de validation mensuelle
   public scheduleNotificationAttenteValidation() {
       let scheduleDate = new Date();
       let targetDay = 28;
