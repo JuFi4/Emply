@@ -15,7 +15,7 @@
 </ion-header>
 
 <ion-content padding>
-    
+<!--    
     <ion-label>Votre tableau de bord :</ion-label>
     <ion-item class = "color1">
     <ion-label class="white" stacked>Contrat :  </ion-label>
@@ -37,5 +37,46 @@
     <ion-label class="white" stacked>Jours fériés disponible : </ion-label>
     <ion-input class="white" type = "text" name = "nbJoursVacancesAPrendre"[disabled] ="inputDisabled" required [(ngModel)]="afficherFerier"></ion-input>
     </ion-item>
+  -->
+  <ion-grid>
+    <ion-row>
+      <ion-col class="color1">
+        <ion-label class="white" stacked>Heures selon contrat :  </ion-label>
+        
+        <ion-input text-center class="white2" type = "text" name = "nbHeuresAFaire" [disabled] ="inputDisabled" required [(ngModel)]="affichageHS">H/Semaine</ion-input>
+        
+      </ion-col>
+    </ion-row>
+    
+    <ion-row>
+      <ion-col class="color3">
+        <ion-label class="white" stacked>Heures<br>effectuées : </ion-label>
+        
+        <ion-input text-center class="white2" type = "text" name = "nbHeuresEffectuees" [disabled] ="inputDisabled"></ion-input>
+        
+      </ion-col>
+      <ion-col class="color3">
+        <ion-label class="white" stacked>Heures<br>supplémentaires : </ion-label>
+        
+          <ion-input text-center class="white2" type = "text" name = "nbHeuresSupp"[disabled] ="inputDisabled" required [(ngModel)]="heureSupp"></ion-input>
+        
+      </ion-col>
+    </ion-row>
+    
+    <ion-row>
+      <ion-col class="color5">
+        <ion-label class="white" stacked>Vacances<br>disponibles : </ion-label>
+        
+        <ion-input text-center class="white2" type = "text" [disabled] ="inputDisabled" required [(ngModel)]="affichageConge"></ion-input>
+        
+      </ion-col>
+      <ion-col class="color5">
+        <ion-label class="white" stacked>Jours fériés<br>disponibles : </ion-label>
+        
+        <ion-input text-center class="white2" type = "text" name = "nbJoursVacancesAPrendre"[disabled] ="inputDisabled" required [(ngModel)]="afficherFerier"></ion-input>
+        
+      </ion-col>
+    </ion-row>
+</ion-grid>
 </ion-content>
 
