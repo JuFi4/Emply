@@ -108,7 +108,6 @@ export class ParametresPage {
   sauverMinutes(valeur) { // valeur = -1 si désactiver
     this.minute = valeur;
     window.localStorage.setItem('importeMinutes', this.minute);//On enregsitre
-    this.AlertsToasts.faireToastModificationEnregistree();
   }//sauverMinutes
 
   // Supprime tous les events futurs programmés dans le calendrier

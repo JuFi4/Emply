@@ -49,7 +49,7 @@ export class MonprofilPage {
   enregistrer() {
     /* Modèle de la fonction: setProfil(userId : string, token: string, nom : string, prenom : string, dateNaissance : string, adresse : string, suppAdresse : string, 
             codePostal : number, ville : string, telFix : string, telMobile: string) */
-    this.abiBddCtrl.setProfil(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), this.user.nom, this.user.prenom, this.user.dateNaissance, this.user.adresse, this.user.suppAdresse, this.user.codePostal, this.user.ville, this.user.telFix, this.user.telMobile).subscribe(
+    this.abiBddCtrl.setProfil(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), this.user.nom.trim(), this.user.prenom.trim(), this.user.dateNaissance, this.user.adresse.trim(), this.user.suppAdresse.trim(), this.user.codePostal.trim(), this.user.ville.trim(), this.user.telFix.trim(), this.user.telMobile.trim()).subscribe(
       data => {
         if (data) {  // OK        
           console.log("Modifications profil enregsitrées");

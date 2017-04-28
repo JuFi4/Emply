@@ -209,19 +209,14 @@ afficherDateMaladie(horaire){
               text: 'Valider',
               handler: data => {
                 console.log('Oui clicked');
-                if(data.dateDebut <= data.dateFin){     
-                      if(data.dateDebut >= this.affichageToday){
-                        if(!this.isHorsLigne){//Si on est pas hors ligne -> OK
+                if(data.dateDebut <= data.dateFin){ //Si la date de début est plus petite ou égale à la date de fin => OK  
+                        if(!this.isHorsLigne){//Si on est pas hors ligne => OK
                             this.validationHoraire(horaire.id, '', '','maladie')
                             .then(result => this.enregsitrementMaladieAccident(data.dateDebut,  data.dateFin, 0, horaire.id))
                             .then(result => resolve("Fini"));
                         } else {
                             this.afficherMessageHorsLigne().then(result => resolve("fini"));                          
                         }
-                      }else{
-                        this.AlertsToasts.afficherAlerteDatePasse();
-                        resolve("fini")
-                      }
                 }else{
                     this.AlertsToasts.afficherAlertPasValide();
                      resolve("fini")

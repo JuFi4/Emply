@@ -142,7 +142,7 @@ export class LoginPage {
       {
         text: 'Envoyer',
         handler: data => {
-          this.abiBddCtrl.setNewPassword(data.mail).subscribe(
+          this.abiBddCtrl.setNewPassword(data.mail.trim()).subscribe(
                 data => {        
                     if(data) { // OK    
                       console.log('Mail existant');
@@ -200,8 +200,8 @@ export class LoginPage {
   // Actions a faire quel que soit le mode de connexion
   connexionOk(){
     // Sauvegade des données de connexion et du statut connecté
-     window.localStorage.setItem('utilisateur', this.utilisateur);
-     window.localStorage.setItem('motDePasse', this.motDePasse);
+     window.localStorage.setItem('utilisateur', this.utilisateur.trim());
+     window.localStorage.setItem('motDePasse', this.motDePasse.trim());
      window.localStorage.setItem('deviceToken', this.deviceToken);
      window.localStorage.setItem('utilisateurConnecte', "1");
 
@@ -219,7 +219,7 @@ export class LoginPage {
       }                  
                         
      // On redirige vers la bonne page
-     this.navCtrl.push(this.rootPage, {utilisateur: this.utilisateur});
+     this.navCtrl.push(this.rootPage, {utilisateur: this.utilisateur.trim()});
   }//connexionOk
 
 
