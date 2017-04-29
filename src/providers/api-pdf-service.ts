@@ -91,14 +91,24 @@ export class ApiPdfService {
           console.log("ouvrir " + adresse);
           //cordova.InAppBrowser.open(adresse, '_system', 'location=yes');
           //window.open(adresse, '_system');
-          cordova.plugins.disusered.open(adresse, function(){ console.log("Ouverture PDF :  OK")}, 
+          /*cordova.plugins.disusered.open(adresse, function(){ console.log("Ouverture PDF :  OK")}, 
             function(code){ 
                 if (code === 1) {
-                    console.log('Ouverture PDF : No file handler found');
+                    console.log('Ouverture PDF : No file handler found ' + code);
                   } else {
-                    console.log('Ouverture PDF : Undefined error');
+                    console.log('Ouverture PDF : Undefined error ' + code);
                   }
-            });
+            });*/            
+            cordova.plugins.fileOpener2.open( adresse,  'application/pdf', 
+                  { 
+                    error : function(e) { 
+                        console.log('Error status: ' + e.status + ' - Error message: ' + e.message);
+                    },
+                    success : function () {
+                        console.log('file opened successfully'); 				
+                    }
+                }
+            );
         }
       }
     ]
