@@ -70,7 +70,7 @@ export class MyApp {
         }
       },
       {
-        text: 'Oui',
+        text: 'Confirmer',
         handler: () => {
           this.abiBddCtrl.deconnexion(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
             data => {

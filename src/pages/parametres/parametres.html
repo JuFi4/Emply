@@ -26,7 +26,7 @@
   <h5>Paramètre du temps de la notification de la fin de service :</h5>
   <ion-item>
     <ion-label>Votre choix :</ion-label>
-    <ion-select>
+    <ion-select okText="Confirmer" cancelText="Annuler">
       <ion-option value="0" (ionSelect)="sauverMinutes(0)" [disabled]="isHorsLigne" [selected]='is0'>Immédiatement à la fin de mon service</ion-option>
       <ion-option value="15" (ionSelect)="sauverMinutes(15)" [disabled]="isHorsLigne" [selected]='is15'>Après 15 minutes</ion-option>
       <ion-option value="30" (ionSelect)="sauverMinutes(30)" [disabled]="isHorsLigne" [selected]='is30'>Après 30 minutes</ion-option>
