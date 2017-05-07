@@ -33,8 +33,6 @@ export class AccueilPage {
   annneeCourrante = new Date().getFullYear(); // Année courrante
   moisCourant = new Date().getMonth()+1;
   jourCourant = new Date().getDay();
-  vacancesAnnee : number;
-  jourFerierAnnee : number;
   idDepartement : String;
   infosContrat : InfosContrat;
   soldeEmploye : SoldeEmploye;
@@ -59,7 +57,6 @@ export class AccueilPage {
 
     //On sync les horaires (calendrier + notification ) ensuite: en récupère les stats, et quand c'est fini, on arrête l'affichage de l'icone de chargement
     syncHoraireCtrl.manangeSync().then(result => this.getStats()).then(result => loader.dismiss());
-    this.getCalcul();
   }//constructor
   
   getStats(){
@@ -68,8 +65,7 @@ export class AccueilPage {
       
       this.apiBddService.getIdDepartement(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD')).subscribe(
                               dep => {
-                                if(dep) { // OK   
-                                   // @ VANESSA : OK : tout se range bien dans this.idEtablissement
+                                if(dep) { 
                                   this.idDepartement = dep;
                                   window.localStorage.setItem('getDepartement', JSON.stringify(this.idDepartement));
                                   console.log("idDepartement : " + window.localStorage.getItem('getDepartement'));
@@ -81,8 +77,7 @@ export class AccueilPage {
 
       this.apiBddService.getIdEtablissement(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),window.localStorage.getItem('getDepartement')).subscribe(
                               eta => {
-                                if(eta) { // OK   
-                                   // @ VANESSA : OK : tout se range bien dans this.idEtablissement
+                                if(eta) { 
                                   this.idEtablissement = eta;
                                   console.log("idEtablissement : " + this.idEtablissement);
                                   window.localStorage.setItem('getEtablissement', JSON.stringify(this.idEtablissement));
@@ -94,8 +89,7 @@ export class AccueilPage {
 
         this.apiBddService.getInfosSolde(window.localStorage.getItem('id'), this.annneeCourrante+"-01-01",this.annneeCourrante+"-12-31",window.localStorage.getItem('tokenBDD'),).subscribe(
                   dataInfoSolde => {
-                        if(dataInfoSolde) { // OK     
-                           // @ VANESSA : OK : tout se range bien dans ton objet
+                        if(dataInfoSolde) { 
                             this.dataInfoUser = new InfoHeureUser(
                               dataInfoSolde.brut.time,
                               dataInfoSolde.totalPause.time,
@@ -122,19 +116,26 @@ export class AccueilPage {
                                         dataInfo.heures_semaine,
                                         dataInfo.jourprisvacances,
                                         dataInfo.jourprisferies,
-                                  )                                                                   
+                                  )   
+                                  console.log("------Coucou info personne------");                                                               
                                   console.log("dataInfo");
                                   console.log(this.infoEta.droitVacanceAnnee);
-                                  this.vacancesAnnee = this.infoEta.droitVacanceAnnee;
-                                  this.jourFerierAnnee = this.infoEta.droitJourFerieAnnee;
-                                  this.nbHeureParSem = this.infoEta.heureSemaine;
-                                  var heureFerier = this.infoEta.droitJourFerieAnnee - this.infoEta.jourPrisFer;
-                                  var heureVac = this.vacancesAnnee - this.infoEta.jourPrisVac;
-                                  this.affichageHS = this.nbHeureParSem +" H/Semaine";
-                                  console.log("affichage "+this.affichageHS);
-                                  this.affichageConge = heureVac +"/"+this.vacancesAnnee;
-                                  console.log("affichage "+this.affichageConge);
-                                  this.afficherFerier = heureFerier +"/"+ this.jourFerierAnnee 
+                                  var heureFerier = (this.infoEta.jourPrisFer+this.soldeEmploye.soldeFerier) - this.infoEta.jourPrisFer;
+                                  var heureVac = (this.infoEta.jourPrisVac+ this.soldeEmploye.soldeVacance) - this.infoEta.jourPrisVac;
+                                  
+                                  //si il c'est un contrat en pourcentage on fait fois le nombre d'heures de l'étabalissement
+                                  //sinon, on met les horaires normaux
+                                  console.log(this.infosContrat.type);
+                                  if(this.infosContrat.type == 2){
+                                    this.affichageHS = this.infoEta.heureSemaine*this.infosContrat.nbHeure +" H/Semaine";
+                                  }else{
+                                    this.affichageHS = this.infosContrat.nbHeure + " H/Semaine";
+                                  }
+                                  console.log(this.affichageHS);
+                                  this.affichageConge = heureVac +"/"+this.infoEta.droitVacanceAnnee;
+                                  console.log(this.affichageConge);
+                                  this.afficherFerier = heureFerier +"/"+ this.infoEta.droitJourFerieAnnee 
+                                  console.log( this.afficherFerier);
                                   window.localStorage.setItem('getInfoEta', JSON.stringify(this.dataInfo));
                                 } else { // Erreur
                                   console.log("Pas ok");
@@ -146,9 +147,11 @@ export class AccueilPage {
                                 if(typeContratH) { // OK
                                   console.log(typeContratH)  
                                   this.infosContrat = new InfosContrat(
-                                        typeContratH[0].type,
-                                        typeContratH[0].nbHeure,
-                                  )                                                                   
+                                        typeContratH[0].conParticularite,
+                                        typeContratH[0].idHor,
+                                  )
+                                  console.log("---- HELLOOO ------");      
+                                 console.log(this.infosContrat.nbHeure);
                                   console.log("typeContratH");
                                 } else { // Erreur
                                   console.log("Pas ok");
@@ -165,7 +168,9 @@ export class AccueilPage {
                                         soldeEmploye.solde_heures.time,
                                         soldeEmploye.solde_vacances,
                                   )
-                                  this.heureSupp = this.soldeEmploye.soldeHeure;                                                                   
+                                  console.log("-----HELLO LOOOG");
+                                  this.heureSupp = this.soldeEmploye.soldeHeure; 
+                                  console.log(this.soldeEmploye.soldeHeure);                                                                  
                                   console.log("soldeEmploye");
                                 } else { // Erreur
                                   console.log("Pas ok");
@@ -176,10 +181,6 @@ export class AccueilPage {
       });
   }//getStats
 
-  getCalcul(){
-      
-
-  }
 
   ionViewDidLoad() {
     console.log('Hello Accueil Page');

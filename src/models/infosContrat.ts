@@ -1,8 +1,8 @@
 export class InfosContrat {
     nbHeure : number;
-    type : String;
+    type : number;
 
-    constructor(type : String, nbHeure : number,){
+    constructor(nbHeure : number, type : number,){
             this.nbHeure = nbHeure;
             this.type = type;
     }//constructor
