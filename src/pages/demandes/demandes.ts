@@ -37,22 +37,6 @@ export class DemandesPage {
     this.isCheckDatePasse = true;
     this.isCheckHeure = true;
     this.getDemandes();
-
-    // EXEMPLE D'APPEL DE LA METHODE enregsitrerDemande()
-    // Demande journée complète => 1
-    //this.enregsitrerDemande(2, "2017-05-01", "2017-05-01", 1, "salut") ;
-
-    //Demande journée pas complète => 0
-    //this.enregsitrerDemande(2, "2017-05-03 14:30", "2017-05-03 15:30", 0, "salut");
-
-    // Vu que tu dois mettre les heures et les minutes, tu peux concatener tout ça de cette manière :
-    //this.enregsitrerDemande(idDemande, dateDebut+" "+minudesDebut, dateFin+" "+minutesFin, 0, motif) ;
-    // -> Exemple
-    //this.enregsitrerDemande(2, "2017-05-05"+" "+"14:30", "2017-05-05"+" "+"16:30", 0, "salut") ;
-
-    // -> la méthode modifierDemande() fonctionne exactement de la même manière
-    //this.modifierDemande(1, "2017-05-05"+" "+"14:30", "2017-05-05"+" "+"16:30", 0, "") ;
-    //this.modifierDemande(1, "2017-04-15", "2017-04-16", 1, "") ;
   }//constructor
 
   ionViewDidLoad() {
@@ -105,7 +89,7 @@ export class DemandesPage {
     alert.setTitle('Choix de la demande');
     alert.addInput({
       type: 'radio',
-      label: 'Demande de congé',
+      label: 'Demande de férié',
       id: '2',
       value: 'demandeConge',
       name: 'conge',
@@ -121,7 +105,7 @@ export class DemandesPage {
     });
     alert.addInput({
       type: 'radio',
-      label: 'Congé militaire',
+      label: 'Demande de congé militaire',
       id: '4',
       value: 'demandeMilitaire',
       name: 'militaire',
@@ -129,23 +113,23 @@ export class DemandesPage {
     });
     alert.addInput({
       type: 'radio',
-      label: 'Congé de formation',
+      label: 'Demande de congé de formation',
       id: '5',
       value: 'demandeFormation',
       name: 'formation',
       checked: false
     });
-    alert.addInput({
+    /*alert.addInput({
       type: 'radio',
       label: 'Demande de congé maternité',
       id: '6',
       value: 'demandeMaternite',
       name: 'maternite',
       checked: false
-    });
+    });*/
     alert.addInput({
       type: 'radio',
-      label: 'Congé pour décès',
+      label: 'Congé pour cause de décès',
       id: '7',
       value: 'demandeDeces',
       name: 'deces',
@@ -161,21 +145,21 @@ export class DemandesPage {
     });
     alert.addInput({
       type: 'radio',
-      label: 'Autre Congé',
-      id: '9',
-      value: 'demandeAutre',
-      name: 'autre',
-      checked: false
-    });
-    alert.addInput({
-      type: 'radio',
-      label: 'Congé paternité',
+      label: 'Demande de congé paternité',
       id: '10',
       value: 'demandePaternite',
       name: 'paternite',
       checked: false
     });
     alert.addInput({
+      type: 'radio',
+      label: 'Autre Demande',
+      id: '9',
+      value: 'demandeAutre',
+      name: 'autre',
+      checked: false
+    }); 
+    /*alert.addInput({
       type: 'radio',
       label: 'Congé sans solde',
       id: '11',
@@ -190,7 +174,7 @@ export class DemandesPage {
       value: 'demandeRecuperation',
       name: 'recuperation',
       checked: false
-    });
+    });*/
     alert.addButton('Annuler');
     alert.addButton({
       text: 'Confirmer',
@@ -206,9 +190,9 @@ export class DemandesPage {
           this.faireDemandeConge(4);
         } else if (data === "demandeFormation" && idTypeDemande === 1) {
           this.faireDemandeConge(5);
-        } else if (data === "demandeMaternite" && idTypeDemande === 1) {
+        } /*else if (data === "demandeMaternite" && idTypeDemande === 1) {
           this.faireDemandeConge(6);
-        } else if (data === "demandeDeces" && idTypeDemande === 1) {
+        } */else if (data === "demandeDeces" && idTypeDemande === 1) {
           this.faireDemandeConge(7);
         } else if (data === "demandeDemenagement" && idTypeDemande === 1) {
           this.faireDemandeConge(8);
@@ -216,13 +200,13 @@ export class DemandesPage {
           this.faireDemandeConge(9);
         } else if (data === "demandePaternite" && idTypeDemande === 1) {
           this.faireDemandeConge(10);
-        } else if (data === "demandeSansSolde" && idTypeDemande === 1) {
+        } /*else if (data === "demandeSansSolde" && idTypeDemande === 1) {
           this.faireDemandeConge(11);
         } else if (data === "demandeRecuperation" && idTypeDemande === 1) {
           this.faireDemandeConge(12);
 
           //Pour les demi journées
-        } else if (data === "demandeConge" && idTypeDemande === 0) {
+        } */else if (data === "demandeConge" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(2);
         } else if (data === 'demandeVacances' && idTypeDemande === 0) {
           this.faireDemandeDemiConge(3);
@@ -230,9 +214,9 @@ export class DemandesPage {
           this.faireDemandeDemiConge(4);
         } else if (data === "demandeFormation" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(5);
-        } else if (data === "demandeMaternite" && idTypeDemande === 0) {
+        } /*else if (data === "demandeMaternite" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(6);
-        } else if (data === "demandeDeces" && idTypeDemande === 0) {
+        } */else if (data === "demandeDeces" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(7);
         } else if (data === "demandeDemenagement" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(8);
@@ -240,11 +224,11 @@ export class DemandesPage {
           this.faireDemandeDemiConge(9);
         } else if (data === "demandePaternite" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(10);
-        } else if (data === "demandeSansSolde" && idTypeDemande === 0) {
+        } /*else if (data === "demandeSansSolde" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(11);
         } else if (data === "demandeRecuperation" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(12);
-        } else {
+        } */else {
           console.log("RIEN!!!!!");
         }
       }

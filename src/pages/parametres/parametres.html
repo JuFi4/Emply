@@ -23,7 +23,8 @@
     <ion-label>Synchroniser les nouveaux horaires</ion-label>
     <ion-checkbox [(ngModel)]="autoImport" (click)="saveAutoImportChange()" [disabled]="isHorsLigne"></ion-checkbox>
   </ion-item>
-  <h5>Paramètre du temps de la notification de la fin de service :</h5>
+  <h5>Notification de fin de service :</h5>
+  <p><i>Après combien de temps voulez-vous recevoir la notification de la fin de votre service ?</i></p>
   <ion-item>
     <ion-label>Votre choix :</ion-label>
     <ion-select okText="Confirmer" cancelText="Annuler">
