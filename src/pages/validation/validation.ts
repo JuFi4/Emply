@@ -5,6 +5,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
 import { AffichageValidationHoraireService } from '../../providers/affichage-validation-horaire-service';
+import { ApiPdfService } from '../../providers/api-pdf-service';
 
 // Models
 import {Horaire} from '../../models/horaire';
@@ -24,7 +25,7 @@ export class ValidationPage {
 isHorsLigne : boolean;
 horairesAttenteValidation : Horaire[];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService, private affichageValidation : AffichageValidationHoraireService
+  constructor(public pdfCtrl: ApiPdfService, public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService, private affichageValidation : AffichageValidationHoraireService
    ) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
 
@@ -58,7 +59,6 @@ horairesAttenteValidation : Horaire[];
 
   traiterHorairesAttenteValidation(data){    
       this.horairesAttenteValidation = [] // On instancie le tableau des horaires en attente de validation
-      //let verifierCalendrierEvents = (data.length > 0) ? false : true; // On instancie la vérification des horaire en attente de validation à false, SAUF si le tableau des nouveaux horaires est vide
       for(let i = 0; i < data.length; i++){ //Remplissage du tableau avec les données des horaires formatées
         let dateHoraire = new Date(data[i].date);
         let horaire =  new Horaire(data[i].id, 
@@ -74,6 +74,17 @@ horairesAttenteValidation : Horaire[];
   afficherValidationAttenteAlert(horaire : Horaire) {
       // TODO: corriger pour que ça ouvre la bonne alerte qui permettera de valider l'horaire dans la BDD et mettre la valeur de tra_valide à 1
       this.affichageValidation.afficherAlertFinDeService(horaire).then(result => this.getHorairesAttenteValidation());
-  }
+  }//afficherValidationAttenteAlert
+
+  telechargerPDF(){
+      let date = new Date();
+      let mois = date.getMonth();// Mois actuel : on ne soutrait pas 1 pour avoir le mois dernier car JavaScript compte déja les mois avec une décalage de 1
+     let annee = date.getFullYear();
+      if(mois == 0){ // Si on est en janvier : il faut afficher décémbre dernier
+        mois = 12;//On fixe le mois
+        annee-=1;//On décrémente l'année de 1
+      }
+      this.pdfCtrl.getPdfValMensuelle(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee.toString(), mois.toString());
+  }//telechargerPDF
 
 }

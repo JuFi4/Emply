@@ -100,4 +100,5 @@
    <div *ngIf = "isJourVide"><h2 class ="sstitreNoH"> Aucune entrée pour ce jour</h2>
   </div>
 </div>
+<button ion-button block outline [disabled] ="isHorsLigne" (click)="telechargerPDF()">Télécharger PDF</button>
 </ion-content>

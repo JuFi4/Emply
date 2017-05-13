@@ -42,6 +42,14 @@ export class ApiPdfService {
     this.checkPermission().then(result => this.downloadPdfHoraires(userId, token));
   }//getPdfHoraires
 
+   getPdfCalendrier(userId:string, token:string, annee, mois){
+    this.checkPermission().then(result => this.downloadPdfCalendrier(userId, token, annee, mois));
+  }//getPdfHoraires
+  
+   getPdfValMensuelle(userId:string, token:string, annee:string, mois:string){
+    this.checkPermission().then(result => this.downloadPdfValMensuelle(userId, token, annee, mois));
+  }//getPdfValMensuelle
+
   downloadPdfHoraires(userId:string, token:string){
       const fileTransfer: TransferObject = new Transfer().create();
       let url = this.baseUrl+"type=horaires&userId="+encodeURI(userId)+"&token="+encodeURI(token);
@@ -57,9 +65,6 @@ export class ApiPdfService {
         });    
    } //downloadPdfHoraires
 
-   getPdfValMensuelle(userId:string, token:string, annee:string, mois:string){
-    this.checkPermission().then(result => this.downloadPdfValMensuelle(userId, token, annee, mois));
-  }//getPdfValMensuelle
 
   downloadPdfValMensuelle(userId:string, token:string, annee:string, mois:string){
     const fileTransfer: TransferObject = new Transfer().create();
@@ -75,6 +80,20 @@ export class ApiPdfService {
       });
   }//downloadPdfValMensuelle
 
+   downloadPdfCalendrier(userId:string, token:string, annee:string, mois:string){
+    const fileTransfer: TransferObject = new Transfer().create();
+    let url = this.baseUrl+"type=calendrier&userId="+encodeURI(userId)+"&token="+encodeURI(token)+"&annee="+encodeURI(annee)+"&mois="+encodeURI(mois);
+    let dest = cordova.file.externalRootDirectory + 'calendrier_'+mois+'-'+annee+'.pdf';
+    console.log(url);
+    fileTransfer.download(url, dest).then((entry) => {
+        console.log('download complete: ' + entry.toURL()); 
+        this.afficherMessageOK("Le ficher PDF de calendrier mensuel à bien été téléchargé dans le dossier de stockage de votre téléphone", entry.toURL());        
+      }, (error) => {
+        console.log(error);
+        this.afficherErreur();
+      });
+  }//downloadPdfCalendrier
+
   afficherMessageOK(monMessage, adresse){
      let prompt = this.alertCtrl.create({
         title: "Téléchargement terminé",
@@ -88,18 +107,8 @@ export class ApiPdfService {
       {
         text: 'Afficher',
         handler: () => {
-          console.log("ouvrir " + adresse);
-          //cordova.InAppBrowser.open(adresse, '_system', 'location=yes');
-          //window.open(adresse, '_system');
-          /*cordova.plugins.disusered.open(adresse, function(){ console.log("Ouverture PDF :  OK")}, 
-            function(code){ 
-                if (code === 1) {
-                    console.log('Ouverture PDF : No file handler found ' + code);
-                  } else {
-                    console.log('Ouverture PDF : Undefined error ' + code);
-                  }
-            });*/            
-            cordova.plugins.fileOpener2.open( adresse,  'application/pdf', 
+          console.log("ouvrir " + adresse);        
+          cordova.plugins.fileOpener2.open( adresse,  'application/pdf', 
                   { 
                     error : function(e) { 
                         console.log('Error status: ' + e.status + ' - Error message: ' + e.message);
@@ -116,9 +125,6 @@ export class ApiPdfService {
      });
      prompt.present();
   }//afficherToast
-
-
-
 
   afficherErreur(){
     let prompt = this.alertCtrl.create({

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, LoadingController } from 'ionic-angular';
 
 
 // Providers
@@ -24,7 +24,7 @@ export class MeshorairesfutursPage {
   horairesFuturs : Horaire[];
   isHorsLigne: boolean;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public pdfCtrl: ApiPdfService, private syncHoraireCtrl : SyncHorairesService, private connectivityService: ConnectivityService) {
+  constructor(private loadCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public pdfCtrl: ApiPdfService, private syncHoraireCtrl : SyncHorairesService, private connectivityService: ConnectivityService) {
     // Méthodes à lancer au chargement de la page
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     this.getHorairesFuturs(); // On charge les horaires futurs
@@ -35,8 +35,14 @@ export class MeshorairesfutursPage {
   }
 
   getHorairesFuturs() {
-    console.log("Coucou les horaires futurs");
-      this.syncHoraireCtrl.gethorairesFuturs().then(result => this.horairesFuturs = this.syncHoraireCtrl.horairesFuturs);     
+      console.log("Coucou les horaires futurs");
+      //Icone de chargement
+      let loader = this.loadCtrl.create({
+        content: "Chargement"
+      });  
+      loader.present();
+      // On va chercher les horaires futurs, quand on les a : on les range dans le tableau this.horairesFuturs, et on enlève l'affichage de l'icone de chargement
+      this.syncHoraireCtrl.gethorairesFuturs().then(result => this.horairesFuturs = this.syncHoraireCtrl.horairesFuturs).then(result => loader.dismiss());
       console.log(this.horairesFuturs);    
   }
 

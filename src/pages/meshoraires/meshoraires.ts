@@ -1,5 +1,5 @@
 import { Component, Input} from '@angular/core';
-import{NavController, NavParams, AlertController} from 'ionic-angular';
+import{ NavController, NavParams, AlertController, LoadingController} from 'ionic-angular';
 import {Calendar} from 'ionic-native';
 
 // Providers
@@ -7,7 +7,7 @@ import { NotificationsLocalesService } from '../../providers/notifications-local
 import {MoisService} from '../../providers/mois-service';
 import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
-
+import { ApiPdfService } from '../../providers/api-pdf-service';
 
 //models
 import {Mois} from '../../models/mois';
@@ -58,10 +58,10 @@ export class MeshorairesPage {
    maladieDuJour : Maladie;
    isJourVide = true;
 
-   constructor(public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService,
+   constructor(public pdfCtrl: ApiPdfService, private loadCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public notificationsLocalesCtrl : NotificationsLocalesService,
     public moisService : MoisService, public alertCtrl: AlertController, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) {   
      // Instanciation des valeurs par défaut
-     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' ||connectivityService.isOffline();
+     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
      this.moisService.getSemaine().then(semaines => this.semaines = semaines);
      this.moisService.getMois().then(moisListe => this.moisListe = moisListe).then(result => this.selectionnerMois());
      this.anneeSelectionne = this.annneeCourrante; // Par défaut : l'année sélectionnée est l'année courante   
@@ -73,7 +73,7 @@ export class MeshorairesPage {
 
      // Méthodes à lancer au chargement de la page
      this.supprimerAnciennesSauvegares(); //Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone    
-}//constructor
+  }//constructor
 
     ionViewDidLoad() {
       console.log('Hello MesHoraires Page');      
@@ -126,14 +126,23 @@ export class MeshorairesPage {
     //Récupère la liste des horaires pour l'année et le mois passés en paramètre
     getControleMensuel(annee, mois){
       if(!this.isHorsLigne){ // Si on a internet
+
+        //Icone de chargement
+        let loader = this.loadCtrl.create({
+          content: "Chargement"
+        });  
+        loader.present();
+
         // 1) on récupres les horaires
         // 2) Ensuite : on récupère les maladies/ accidents pour ce mois
         // 3) Ensuite: on récupàre les demandes validées pour ce mois
         // 4) Ensuite : on traite tout ça
+        // 5) Ensuite : on arrête l'icone de chargement
         this.getHorairesMensuels(annee, mois)
           .then(result => this.getMaladiesParMois(annee, mois))
             .then(result => this.getDemandesParMois(annee, mois))
-              .then(result => this.traiterControleMensuel(annee, mois, false));
+              .then(result => this.traiterControleMensuel(annee, mois, false))
+                .then(result => loader.dismiss());
       
       } else {//Mode hors ligne : traitement des données avec l'indicateur hors ligne
          this.traiterControleMensuel(annee, mois, true);     
@@ -338,6 +347,9 @@ export class MeshorairesPage {
       return new Date(annee, 2, 0).getDate() == 29
     }//isAnneeBissextile
 
+   telechargerPDF(){
+      this.pdfCtrl.getPdfCalendrier(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), this.anneeSelectionne, (this.moisSelectionne.moisId+1));
+   }//telechargerPDF
   
 }//MeshorairesPage
 

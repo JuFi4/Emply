@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController } from 'ionic-angular';
+import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 import { MeshorairesPage } from '../meshoraires/meshoraires';
 import { Calendar } from 'ionic-native';
 
@@ -40,7 +40,7 @@ export class ParametresPage {
   is180 = false;
   isNull = false; // choix pour désactiver => minute à -1
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private connectivityService: ConnectivityService, public alertCtrl: AlertController, private syncHoraireCtrl : SyncHorairesService, private AlertsToasts: AlertsToasts) {
+  constructor(private loadCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, private connectivityService: ConnectivityService, public alertCtrl: AlertController, private syncHoraireCtrl : SyncHorairesService, private AlertsToasts: AlertsToasts) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     this.autoImport = this.setAutoImport();
     this.importMinutes();
@@ -86,9 +86,16 @@ export class ParametresPage {
   }//saveAutoImportChange
 
   syncCalendrierSmartphone(){
-      // On re-traite les horaires avec paramètre de synchronisation
+      //Icone de chargement
+      let loader = this.loadCtrl.create({
+        content: "Chargement"
+      });  
+
+     loader.present();
+
+      // On re-traite les horaires avec paramètre de synchronisation, et quand c'est fini on cache l'icone
       this.syncHoraireCtrl.autoImport = true;
-      this.syncHoraireCtrl.gethorairesFuturs(true);    
+      this.syncHoraireCtrl.gethorairesFuturs(true).then(result => loader.dismiss());;    
   }
 
   setAutoImport() {
@@ -114,6 +121,13 @@ export class ParametresPage {
   public supprimerCalendrierEvents() {
     console.log("supprimerCalendrierEvents");
 
+    //Icone de chargement
+      let loader = this.loadCtrl.create({
+        content: "Chargement"
+      });  
+
+     loader.present();
+
     this.syncHoraireCtrl.gererCalendrierSmartphone(); // On récupère les events enregsitrés
     this.calendrierEvents = this.syncHoraireCtrl.calendrierEvents;
 
@@ -128,6 +142,8 @@ export class ParametresPage {
     }//for    
     this.calendrierEvents = []; // On vide l'array des calendrier Events
     window.localStorage.setItem('calendrierEvents', JSON.stringify(this.calendrierEvents));// On enregsitre la modification en local storage 
+    
+    loader.dismiss() // On arrête l'icone de chargement
   }//supprimerCalendrierEvents
 
 
