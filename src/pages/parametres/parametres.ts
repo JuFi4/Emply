@@ -26,14 +26,11 @@ export class ParametresPage {
   importeMinutes = true;
   calendrierEvents: CalendrierEvent[];
   is0 = false;
-  is15 = false;
   is30 = false;
-  is45 = false;
   is60 = false;
-  is90 = false;
-  is120 = false;
-  is150 = false;
   is180 = false;
+  is360 = false;
+  is600 = false;
   isNull = false; // choix pour désactiver => minute à -1
 
   constructor(private loadCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, private connectivityService: ConnectivityService, public alertCtrl: AlertController, private syncHoraireCtrl : SyncHorairesService, private AlertsToasts: AlertsToasts) {
@@ -141,22 +138,16 @@ export class ParametresPage {
   selectionnerMinutes() {
     if (this.minute === "0") {
       this.is0 = true;
-    } else if (this.minute === "15") {
-      this.is15 = true;
     } else if (this.minute === "30") {
       this.is30 = true;
-    } else if (this.minute === "45") {
-      this.is45 = true;
     } else if (this.minute === "60") {
       this.is60 = true;
-    } else if (this.minute === "90") {
-      this.is90 = true;
-    } else if (this.minute === "120") {
-      this.is120 = true;
-    } else if (this.minute === "150") {
-      this.is150 = true;
     } else if (this.minute === "180") {
       this.is180 = true;
+    } else if (this.minute === "360") {
+      this.is360 = true;
+    } else if (this.minute === "600") {
+      this.is600 = true;
     } else if (this.minute === "-1") { // -1 => désactiver les notifications de fin de service
       this.isNull = true;
     } else {
