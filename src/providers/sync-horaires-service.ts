@@ -1,3 +1,5 @@
+//SyncHorairesService
+
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
@@ -12,12 +14,7 @@ import {Etablissement} from '../models/etablissement';
 import { NotificationsLocalesService } from './notifications-locales-service';
 import { ApiBddService } from './api-bdd-service';
 import { ConnectivityService } from './connectivity-service';
-/*
-  Generated class for the SyncHorairesService provider.
 
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
 @Injectable()
 export class SyncHorairesService {
   horairesFuturs : Horaire[];
@@ -29,8 +26,7 @@ export class SyncHorairesService {
   nomCalendrierEvent : string;
   dateCourrante = new Date();
 
-  constructor(private notificationsLocalesCtrl : NotificationsLocalesService, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) {
-    console.log('Hello SyncHorairesService Provider');   
+  constructor(private notificationsLocalesCtrl : NotificationsLocalesService, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService) {  
     // On fixe les heures, minutes et secondes de la date actuelle à 0
      this.dateCourrante.setHours(0);
      this.dateCourrante.setMinutes(0);
@@ -39,9 +35,9 @@ export class SyncHorairesService {
 
   manangeSync(){
      return new Promise((resolve, reject) => {            
-        this.setAutoImport();// On instancie l'autoImport par rapport à la valeur sauvegardée
-        this.gererCalendrierSmartphone();    //Prépare les éléments nécéssaires pour la gestion du calendrier smartphone   
-        this.gethorairesFuturs(); // On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier 
+        this.setAutoImport();//On instancie l'autoImport par rapport à la valeur sauvegardée
+        this.gererCalendrierSmartphone();//Prépare les éléments nécéssaires pour la gestion du calendrier smartphone   
+        this.gethorairesFuturs();//On charge et on gère les horaires futurs : gère en même temps les notifications de fin de service et les events du calendrier 
         resolve("Fini");
       });
   }//manangeSync
@@ -53,8 +49,8 @@ export class SyncHorairesService {
     }//setAutoImport
 
  
- // Paramètre forceCalendarSync, par défaut à false : on on appelle la fonction en mettant true, les horaires seront synchronés dans le calendrier même s'ils n'ont pas changé
- // -> Permet de forcer la synchronication lorsqu'on a coché la case "synchronication" dans paramètres
+ // Paramètre forceCalendarSync, par défaut à false : on on appelle la fonction en mettant true, les horaires seront synchronisés dans le calendrier même s'ils n'ont pas changé
+ // -> Permet de forcer la synchronication lorsqu'on a coché la case "synchronication" dans la page paramètres
   public gethorairesFuturs(forceCalendarSync = false){             
      return new Promise((resolve, reject) => {   
       this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || this.connectivityService.isOffline();       
@@ -62,10 +58,8 @@ export class SyncHorairesService {
                 this.abiBddCtrl.getHorairesFuturs(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
                   data => {  
                     if(data) { // Si les données sont bien chargées 
-                        console.log("PAs d'erreur");
                         let dataToString = JSON.stringify(data); //On passe les données en string de JSON pour pouvoir les comparer avec la sauvegarde      
                         let isNewData =   dataToString != window.localStorage.getItem('getHorairesFuturs'); // On compare les horaires stockés avec les nouveaux horaires chargés
-                        console.log("isNewData : " + isNewData);
                         if(isNewData){ // Si il y a des changement
                            window.localStorage.setItem('getHorairesFuturs', dataToString);//On sauvegarde les nouveaux horaires en local              
                            this.enregsitrerReceptionHoraire();// On lance l'enregsitrement de l'accusé de récéption                       
@@ -81,7 +75,7 @@ export class SyncHorairesService {
                         // Dans tous les cas: on  programme une notification locale pour la validation mensuelle
                         this.enregistrerNotificationMensuelle();         
                       } else { 
-                          console.log("Erreur");
+                          return;
                       }              
                   }); 
           } else { // Mode hors ligne 
@@ -156,7 +150,6 @@ export class SyncHorairesService {
     private updateCalendrierEvents(){
       for(let i = 0; i < this.calendrierEvents.length; i++){ //On boucle sur les anciens events
          if(this.eventStateInList(this.calendrierEvents[i], this.calendrierEventsUpdate) === -2){  // Si l'ancien even n'est pas dans la liste mise à jour
-          console.log("On supprime : " + this.calendrierEvents[i].id + " : " + this.calendrierEvents[i].startDate+ " : " + this.calendrierEvents[i].endDate);  
            Calendar.deleteEvent( // On supprime l'event du calendrier
               this.calendrierEvents[i].title,
               this.calendrierEvents[i].location,
@@ -164,9 +157,7 @@ export class SyncHorairesService {
               this.calendrierEvents[i].startDate,
               this.calendrierEvents[i].endDate);
          }
-      }//for    
-      console.log(this.calendrierEvents);  
-      console.log(this.calendrierEventsUpdate);  
+      }   
       this.calendrierEvents = this.calendrierEventsUpdate; // On replace a liste par celle mise à jour 
       this.calendrierEventsUpdate = []; // On vide la liste des uptate events
       window.localStorage.setItem('calendrierEvents', JSON.stringify(this.calendrierEvents));// On enregsitre la liste en local storage  
@@ -188,10 +179,8 @@ export class SyncHorairesService {
            horaire.id
        );       
        let eventState  = this.eventStateInList(event, this.calendrierEvents);
-       console.log("Event  : "+ event.id + " -> "+ eventState);
        if(eventState === -2 || eventState >= 0){ // L'event n'existe pas, ou qu'il a changé: on le créer           
           if(eventState >= 0){//Si l'event existe déja, mais à une date différente : on supprime celui qui est enregsitré
-            console.log("On supprime l'event : " + event.startDate);
             Calendar.deleteEvent( // On supprime l'event du calendrier
               this.calendrierEvents[eventState].title,
               this.calendrierEvents[eventState].location,
@@ -199,20 +188,18 @@ export class SyncHorairesService {
               this.calendrierEvents[eventState].startDate,
               this.calendrierEvents[eventState].endDate).then(
                 (msg) => { // Une fois que l'event a bien été supprimé : on va le re-créer
-                  console.log("Delete OK " ) ;
                   Calendar.createEvent(event.title, event.location, event.notes, event.startDate, event.endDate).then(  // On enregsitre l'évenement dans le calendrier
                     (msg) => { console.log("Création OK"); }, // On enregsitre l'évenement dans le calendrier
-                    (err) => { console.log("Creation erreur " +err); }
+                    (err) => { console.log("Creation erreur " + err); }
                   );   
               }, // On enregsitre l'évenement dans le calendrier
                 (err) => { console.log("Delete erreur " + err) }   
               );
           } else {//Sinon
               // On créer / re-créer l'event
-              console.log("On créer l'event : " + event.startDate);
               Calendar.createEvent(event.title, event.location, event.notes, event.startDate, event.endDate).then(  // On enregsitre l'évenement dans le calendrier
                     (msg) => { console.log("Création OK"); },
-                    (err) => { console.log("Creation erreur " +err); }
+                    (err) => { console.log("Creation erreur " + err); }
               );    
           }    
        }   
@@ -236,7 +223,7 @@ export class SyncHorairesService {
         if(window.localStorage.getItem('autoImportNomEvent') != "undefined" && window.localStorage.getItem('autoImportNomEvent') != null){
           this.nomCalendrierEvent = window.localStorage.getItem('autoImportNomEvent');//On récupère le nom par leqeul on veut sauver les events
       }
-    }//gererCalendrier
+    }//gererCalendrierSmartphone
 
    private eventStateInList(event : CalendrierEvent, liste : CalendrierEvent[]) : number{
       for(let i = 0; i < liste.length; i++){
@@ -264,11 +251,10 @@ export class SyncHorairesService {
     // Enregsitre la notification locale mensuelle
     private enregistrerNotificationMensuelle(){
         this.notificationsLocalesCtrl.scheduleNotificationValidationMensuelle(); // On enregsitre la notification locale de fin de mois        
-    }//enregistrerNotification
+    }//enregistrerNotificationMensuelle
 
     private enregistrerNotificationAttenteValidation() {
         this.notificationsLocalesCtrl.scheduleNotificationAttenteValidation(); //On enregistre la notification locale alertant que ç'est bientôt la fin de mois et qu'il faut valider les horaires en attente de validation
-        console.log("La notif locale du 28 est bien programmée :D");
   }//enregistrerNotificationAttenteValidation
 
 }//SyncHorairesService

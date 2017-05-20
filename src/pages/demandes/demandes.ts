@@ -1,3 +1,5 @@
+//Demandes page
+
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
@@ -11,12 +13,6 @@ import { AlertsToasts } from '../../providers/alerts-toasts';
 //models
 import { Demande } from '../../models/demande';
 
-/*
-  Generated class for the Demandes page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-demandes',
   templateUrl: 'demandes.html'
@@ -229,7 +225,7 @@ export class DemandesPage {
         } else if (data === "demandeRecuperation" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(12);
         } */else {
-          console.log("RIEN!!!!!");
+          return;
         }
       }
     });
@@ -265,7 +261,6 @@ export class DemandesPage {
         {
           text: 'Annuler',
           handler: data => {
-            console.log('Annuler');
           }
         },
         {
@@ -275,9 +270,7 @@ export class DemandesPage {
             if (this.isCheckDate) {
               this.faireCheckDatePassee(data.DateDeb); //Vérifier que les dates ne sont pas dans le passé
               if (this.isCheckDatePasse) {
-                console.log('Confirmer');
                 this.enregsitrerDemande(id, data.DateDeb, data.DateFin, 1,  data.Motif.trim());
-                console.log(id, data.DateDeb, data.DateFin, data.Motif);                
               } else {
                 this.AlertsToasts.faireAlertePasOkDatePassee();
               }
@@ -296,8 +289,6 @@ export class DemandesPage {
     var ajd = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
     var heureDebut = ('0' + ( today.getHours())).slice(-2) + ':' + ('0' +  today.getMinutes()).slice(-2);
     var heureFin = ('0' + (today.getHours() + 1)).slice(-2)  + ':' + ('0' + today.getMinutes()).slice(-2);
-    console.log(heureDebut);
-    console.log(heureFin);
     let prompt = this.alertCtrl.create({
       title: 'Demande de congé',
       message: "Entrez les dates de la demande : ",
@@ -330,7 +321,6 @@ export class DemandesPage {
         {
           text: 'Annuler',
           handler: data => {
-            console.log('Annuler');
           }
         },
         {
@@ -338,11 +328,9 @@ export class DemandesPage {
           handler: data => {
               this.faireCheckDatePassee(data.DateDeb); //Vérifier que les dates ne sont pas dans le passé
               if (this.isCheckDatePasse) {
-                console.log('Confirmer');
                 this.faireCheckheure(data.HeureDebut, data.HeureFin); //Vérifier que les heures ne soient pas incohérentes
                 if(this.isCheckHeure){
                   this.enregsitrerDemande(id, data.DateDeb +" "+ data.HeureDebut, data.DateDeb +" "+ data.HeureFin, 0,data.Motif.trim());
-                  console.log(id, data.DateDeb +" "+ data.HeureDebut, data.DateDeb +" "+ data.HeureFin, 0,data.Motif);
                 }else{
                   this.AlertsToasts.faireAlerteHeuresPasOk();
                 }
@@ -390,18 +378,15 @@ export class DemandesPage {
             {
               text: 'Annuler',
               handler: data => {
-                console.log('Annuler');
               }
             },
             {
               text: 'Confirmer',
               handler: data => {
-                console.log('Confirmer');
                 this.faireCheckDate(data.DateDebutNew, data.DateFinNew); //Vérifier que les dates ne soient pas incohérentes
                 if (this.isCheckDate) {
                   this.faireCheckDatePassee(data.DateDebutNew);//Vérifier que les dates ne sont pas dans le passé
                   if (this.isCheckDatePasse) {
-                    console.log(demande.id, data.DateDebutNew, data.DateFinNew, 1, data.MotifNew);
                     this.modifierDemande(demande.id, data.DateDebutNew, data.DateFinNew, 1, data.MotifNew.trim());
                   } else {
                     this.AlertsToasts.faireAlertePasOkDatePassee();
@@ -448,18 +433,15 @@ export class DemandesPage {
             {
               text: 'Annuler',
               handler: data => {
-                console.log('Annuler');
               }
             },
             {
               text: 'Confirmer',
               handler: data => {
-                console.log('Confirmer');
                   this.faireCheckDatePassee(data.DateDebutNew);//Vérifier que les dates ne sont pas dans le passé
                   if (this.isCheckDatePasse) {
                     this.faireCheckheure(data.HeureDebutNew, data.HeureFinNew); //Vérifier que les heures ne soient pas incohérentes
                     if(this.isCheckHeure){
-                      console.log(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateDebutNew + " " + data.HeureFinNew, 0, data.MotifNew);
                       this.modifierDemande(demande.id, data.DateDebutNew + " " + data.HeureDebutNew, data.DateDebutNew + " " + data.HeureFinNew, 0, data.MotifNew.trim());
                     } else{
                       this.AlertsToasts.faireAlerteHeuresPasOk();
@@ -473,7 +455,7 @@ export class DemandesPage {
         });
         prompt.present();
       } else {
-        console.log("pas possible=> demande pas journée complète ni demi journée");
+        return;
       }
     } else { // Traiter le cas ou la demande a déjà été validée par le gérant
       let alert = this.alertCtrl.create({
@@ -488,11 +470,9 @@ export class DemandesPage {
    enregsitrerDemande(typeDemId, dateDebut: string, dateFin: string, isJourneeComplete, motif: string) {
     this.abiBddCtrl.setDemande(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), typeDemId, dateDebut, dateFin, isJourneeComplete, motif).subscribe(
       data => {
-        if (data) {  // OK         
-          console.log("Demande enregsitrée"); // Traiter le cas où c'est ok : un toast par exemple
+        if (data) {  // OK
           this.AlertsToasts.faireToastOk();
         } else { // Erreur
-          console.log("Enregsitrement échoue : token ou ID"); // Traiter le cas oû c'est pas OK : une alerte...
           this.AlertsToasts.faireAlertePasOk();
         }
         this.getDemandes();//On recharge les demandes
@@ -500,14 +480,11 @@ export class DemandesPage {
   }//enregsitrerDemande
 
   modifierDemande(demId, dateDebut: string, dateFin: string, isJourneeComplete, motif: string) {
-    // setDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, motif:string
     this.abiBddCtrl.modDemande(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), demId, dateDebut, dateFin, isJourneeComplete, motif).subscribe(
       data => {
         if (data) {  // OK         
-          console.log("Modification enregsitrée"); // Traiter le cas où c'est ok : un toast par exemple
           this.AlertsToasts.faireToastOk();
         } else { // Erreur
-          console.log("Enregsitrement échoue : token ou ID"); // Traiter le cas oû c'est pas OK : une alerte...
           this.AlertsToasts.faireAlertePasOk();
         }
         this.getDemandes();//On recharge les demandes
@@ -531,22 +508,19 @@ export class DemandesPage {
                 data[i].id_typeDemande,
                 data[i].nom_typeDemande
               );
-              this.demandes.push(demande); // On ajoute l'horaire au tableau
+              this.demandes.push(demande); // On ajoute les demandes au tableau
               window.localStorage.setItem('getDemandes', JSON.stringify(this.demandes));  // Création de la sauvegarde locale
             }
-            console.log(this.demandes);
           } else { // Erreur
-            console.log("Aucune demande à afficher");
+            return;
           }
         });
     } else {
-      console.log("Mode hors ligne");
       this.demandes = JSON.parse(window.localStorage.getItem('getDemandes'));
     }
   }//getDemandes
 
   faireCheckDate(dateDebutCheck, dateFinCheck) { //Vérifier que les dates ne soient pas incohérentes
-    console.log("je me fait check pour les dates");
     if (dateDebutCheck <= dateFinCheck) {
       this.isCheckDate = true;
     } else {
@@ -558,7 +532,6 @@ export class DemandesPage {
     var today = new Date();
     var ajd = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
     var heureActuelle = ('0' + ( today.getHours())).slice(-2) + ':' + ('0' +  today.getMinutes()).slice(-2);
-    console.log("je me fait check pour les heures");
     if (heureDebutCheck < heureFinCheck && heureDebutCheck >= heureActuelle) {
       this.isCheckHeure = true;
     } else {
@@ -575,4 +548,4 @@ export class DemandesPage {
       this.isCheckDatePasse = false;
     }
   }//faireCheckDatePassee
-}
+}//DemandesPage

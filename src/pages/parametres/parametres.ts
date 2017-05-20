@@ -1,3 +1,5 @@
+//Parametres page
+
 import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 import { MeshorairesPage } from '../meshoraires/meshoraires';
@@ -11,12 +13,6 @@ import { AlertsToasts } from '../../providers/alerts-toasts';
 //Modele
 import { CalendrierEvent } from '../../models/calendrierEvent';
 
-/*
-  Generated class for the Parametres page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-parametres',
   templateUrl: 'parametres.html'
@@ -45,11 +41,11 @@ export class ParametresPage {
     this.autoImport = this.setAutoImport();
     this.importMinutes();
     this.selectionnerMinutes();
-  }
+  }//constructor
 
   ionViewDidLoad() {
     console.log('Hello Parametres Page');
-  }
+  }//ionViewDidLoad
 
   saveAutoImportChange() {
     window.localStorage.setItem('autoImport', this.autoImport.toString());  // Création de la sauvegarde locale de ces horaires (mois et annee) 
@@ -67,11 +63,8 @@ export class ParametresPage {
           {
             text: 'OK',
             handler: data => {
-              console.log("je suis dans ok");
-              this.nomCalendrierEvent = data.nomEvent;//On defini ce nom comme nom pour les event
-              console.log(this.nomCalendrierEvent + " je suis le nom du calendrier");              
+              this.nomCalendrierEvent = data.nomEvent;//On defini ce nom comme nom pour les event            
               window.localStorage.setItem('autoImportNomEvent', data.nomEvent);                
-              console.log("j'ai été enregistré " + data.nomEvent);
               this.syncCalendrierSmartphone(); //On synchronise le calendrier 
               this.AlertsToasts.faireToastSynchronisation();   
             }
@@ -81,7 +74,6 @@ export class ParametresPage {
       alert.present();
     } else { // On a coché non
       this.supprimerCalendrierEvents();
-      console.log("On a coché non");
     }
   }//saveAutoImportChange
 
@@ -132,14 +124,13 @@ export class ParametresPage {
     this.calendrierEvents = this.syncHoraireCtrl.calendrierEvents;
 
     for (let i = 0; i < this.calendrierEvents.length; i++) { //On boucle sur les events enregsitrés
-      console.log("On supprime " + this.calendrierEvents[i].startDate);
       Calendar.deleteEvent( // On supprime l'event du calendrier
         this.calendrierEvents[i].title,
         this.calendrierEvents[i].location,
         this.calendrierEvents[i].notes,
         this.calendrierEvents[i].startDate,
         this.calendrierEvents[i].endDate);
-    }//for    
+    }   
     this.calendrierEvents = []; // On vide l'array des calendrier Events
     window.localStorage.setItem('calendrierEvents', JSON.stringify(this.calendrierEvents));// On enregsitre la modification en local storage 
     
@@ -166,11 +157,11 @@ export class ParametresPage {
       this.is150 = true;
     } else if (this.minute === "180") {
       this.is180 = true;
-    } else if (this.minute === "-1") { // -1 => désactiver
+    } else if (this.minute === "-1") { // -1 => désactiver les notifications de fin de service
       this.isNull = true;
     } else {
       this.is0 = true;
     }
-  }
+  }//selectionnerMinutes
 
-}
+}//ParametresPage

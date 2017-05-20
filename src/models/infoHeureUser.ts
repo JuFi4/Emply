@@ -9,5 +9,5 @@ export class InfoHeureUser {
         this.conge = conge;
         this.pause = pause;
         this.net = net;
-    }
-}
+    }//constructor
+}//InfoHeureUser

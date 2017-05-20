@@ -1,104 +1,70 @@
-
-<!--
-  Generated template for the Meshoraires page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-
+<!-- Meshoraires page -->
 <ion-header>
-
-  <ion-toolbar> <!-- Même design que la nav-bar, mais sans le back button ! -->
+  <ion-toolbar>
     <button ion-button icon-only menuToggle>
       <ion-icon name="menu"></ion-icon> 
     </button>
     <ion-title>Mes horaires</ion-title>
-   </ion-toolbar>
+  </ion-toolbar>
 </ion-header>
 <ion-content padding>
-
-<!--
-<ion-item>
-  <ion-label>Choisir un mois</ion-label> 
-    <ion-select [(ngModel)]= "mois" (ngModelChange)= "onChange(mois)">
-       <ion-option  *ngFor = "let mois of moisListe"> {{mois.nom}}</ion-option>
-    </ion-select>  
-</ion-item>-->
-<!--
-<ion-item>
-<ion-item text-wrap>
-    <ion-label>Synchroniser les nouveaux horaires dans le calendrier</ion-label>
-    <ion-checkbox [(ngModel)]="autoImport"  (click)="saveAutoImportChange()" [disabled] ="isHorsLigne"></ion-checkbox>
-  </ion-item>-->
-
-<div *ngIf = "annee && moisSelectionne"  (swipe)="changerMois($event)">
-
-<div class="month"> 
-  <ul>
-    <button  class="prev" ion-button (click)="goToMoisPrecedent()">&#10094;</button>
-    <button class="next" ion-button (click)= "goToMoisSuivant()" >&#10095;</button>
-    <li >
-     {{moisSelectionne.nom}}
-    </li>  
-    <li>
-      {{anneeSelectionne}}      
-    </li>  
-  </ul>
-</div>
-
-<ul class="weekdays">
-  <li *ngFor = "let semaine of semaines">
-    <span>{{semaine.nom}}</span></li>
-</ul>
-
-<ul class="days"> 
-  <li  *ngFor ="let i of joursMoisPrecedent">
-   <button class="detailJour" ion-button disabled="true" > 
-     {{i.jour}}    
-   </button>
-  </li>
-  <li  *ngFor ="let i of jours">
-   <button class="detailJour" ion-button (click)="detailHoraire(i)"        
-        [class.isMaladie]="i.isMaladie"
-        [class.isAccident]="i.isAccident"      
-        [class.hasDemande]="i.hasDemande && !i.hasHoraire" 
-        [class.hasHoraire]="i.hasHoraire"
-        [class.isAujourdhui]="i.isAujourdhui">     
-     {{i.jour}}    
-   </button>
-  </li>
-</ul>
-</div>
-
-<div *ngIf="affichageDetailH">
-  <h2 class = "titreH"> Détail du {{selJour}}</h2>
-  
-  <div *ngIf = "hasHoraire">    
-     <h2 class = "sstitreH"> Horaires</h2>
-      <div *ngFor = "let hjours of horairesDuJour">
-        <ion-item> Horaire début : {{ hjours.affichageHeureDebut }}</ion-item>
-        <ion-item > Horaire fin : {{hjours.affichageHeureFin}}  </ion-item>
+  <div *ngIf="annee && moisSelectionne" (swipe)="changerMois($event)">
+    <div class="month">
+      <ul>
+        <button class="prev" ion-button (click)="goToMoisPrecedent()">&#10094;</button>
+        <button class="next" ion-button (click)="goToMoisSuivant()">&#10095;</button>
+        <li>
+          {{moisSelectionne.nom}}
+        </li>
+        <li>
+          {{anneeSelectionne}}
+        </li>
+      </ul>
     </div>
-     <br>
-  </div> 
-
-  <div *ngFor = "let demande of demandesDuJour">
-    <h2 class = "sstitreH"> Absence : {{ demande.nom_typeDemande }} </h2>
-     <ion-item *ngIf="demande.isJourneeComplete">Du {{ demande.affichageDateDebut }} au {{ demande.affichageDateFin }} </ion-item>
-     <ion-item *ngIf="!demande.isJourneeComplete">De {{ demande.affichageHeureDebut }} à {{ demande.affichageHeureFin }} </ion-item>
+    <ul class="weekdays">
+      <li *ngFor="let semaine of semaines">
+        <span>{{semaine.nom}}</span></li>
+    </ul>
+    <ul class="days">
+      <li *ngFor="let i of joursMoisPrecedent">
+        <button class="detailJour" ion-button disabled="true"> 
+     {{i.jour}}    
+   </button>
+      </li>
+      <li *ngFor="let i of jours">
+        <button class="detailJour" ion-button (click)="detailHoraire(i)" [class.isMaladie]="i.isMaladie" [class.isAccident]="i.isAccident"
+          [class.hasDemande]="i.hasDemande && !i.hasHoraire" [class.hasHoraire]="i.hasHoraire" [class.isAujourdhui]="i.isAujourdhui">     
+     {{i.jour}}    
+   </button>
+      </li>
+    </ul>
   </div>
-
-  <div *ngIf = "isMaladie"><h2 class = "sstitreH"> Absence : Maladie</h2>
-    <ion-item>Du {{ maladieDuJour.affichageDateDebut }} au {{ maladieDuJour.affichageDateFin }}</ion-item>
+  <div *ngIf="affichageDetailH">
+    <h2 class="titreH"> Détail du {{selJour}}</h2>
+    <div *ngIf="hasHoraire">
+      <h2 class="sstitreH"> Horaires</h2>
+      <div *ngFor="let hjours of horairesDuJour">
+        <ion-item> Horaire début : {{ hjours.affichageHeureDebut }}</ion-item>
+        <ion-item> Horaire fin : {{hjours.affichageHeureFin}} </ion-item>
+      </div>
+      <br>
+    </div>
+    <div *ngFor="let demande of demandesDuJour">
+      <h2 class="sstitreH"> Absence : {{ demande.nom_typeDemande }} </h2>
+      <ion-item *ngIf="demande.isJourneeComplete">Du {{ demande.affichageDateDebut }} au {{ demande.affichageDateFin }} </ion-item>
+      <ion-item *ngIf="!demande.isJourneeComplete">De {{ demande.affichageHeureDebut }} à {{ demande.affichageHeureFin }} </ion-item>
+    </div>
+    <div *ngIf="isMaladie">
+      <h2 class="sstitreH"> Absence : Maladie</h2>
+      <ion-item>Du {{ maladieDuJour.affichageDateDebut }} au {{ maladieDuJour.affichageDateFin }}</ion-item>
+    </div>
+    <div *ngIf="isAccident">
+      <h2 class="sstitreH"> Absence : Accident</h2>
+      <ion-item>Du {{ maladieDuJour.affichageDateDebut }} au {{ maladieDuJour.affichageDateFin }}</ion-item>
+    </div>
+    <div *ngIf="isJourVide">
+      <h2 class="sstitreNoH"> Aucune entrée pour ce jour</h2>
+    </div>
   </div>
-  
-
-  <div *ngIf = "isAccident"><h2 class = "sstitreH"> Absence : Accident</h2>
-    <ion-item>Du {{ maladieDuJour.affichageDateDebut }} au {{ maladieDuJour.affichageDateFin }}</ion-item>
-  </div>
-
-   <div *ngIf = "isJourVide"><h2 class ="sstitreNoH"> Aucune entrée pour ce jour</h2>
-  </div>
-</div>
-<button ion-button block outline [disabled] ="isHorsLigne" (click)="telechargerPDF()">Télécharger PDF</button>
+  <button ion-button block outline [disabled]="isHorsLigne" (click)="telechargerPDF()">Télécharger PDF</button>
 </ion-content>

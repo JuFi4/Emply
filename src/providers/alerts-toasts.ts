@@ -1,3 +1,5 @@
+//AlertsToasts
+
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
@@ -5,12 +7,6 @@ import 'rxjs/add/operator/map';
 import { AlertController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 
-/*
-  Generated class for the AlertsToasts provider.
-
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
 @Injectable()
 export class AlertsToasts {
 
@@ -18,7 +14,6 @@ export class AlertsToasts {
     console.log('Hello AlertsToasts Provider');
   }
 
-  //Pour le provider d'affichage des validation des horaires et les demandes
   //Alerts pour les demandes dont les dates ne sont pas cohérentes (dateDebut > dateFin)
   afficherAlertPasValide() {
     let alert = this.alertCtrl.create({
@@ -37,8 +32,6 @@ export class AlertsToasts {
     });
     alert.present();
   }
-
-  //Pour la page des demandes
 
   //Alert pour les dates qui sont dans le passé
   faireAlertePasOkDatePassee() {
@@ -79,9 +72,6 @@ export class AlertsToasts {
     });
     toast.present();
   }//faireToastOk
-
-
-  //Pour le profil
 
   //Alert connexion echouée
   faireAlertConnexionEchouee() {
@@ -154,7 +144,6 @@ export class AlertsToasts {
   }//alerterMailInexistant
 
   afficherErreurDeCOnnexion() {
-    console.log("Connexion échouée : mauvais mail ou mot de passe");
     let alert = this.alertCtrl.create({
       title: 'Erreur',
       subTitle: 'Utilisateur et/ou mot de passe incorrect(s).',
@@ -170,7 +159,16 @@ export class AlertsToasts {
       cssClass: "yourCssClassName",
     });
     toast.present();
-  }
+  }//faireToastSynchronisation
 
-}
+  afficherErreurChargementValidation() {
+    let alert = this.alertCtrl.create({
+      title: 'Problème de chargement',
+      subTitle: 'Les horaires en attente de validation n''ont pas été chargés',
+      buttons: ['Retour']
+    });
+    alert.present();
+  }//afficherErreurChargementValidation
+  
+}//AlertsToasts
 

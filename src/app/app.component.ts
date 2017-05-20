@@ -38,23 +38,18 @@ export class MyApp {
       {title: 'Mon profil', component: MonprofilPage },
       {title: 'Paramètres', component: ParametresPage },
     ];
-  }
+  }//constructor
 
   initializeApp() {
     this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
       StatusBar.styleDefault();
-      //Splashscreen.hide();
     });
-  }
+  }//initializeApp
 
   openPage(page) {
-    // close the menu when clicking a link from the menu
     this.menu.close();
-    // navigate to the new page if it is not the current page
     this.nav.setRoot(page.component);
-  }
+  }//openPage
   
   deconnecter() {
     let alert = this.alertCtrl.create({
@@ -77,7 +72,7 @@ export class MyApp {
               if(data) {}  // Déconnexion OK         
             });
           
-          // On défini à "undefined"" utilisateur et  motDePasse au lieu de faire clear -> afin de garder les données pour le mode hors connexion
+          // On définit à "undefined" l'utilisateur et le motDePasse au lieu de faire clear -> afin de garder les données pour le mode hors connexion
           //window.localStorage.clear();
           window.localStorage.setItem('utilisateur', "undefined");
           window.localStorage.setItem('motDePasse', "undefined");
@@ -87,17 +82,16 @@ export class MyApp {
           console.log("Id: " + window.localStorage.getItem('id'));
           console.log("Token bdd: " + window.localStorage.getItem('tokenBDD'));
 
-          // On supprime les notifications locales -  elles vont être re-crées quand la personne se reconnecterais et ira voir ses horaires  
+          // On supprime les notifications locales -  elles vont être re-crées quand la personne se reconnectera et ira voir ses horaires  
            this.notificationsLocalesCtrl.resetNotification();
 
           this.menu.close();
           this.nav.push(LoginPage); //charge la page login
-          //this.nav.popToRoot();
         }
       }
     ]
   });
   alert.present();
-  }
+  }//deconnecter
 
-}
+}//MyApp

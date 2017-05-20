@@ -1,24 +1,16 @@
+//ApiPdfService
+
 import { Injectable } from '@angular/core';
 import { ToastController, AlertController } from 'ionic-angular';
 import { Transfer, TransferObject } from '@ionic-native/transfer';
 
-
-
-/*
-  Generated class for the ApiPdfService provider.
-
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
 declare var cordova: any;
 
 @Injectable()
 export class ApiPdfService {
-  
 
   baseUrl = 'https://ctrl-ccnt.ch/assets/php/api/apiPdfService.php?'; // URL du service web
   constructor(public toastCtrl : ToastController, public alertCtrl: AlertController) { }//constructor
-
 
  checkPermission() {
        return new Promise((resolve, reject) => {
@@ -54,28 +46,21 @@ export class ApiPdfService {
       const fileTransfer: TransferObject = new Transfer().create();
       let url = this.baseUrl+"type=horaires&userId="+encodeURI(userId)+"&token="+encodeURI(token);
       let dest = cordova.file.externalRootDirectory + 'horaires.pdf';
-      //let dest = cordova.file.externalApplicationStorageDirectory  + 'horaires.pdf';
       console.log(url);
       fileTransfer.download(url, dest).then((entry) => {
-          console.log('download complete: ' + entry.toURL()); 
           this.afficherMessageOK("Le ficher PDF de vos horaires a bien été téléchargé dans le dossier de stockage de votre téléphone", entry.toURL());        
         }, (error) => {
-          console.log(error);
           this.afficherErreur();
         });    
    } //downloadPdfHoraires
-
 
   downloadPdfValMensuelle(userId:string, token:string, annee:string, mois:string){
     const fileTransfer: TransferObject = new Transfer().create();
     let url = this.baseUrl+"type=valMensuelle&userId="+encodeURI(userId)+"&token="+encodeURI(token)+"&annee="+encodeURI(annee)+"&mois="+encodeURI(mois);
     let dest = cordova.file.externalRootDirectory + 'validationMensuelle_'+mois+'-'+annee+'.pdf';
-    console.log(url);
     fileTransfer.download(url, dest).then((entry) => {
-        console.log('download complete: ' + entry.toURL()); 
         this.afficherMessageOK("Le ficher PDF de vos heures mensuelles à bien été téléchargé dans le dossier de stockage de votre téléphone", entry.toURL());        
       }, (error) => {
-        console.log(error);
         this.afficherErreur();
       });
   }//downloadPdfValMensuelle
@@ -84,12 +69,9 @@ export class ApiPdfService {
     const fileTransfer: TransferObject = new Transfer().create();
     let url = this.baseUrl+"type=calendrier&userId="+encodeURI(userId)+"&token="+encodeURI(token)+"&annee="+encodeURI(annee)+"&mois="+encodeURI(mois);
     let dest = cordova.file.externalRootDirectory + 'calendrier_'+mois+'-'+annee+'.pdf';
-    console.log(url);
     fileTransfer.download(url, dest).then((entry) => {
-        console.log('download complete: ' + entry.toURL()); 
         this.afficherMessageOK("Le ficher PDF de calendrier mensuel à bien été téléchargé dans le dossier de stockage de votre téléphone", entry.toURL());        
       }, (error) => {
-        console.log(error);
         this.afficherErreur();
       });
   }//downloadPdfCalendrier
@@ -106,15 +88,12 @@ export class ApiPdfService {
       },
       {
         text: 'Afficher',
-        handler: () => {
-          console.log("ouvrir " + adresse);        
+        handler: () => {      
           cordova.plugins.fileOpener2.open( adresse,  'application/pdf', 
                   { 
                     error : function(e) { 
-                        console.log('Error status: ' + e.status + ' - Error message: ' + e.message);
                     },
-                    success : function () {
-                        console.log('file opened successfully'); 				
+                    success : function () {		
                     }
                 }
             );
@@ -124,7 +103,7 @@ export class ApiPdfService {
 
      });
      prompt.present();
-  }//afficherToast
+  }//afficherMessageOK
 
   afficherErreur(){
     let prompt = this.alertCtrl.create({
@@ -133,5 +112,5 @@ export class ApiPdfService {
          buttons:["ok"]
      });
      prompt.present();
-  }
+  }//afficherErreur
 }//ApiPdfService

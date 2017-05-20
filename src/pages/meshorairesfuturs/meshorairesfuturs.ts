@@ -1,3 +1,5 @@
+//Meshorairesfuturs page
+
 import { Component } from '@angular/core';
 import { NavController, NavParams, LoadingController } from 'ionic-angular';
 
@@ -9,12 +11,7 @@ import { ConnectivityService } from '../../providers/connectivity-service';
 
 //Models
 import {Horaire} from '../../models/horaire';
-/*
-  Generated class for the Meshorairesfuturs page.
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-meshorairesfuturs',
   templateUrl: 'meshorairesfuturs.html'
@@ -28,11 +25,11 @@ export class MeshorairesfutursPage {
     // Méthodes à lancer au chargement de la page
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
     this.getHorairesFuturs(); // On charge les horaires futurs
-  }
+  }//constructor
 
   ionViewDidLoad() {
     console.log('Hello Meshorairesfuturs Page');
-  }
+  }//ionViewDidLoad
 
   getHorairesFuturs() {
       console.log("Coucou les horaires futurs");
@@ -44,10 +41,10 @@ export class MeshorairesfutursPage {
       // On va chercher les horaires futurs, quand on les a : on les range dans le tableau this.horairesFuturs, et on enlève l'affichage de l'icone de chargement
       this.syncHoraireCtrl.gethorairesFuturs().then(result => this.horairesFuturs = this.syncHoraireCtrl.horairesFuturs).then(result => loader.dismiss());
       console.log(this.horairesFuturs);    
-  }
+  }//getHorairesFuturs
 
   telechargerPDF(){
       this.pdfCtrl.getPdfHoraires(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'));
     }//telechargerPDF
 
-}
+}//MeshorairesfutursPage

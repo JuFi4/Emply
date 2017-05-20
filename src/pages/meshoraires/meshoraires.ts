@@ -1,3 +1,4 @@
+//Meshoraires page
 import { Component, Input} from '@angular/core';
 import{ NavController, NavParams, AlertController, LoadingController} from 'ionic-angular';
 import {Calendar} from 'ionic-native';
@@ -19,12 +20,6 @@ import {Etablissement} from '../../models/etablissement';
 import {Demande} from '../../models/demande';
 import {Maladie} from '../../models/Maladie';
 
-/*
-  Generated class for the Meshoraires page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-meshoraires',
   templateUrl: 'meshoraires.html'
@@ -88,7 +83,7 @@ export class MeshorairesPage {
     this.affichageDetailH = false; // On désactive le détail du jour
      this.jours.length = 0;
      this.joursMoisPrecedent.length = 0;
-     let premierJoursMois = new Date(this.anneeSelectionne, this.moisSelectionne.moisId, 0).getDay(); // On défini quel est le 1er jours du mois (code de 0 à 6 qui défini quel est le jour de la semaine)
+     let premierJoursMois = new Date(this.anneeSelectionne, this.moisSelectionne.moisId, 0).getDay(); // On définit quel est le 1er jours du mois (code de 0 à 6 qui défini quel est le jour de la semaine)
     
      // On regarder quel est le mois précédent (par rapport au moisId), si on est en janvier, c'est décembre (ID 11)
      let idMoisPrecedent = this.moisSelectionne.moisId - 1;
@@ -114,7 +109,7 @@ export class MeshorairesPage {
      // On remplis les jours du mois 
      for(let i = 1; i <= nbJoursMois; i++){
         this.jours.push(new Jour(i, new Date(this.anneeSelectionne, this.moisSelectionne.moisId, i)));
-     }//for
+     }
 
       if(this.moisSelectionne.moisId == this.moisCourant){ // Si le mois à afficher est le mois courant
           this.jours[this.dateCourrante.getDate()-1].isAujourdhui = true; // On définie le jour d'aujourd'hui
@@ -134,10 +129,10 @@ export class MeshorairesPage {
         loader.present();
 
         // 1) on récupres les horaires
-        // 2) Ensuite : on récupère les maladies/ accidents pour ce mois
-        // 3) Ensuite: on récupàre les demandes validées pour ce mois
-        // 4) Ensuite : on traite tout ça
-        // 5) Ensuite : on arrête l'icone de chargement
+        // 2) on récupère les maladies/ accidents pour ce mois
+        // 3) on récupàre les demandes validées pour ce mois
+        // 4) on traite tout ça
+        // 5) on arrête l'icone de chargement
         this.getHorairesMensuels(annee, mois)
           .then(result => this.getMaladiesParMois(annee, mois))
             .then(result => this.getDemandesParMois(annee, mois))
@@ -203,7 +198,7 @@ export class MeshorairesPage {
               if(data) { // Si les données sont bien chargées 
                    for(let i = 0; i < data.length; i++){ //Remplissage du tableau demandes avec les données demandes formatées
                        this.demandesDuMois.push(new Demande(data[i].id, new Date(data[i].dateDebut), new Date(data[i].dateFin), data[i].motif,  data[i].isJourneeComplete, "", data[i].id_typeDemande, data[i].nom_typeDemande));
-                   }//for    
+                   }    
                   resolve(true); // On résout la promise à true
                } else {
                  resolve(false); // On résout la promise à false     
@@ -219,7 +214,7 @@ export class MeshorairesPage {
           if(!this.setMaladieOnJour(this.jours[i])){ // On regarde si on était on maladie/accident 
               this.setDemandeOnJour(this.jours[i]);//Si ce n'est pas le cas: on regarde si on était en "congé"
           }
-      }//for
+      }
       window.localStorage.setItem("getControleMensuel_"+ annee +"_"+ mois, JSON.stringify(this.jours));//On enregsitre
     } else { //Si on est hors-ligne: on récupère les jours enregistrés en local*/
       let savedJours : Jour[];
@@ -261,7 +256,7 @@ export class MeshorairesPage {
         this.demandesDuMois[i].dateFin.setMinutes(0);
         this.demandesDuMois[i].dateFin.setSeconds(0);
 
-        if(jour.date >= this.demandesDuMois[i].dateDebut && jour.date <= this.demandesDuMois[i].dateFin){ // Si on avais une demande pour ce jours là
+        if(jour.date >= this.demandesDuMois[i].dateDebut && jour.date <= this.demandesDuMois[i].dateFin){ // Si on avait une demande pour ce jours là
             jour.addDemande(this.demandesDuMois[i]); //On ajoute la demande ce jour  
             return true;
         }
@@ -293,15 +288,12 @@ export class MeshorairesPage {
     }//resetDetailHoraire
     
     detailHoraire(jour : Jour){
-      console.log("detailHoraire " + jour);
-      this.resetDetailHoraire(); //  DRY ;)
+      this.resetDetailHoraire();
       if(jour.hasHoraire){ this.horairesDuJour = jour.tbHoraire; this.hasHoraire = true; this.isJourVide = false;}
       if(jour.hasDemande) {  this.demandesDuJour = jour.tbDemande; this.isJourVide = false;}
       if(jour.isAccident) { this.isAccident = true;  this.isJourVide = false;}
       if(jour.isMaladie){ this.isMaladie = true; this.isJourVide = false;}
       if(jour.enMaladie != null ) { this.maladieDuJour = jour.enMaladie; this.isJourVide = false;}
-      console.log("jour.hasDemande : " + jour.hasDemande);
-      console.log(jour.tbDemande);
       this.selJour = jour.jour; 
    }//DetailHoraire
 
@@ -314,31 +306,28 @@ export class MeshorairesPage {
         idMois = 11;
         this.anneeSelectionne--;
       };
-      // On défini ce mois comme moisSelectionne, et on appelle l'affichage.
+      // On définit ce mois comme moisSelectionne, et on appelle l'affichage.
       this.moisSelectionne = this.moisListe[idMois];
       this.afficherMois();
     }//goToMoisPrecedent
 
     goToMoisSuivant(){
-      // On regarde quel est le mois suivante (par rapport au moisId)
+      // On regarde quel est le mois suivant (par rapport au moisId)
       let idMois = this.moisSelectionne.moisId +1;
       // Si on est en décembre, c'est janvier (ID 0), et on change également d'année (incrément)
       if(idMois === 12) { 
         idMois = 0;
         this.anneeSelectionne++;
       };
-      // On définicele mois comme moisSelectionne, et on appelle l'affichage.
+      // On définit le mois comme moisSelectionne, et on appelle l'affichage.
       this.moisSelectionne = this.moisListe[idMois];
       this.afficherMois();
     }//goToMoisSuivant
 
     changerMois(e){
-      console.log("changerMois");
       if (e.direction == 2) { // Vers la gauche
-          console.log("gauche");
           this.goToMoisSuivant();          
       } else if (e.direction == 4) { // Vers la droite
-        console.log("droite");
         this.goToMoisPrecedent();
       }
     }//changerMois

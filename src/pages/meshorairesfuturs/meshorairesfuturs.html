@@ -1,27 +1,19 @@
-<!--
-  Generated template for the Meshorairesfuturs page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
--->
+<!-- Meshorairesfuturs page -->
 <ion-header>
-
   <ion-navbar>
     <button ion-button icon-only menuToggle>
       <ion-icon name="menu"></ion-icon> 
     </button>
     <ion-title>Mes horaires</ion-title>
   </ion-navbar>
-
 </ion-header>
 
-
 <ion-content padding>
-<ion-list>
-      <ion-item *ngFor="let horaire of horairesFuturs" text-wrap>
-            <ion-label style="float: left; width: 800px;"> Horaire du {{horaire.affichageDate}}: </ion-label>            
-            <ion-label style="text-align: right">de {{horaire.affichageHeureDebut}} à {{horaire.affichageHeureFin}}</ion-label>
-      </ion-item>
+  <ion-list>
+    <ion-item *ngFor="let horaire of horairesFuturs" text-wrap>
+      <ion-label style="float: left; width: 800px;"> Horaire du {{horaire.affichageDate}}: </ion-label>
+      <ion-label style="text-align: right">de {{horaire.affichageHeureDebut}} à {{horaire.affichageHeureFin}}</ion-label>
+    </ion-item>
   </ion-list>
-  <button ion-button block outline [disabled] ="isHorsLigne" (click)="telechargerPDF()">Télécharger PDF</button>
+  <button ion-button block outline [disabled]="isHorsLigne" (click)="telechargerPDF()">Télécharger PDF</button>
 </ion-content>

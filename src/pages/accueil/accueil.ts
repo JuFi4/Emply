@@ -1,3 +1,5 @@
+//Accueil page
+
 import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 
@@ -13,12 +15,6 @@ import { ApiBddService } from '../../providers/api-bdd-service';
 import { SyncHorairesService } from '../../providers/sync-horaires-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
 
-/*
-  Generated class for the Accueil page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-accueil',
   templateUrl: 'accueil.html'
@@ -57,7 +53,7 @@ export class AccueilPage {
     });  
     loader.present();
 
-    // On sync les horaires (calendrier + notification ) ensuite: en récupère les stats, et quand c'est fini, on arrête l'affichage de l'icone de chargement
+    // On synchrnoise les horaires (calendrier + notification ), ensuite: on récupère les stats, et quand c'est fini, on arrête l'affichage de l'icone de chargement
     syncHoraireCtrl.manangeSync().then(result => this.getStats()).then(result => loader.dismiss());
   }//constructor
   
@@ -203,5 +199,5 @@ export class AccueilPage {
 
   ionViewDidLoad() {
     console.log('Hello Accueil Page');
-  }
-}
+  }//ionViewDidLoad
+}//AccueilPage

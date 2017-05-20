@@ -15,5 +15,5 @@ export class Horaire {
         this.affichageHeureDebut = (this.heureDebut.getHours() <= 9 ? "0"+this.heureDebut.getHours() : this.heureDebut.getHours())+":"+(this.heureDebut.getMinutes() <= 9 ? "0"+this.heureDebut.getMinutes() : this.heureDebut.getMinutes());
         this.affichageHeureFin =  (this.heureFin.getHours() <= 9 ? "0"+this.heureFin.getHours() : this.heureFin.getHours())+":"+(this.heureFin.getMinutes() <= 9 ? "0"+this.heureFin.getMinutes() : this.heureFin.getMinutes());
         this.affichageDate=  ('0' + this.date.getDate()).slice(-2) + '.' +  ('0' + (this.date.getMonth() + 1)).slice(-2) + '.' + this.date.getFullYear();
-}//constructor
-}//Horaires
+    }//constructor
+}//Horaire

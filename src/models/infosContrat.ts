@@ -7,4 +7,4 @@ export class InfosContrat {
             this.type = type;
     }//constructor
 
-}//InfoEtablissement
+}//InfosContrat

@@ -14,4 +14,4 @@ export class CalendrierEvent {
         this.endDate = endDate;
         this.id = id;
     }//constructor
-}
+}//CalendrierEvent

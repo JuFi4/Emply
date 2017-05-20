@@ -10,4 +10,4 @@ export class SoldeEmploye {
         this.soldeFerier = soldeFerier;
         this.soldeVacance = soldeVacance;
     }//constructor
-}//Maladie
+}//SoldeEmploye

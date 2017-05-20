@@ -4,6 +4,6 @@ export class userEta {
 
     constructor(idEta : string){
         this.idEta = idEta;
-    }  
+    }//constructor
 
-}
+}//userEta

@@ -1,3 +1,5 @@
+//Controle page
+
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
@@ -6,16 +8,11 @@ import { ApiBddService } from '../../providers/api-bdd-service';
 import { ConnectivityService } from '../../providers/connectivity-service';
 import { AffichageValidationHoraireService } from '../../providers/affichage-validation-horaire-service';
 import { ApiPdfService } from '../../providers/api-pdf-service';
+import { AlertsToasts } from '../../providers/alerts-toasts';
 
 // Models
 import {Horaire} from '../../models/horaire';
 
-/*
-  Generated class for the Controle page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-validation',
   templateUrl: 'validation.html'
@@ -25,20 +22,19 @@ export class ValidationPage {
 isHorsLigne : boolean;
 horairesAttenteValidation : Horaire[];
 
-  constructor(public pdfCtrl: ApiPdfService, public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService, private affichageValidation : AffichageValidationHoraireService
+  constructor(public pdfCtrl: ApiPdfService, public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService, private affichageValidation : AffichageValidationHoraireService.private AlertsToasts: AlertsToasts
    ) {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
 
     // Méthodes à lancer au chargement de la page
     this.getHorairesAttenteValidation(); // On charge et on gère les horaires en attente de validation
-  }
+  }//constructor
 
   ionViewDidLoad() {
     console.log('Hello Validation Page');
-  }
+  }//ionViewDidLoad
 
   getHorairesAttenteValidation () {
-    console.log("getHorairesAttenteValidation")  ;
     if(!this.isHorsLigne){ // Si on a internet
               this.abiBddCtrl.getHorairesAttenteValidation(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
                 data => {  
@@ -47,13 +43,12 @@ horairesAttenteValidation : Horaire[];
                       window.localStorage.setItem('getHorairesAttenteValidation', JSON.stringify(data));//On sauvegarde les données en local    
                       this.traiterHorairesAttenteValidation(data);      
                   } else { 
-                      console.log("Les horaires en attente de validation n'ont pas été chargés.");//TODO Céline : afficher erreur
+                    this.AlertsToasts.afficherErreurChargementValidation();
                   }              
                 }); 
     } else { // Mode hors ligne 
-            // Traitement des horaires à partir des données sauvegardés            
+      // Traitement des horaires à partir des données sauvegardés            
              this.traiterHorairesAttenteValidation(JSON.parse(window.localStorage.getItem('getHorairesAttenteValidation')));   
-             console.log("Tu es hors ligne"); 
     }
   } //getHorairesAttenteValidation
 
@@ -67,12 +62,11 @@ horairesAttenteValidation : Horaire[];
           new Date(dateHoraire.getFullYear(), dateHoraire.getMonth(), dateHoraire.getDate(), data[i].heureFin, data[i].minuteFin)
         );            
         this.horairesAttenteValidation.push(horaire);  // On ajoute l'horaire dans le tableau
-      } //For
-      console.log(this.horairesAttenteValidation);
+      } 
+  );
   }//traiterHorairesAttenteValidation
 
   afficherValidationAttenteAlert(horaire : Horaire) {
-      // TODO: corriger pour que ça ouvre la bonne alerte qui permettera de valider l'horaire dans la BDD et mettre la valeur de tra_valide à 1
       this.affichageValidation.afficherAlertFinDeService(horaire).then(result => this.getHorairesAttenteValidation());
   }//afficherValidationAttenteAlert
 
@@ -87,4 +81,4 @@ horairesAttenteValidation : Horaire[];
       this.pdfCtrl.getPdfValMensuelle(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), annee.toString(), mois.toString());
   }//telechargerPDF
 
-}
+}//ValidationPage

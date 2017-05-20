@@ -1,31 +1,23 @@
-<!--
-  Generated template for the Validation page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
--->
+<!-- Validation page -->
 <ion-header>
-
   <ion-navbar>
     <button ion-button icon-only menuToggle>
       <ion-icon name="menu"></ion-icon> 
     </button>
     <ion-title>Validation</ion-title>
   </ion-navbar>
-
 </ion-header>
 
-
 <ion-content padding>
-    <ion-list>
-      <ion-item *ngFor="let horaire of horairesAttenteValidation" text-wrap>
-            <ion-label style="float: left; width: 800px;"> Horaire du {{horaire.affichageDate}} <br> {{horaire.affichageHeureDebut}} à {{horaire.affichageHeureFin}}</ion-label>
-            <ion-label style="text-align: right">
-              <button ion-button icon-only ion-button type="submit" [disabled] ="isHorsLigne" (click)="afficherValidationAttenteAlert(horaire)">
+  <ion-list>
+    <ion-item *ngFor="let horaire of horairesAttenteValidation" text-wrap>
+      <ion-label style="float: left; width: 800px;"> Horaire du {{horaire.affichageDate}} <br> {{horaire.affichageHeureDebut}} à {{horaire.affichageHeureFin}}</ion-label>
+      <ion-label style="text-align: right">
+        <button ion-button icon-only ion-button type="submit" [disabled]="isHorsLigne" (click)="afficherValidationAttenteAlert(horaire)">
                  <ion-icon name="checkmark"></ion-icon>
-              </button>             
-            </ion-label>             
-      </ion-item>
+              </button>
+      </ion-label>
+    </ion-item>
   </ion-list>
-  <button ion-button block outline [disabled] ="isHorsLigne" (click)="telechargerPDF()">Télécharger PDF du mois dernier</button>
+  <button ion-button block outline [disabled]="isHorsLigne" (click)="telechargerPDF()">Télécharger PDF du mois dernier</button>
 </ion-content>

@@ -6,4 +6,4 @@ export interface Etablissement {
     adresseInfo : string;
     codePostal : string;
     localite: number;
-}
+}//Etablissement

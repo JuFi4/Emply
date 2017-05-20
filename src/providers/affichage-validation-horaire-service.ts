@@ -1,3 +1,5 @@
+//AffichageValidationHoraireService
+
 import { Injectable, Component, ViewChild } from '@angular/core';
 import { AlertController, NavController, Platform} from 'ionic-angular';
 import { LocalNotifications, Push, Splashscreen, StatusBar } from 'ionic-native';
@@ -34,11 +36,9 @@ afficherNotificationFinDeService(horaireToString){
     let dataHoraire = <Horaire>JSON.parse(horaireToString); // On récupère l'horaire passé en data
     // Et on en fait un joli horaire avec des dates correctement formatées
     let horaire = new Horaire(dataHoraire.id, new Date(dataHoraire.heureDebut), new Date(dataHoraire.heureDebut), new Date(dataHoraire.heureFin));
-    console.log(horaire);
     this.afficherAlertFinDeService(horaire);       
 }//afficherNotificationFinDeService
 
-// JULIANA : c'est cette fonction qui est appellée au lieu de afficherNotificationFinDeService, et passe lui l'horaire en paramètre
 afficherAlertFinDeService(horaire : Horaire){
   return new Promise((resolve, reject) => {
       let alert = this.alertCtrl.create({
@@ -48,14 +48,12 @@ afficherAlertFinDeService(horaire : Horaire){
             {
               text: 'Non',            
               handler: () => {
-                console.log('Non clicked');
                 this.modificationHoraires(horaire).then(result => resolve("fini"));   
               }
             },
             {
               text: 'Oui',
               handler: () => {
-                console.log('Oui clicked'); 
                 this.validationHoraire(horaire.id, '', '','oui').then(result => resolve("fini"));    // On enregsitre l'absence dans la BDD 
               }
             },
@@ -70,7 +68,6 @@ afficherAlertFinDeService(horaire : Horaire){
       });
    }//afficherAlertFinDeService
    
-
    modificationHoraires(horaire){  
       return new Promise((resolve, reject) => {         
           let alert = this.alertCtrl.create({
@@ -113,7 +110,6 @@ afficherAlertFinDeService(horaire : Horaire){
             {
               text: 'Absent',
               handler: () =>{
-                console.log("Absent click")   
                 this.validationHoraire(horaire.id, '', '','absent').then(result => resolve("fini")); // On enregsitre l'absence dans la BDD 
                 ;  
               }
@@ -121,7 +117,6 @@ afficherAlertFinDeService(horaire : Horaire){
             {
               text: 'Maladie / Accident (avec CM)',
               handler: () =>{
-                console.log("maladieAccident click")
                 this.faireChoixMaladieAccident(horaire).then(result => resolve("fini"));    
               } 
             },         
@@ -161,15 +156,12 @@ afficherAlertFinDeService(horaire : Horaire){
             handler: data => {
               this.radioOpen = false;
               this.radioResult = data;        
-              console.log("HEY!!!! Je suis CONFIRMER!!!!");
-              console.log("radioResult" + this.radioResult);
               if (data === "maladie"){ 
                 this.afficherDateMaladie(horaire).then(result => resolve("fini"));    
               }else if(data === 'accident'){
                 this.afficherDateAccident(horaire).then(result => resolve("fini"));    
               }
               else{
-                console.log("RIEN!!!!!");
                 resolve("fini");
               }
             }
@@ -208,7 +200,6 @@ afficherDateMaladie(horaire){
             {
               text: 'Valider',
               handler: data => {
-                console.log('Oui clicked');
                 if(data.dateDebut <= data.dateFin){ //Si la date de début est plus petite ou égale à la date de fin => OK  
                         if(!this.isHorsLigne){//Si on est pas hors ligne => OK
                             this.validationHoraire(horaire.id, '', '','maladie')
@@ -258,10 +249,7 @@ afficherDateAccident(horaire){
             },{
               text: 'Valider',
               handler: data => {
-                console.log('Oui clicked');
-                console.log(data.dateDebut +" "+ data.dateFin);
                 if(data.dateDebut >= data.dateFin){
-                  console.log(data.dateDebut +" "+ data.dateFin);
                   this.AlertsToasts.afficherAlertPasValide();
                   resolve("Fini")
                 }else{
@@ -287,10 +275,8 @@ enregsitrementMaladieAccident(dateDebut, dateFin,isAccident, id){
           this.abiBddCtrl.setMaladieAccident(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD'), dateDebut, dateFin, isAccident, id).subscribe(
                 data => {
                   if(data) { // OK     
-                      console.log("enregsitrementMaladieAccident OK");
                       resolve("Fini");
                   } else { // Erreur
-                      console.log("enregsitrementMaladieAccident Pas ok");
                       resolve("Fini");
                 }
             });
@@ -299,7 +285,7 @@ enregsitrementMaladieAccident(dateDebut, dateFin,isAccident, id){
           resolve("Fini");          
       }
     });
-}
+}//enregsitrementMaladieAccident
 
 validationHoraire(hopId, hDebut, hFin, traValid){ 
    return new Promise((resolve, reject) => {     
@@ -307,10 +293,8 @@ validationHoraire(hopId, hDebut, hFin, traValid){
             this.abiBddCtrl.setModHoraire(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),hopId, hDebut, hFin, traValid).subscribe(        
               data => {
                   if(data) {  // OK         
-                      console.log("Enregistrer");
                       this.AlertsToasts.faireToastModificationEnregistree();
                     } else { // Erreur
-                        console.log("Connexion échouée : mauvais mot de passe, token ou ID");
                         this.AlertsToasts.faireAlertConnexionEchouee();
                     }
                     resolve("Fini");
@@ -320,7 +304,7 @@ validationHoraire(hopId, hDebut, hFin, traValid){
               resolve("Fini");
           }
       });
-  }//modificationHoraire
+  }//validationHoraire
 
    afficherValidationMensuelle(titreNotification, messageNotification, date){
       let splitDate = date.split("-");
@@ -358,7 +342,7 @@ validationHoraire(hopId, hDebut, hFin, traValid){
         ]
       });
       alert.present();
-    }
+    }//afficherAlertAttenteValidation
 
   afficherMessageHorsLigne(){    
      return new Promise((resolve, reject) => {     

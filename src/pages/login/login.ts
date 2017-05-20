@@ -1,3 +1,5 @@
+//Login Page
+
 // Modules ionic
 import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams , AlertController, Nav, Platform, LoadingController} from 'ionic-angular';
@@ -21,7 +23,7 @@ import { AlertsToasts } from '../../providers/alerts-toasts';
 //Models
 import {Horaire} from '../../models/horaire';
 
-// Sert pour vérifier le connexion
+// Sert à vérifier la connexion
 declare var navigator: any;
 declare var Connection: any;
 
@@ -59,43 +61,19 @@ export class LoginPage {
      // Vérification des données réseau
      this.checkNetwork();
 
-    console.log("Mode hors ligne : " + window.localStorage.getItem('noNetwork'));
-
     this.resteConnecte = (window.localStorage.getItem('resteConnecte') === '1');
 
-   // JULIANA : j'ai changé l'ordre du traitement pour être sûr qu'on ne tente pas la connexion automatique si ce n'est pas possible
     if(this.resteConnecte && window.localStorage.getItem('utilisateur') !== "undefined" && window.localStorage.getItem('motDePasse') !== "undefined" && 
        window.localStorage.getItem('utilisateur') !== null && window.localStorage.getItem('motDePasse') !== null){ // Connexion automatique
       
-      //this.navCtrl.push(AccueilPage, {utilisateur: this.utilisateur});   // On définie la page à charger comme AccueilPage PAS BESOIN : se fait dans la fonction connecter()
-      // On défini le nom d'utilisateur et mot de passer avec les données du localStorage
+      // On définit le nom d'utilisateur et mot de passer avec les données du localStorage
       this.utilisateur = window.localStorage.getItem('utilisateur');
       this.motDePasse = window.localStorage.getItem('motDePasse');
       this.connecter(); // On appelle directement la fonction de connexion pour obtenir un nouveau token de BDD
    } else { // Affichage de la page connexion normale
-      //this.navCtrl.setRoot(LoginPage); //Il ne faut pas rediriger vers la page dans son propre constructeur
-      //this.navCtrl.popToRoot();        // C'était ça qui faisait charger trois fois la page après le logout
+     return;
   }
-
- /*   if((window.localStorage.getItem('utilisateur') === "undefined" || window.localStorage.getItem('utilisateur') === null) && 
-       (window.localStorage.getItem('motDePasse') === "undefined" || window.localStorage.getItem('motDePasse') === null)) {
-      console.log('Pas de données sauvegardées.');
-      this.navCtrl.setRoot(LoginPage);
-      this.navCtrl.popToRoot();
-    } else { // Connexion automatique
-      this.navCtrl.push(AccueilPage, {utilisateur: this.utilisateur});
-      console.log(window.localStorage.getItem('utilisateur'));
-      console.log(window.localStorage.getItem('motDePasse'));
-      // On défini le nom d'utilisateur et mot de passer avec les données du localStorage
-      this.utilisateur = window.localStorage.getItem('utilisateur');
-      this.motDePasse = window.localStorage.getItem('motDePasse');
-      this.connecter();
-      // JULIANA : Cette manière ne sauvegarde par ne nouveau token => autant passer directement par la méthode this.connecter() qui gère tout
-      //this.abiBddCtrl.connexion(window.localStorage.getItem('utilisateur'), window.localStorage.getItem('motDePasse'), window.localStorage.getItem('deviceToken')).subscribe();
-    }     */
-
-    //this.afficherNotificationLocale(0, "blabla", "blibli", JSON.stringify(new Horaire(21, new Date(2017,3,2), new Date(2017,3,2,8,0), new Date(2017,3,2,15,0)))); 
-  }//constructor
+ }//constructor
 
   changeResteConnecte(){
     this.resteConnecte = !this.resteConnecte;
@@ -117,12 +95,6 @@ export class LoginPage {
   }//ionViewDidLoad
 
   nouveauMotDePasse(){
-        /* TODO JULIANA : intégration de l'api nouveau mot de passe :
-      -1) Remplacer les données de test dans l'api par la variable dans laquelle tu aura demandé le mail de l'utilisateur
-      -2) Traiter le résultat de l'API : 
-          - ai OK  (le " if(data)" dans le code) => message pour dire que le nouveau mdp a été envoyé par email
-          - sinon (le "else" dans le code) = l'email indiqué n'existe pas dans le BDD -> afficher un message d'erreur, ou ce que tu veux     
-    */
     let alert = this.alertCtrl.create({
     title: 'Demande de nouveau mot de passe',
     inputs: [
@@ -145,12 +117,8 @@ export class LoginPage {
           this.abiBddCtrl.setNewPassword(data.mail.trim()).subscribe(
                 data => {        
                     if(data) { // OK    
-                      console.log('Mail existant');
-                      console.log("Retour de l'api si le mail existe :" + data);
                       this.AlertsToasts.confirmerDemandeNouveauMotDePasse();
                     } else { // Erreur
-                      console.log("Mail inexistant");
-                      console.log("Retour de l'api si le mail existe pas:" + data);
                       this.AlertsToasts.alerterMailInexistant();
                     }
                 }
@@ -170,9 +138,6 @@ export class LoginPage {
       this.abiBddCtrl.connexion(this.utilisateur, this.motDePasse, (this.deviceToken != null) ? this.deviceToken : "").subscribe(
                   data => {        
                       if(data) {  // OK   
-                        console.log("data " + data);                      
-                        console.log("ID : " + data.id);
-                        console.log("Token : " + data.token);
 
                         // On sauvegarde les données de l'utilisateur pour la session actuelle
                         window.localStorage.setItem('id', data.id);
@@ -205,11 +170,9 @@ export class LoginPage {
      window.localStorage.setItem('deviceToken', this.deviceToken);
      window.localStorage.setItem('utilisateurConnecte', "1");
 
-      if (this.resteConnecte) {
-         console.log("Checkbox cochée");   
+      if (this.resteConnecte) { 
          window.localStorage.setItem('resteConnecte', '1'); // On sauvegarde le fait qu'on veut rester connecter                                        
      } else {
-        console.log("Checkbox pas cochée");
         window.localStorage.setItem('resteConnecte', '0'); // On sauvegarde le fait qu'on ne veut pas rester connecter
      }
 
@@ -270,7 +233,6 @@ export class LoginPage {
             }, {
               text: 'Afficher',
               handler: () => { // Si la personne est connectée ça ouvre la page des horaires
-                console.log("login " + window.localStorage.getItem('utilisateurConnecte'))
                 if(window.localStorage.getItem('utilisateurConnecte') === "1"){  
                     if(idNoficiation == 1 || idNoficiation == 2){ // Le push concerne les horaires
                         this.navCtrl.push(MeshorairesPage);
@@ -297,9 +259,7 @@ export class LoginPage {
   }//afficherNotificationPush
 
   instancierNotificationsLocales(){
-    console.log('instancierNotificationsLocales');
     LocalNotifications.on("click", (notification, state) => {
-        console.log('notification' + notification.id);
         if(window.localStorage.getItem('utilisateurConnecte') === "1"){  
           this.afficherNotificationLocale(notification.id, notification.title, notification.text, notification.data);
         } else {
@@ -313,7 +273,6 @@ export class LoginPage {
   }//instancierNotificationsLocales
 
  afficherNotificationLocale(idNotification, titreNotification, messageNotification, data) {
-    console.log('notification' + idNotification);
     if(idNotification == 0){  // Si l'id est 1 = c'est la notification mensuelle de validation des heures
       this.validationCtrl.afficherValidationMensuelle(titreNotification, messageNotification, data);
     } else  {

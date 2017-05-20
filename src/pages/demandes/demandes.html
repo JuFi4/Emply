@@ -1,11 +1,5 @@
-<!--
-  Generated template for the Demandes page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
--->
+<!-- Demandes page -->
 <ion-header>
-
   <ion-navbar>
     <button ion-button icon-only menuToggle>
       <ion-icon name="menu"></ion-icon> 
@@ -13,32 +7,29 @@
     <ion-title>Mes Demandes</ion-title>
 
     <ion-buttons end>
-      <button ion-button icon-only [disabled] ="isHorsLigne" (click)="saisirDemande()">
+      <button ion-button icon-only [disabled]="isHorsLigne" (click)="saisirDemande()">
         <ion-icon name="add-circle"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
-
 </ion-header>
 
 
 <ion-content padding>
   <ion-list>
-      <ion-item *ngFor="let demande of demandes" text-wrap [class.isNew]="demande.isNew" [class.isAccept]="demande.isAccept" [class.isRefuse]="demande.isRefuse">
-            <ion-label> {{demande.nom_typeDemande}}</ion-label>
-            <ion-label *ngIf="demande.isJourneeComplete"  style="float: left; width: 500px;">              
-              Du {{demande.affichageDateDebut}}    
-              au {{demande.affichageDateFin}}     
-            </ion-label>
-            <ion-label *ngIf="!demande.isJourneeComplete"  style="float: left; width: 500px;">              
-              Le {{demande.affichageDateDebut}}    
-              de  {{demande.affichageHeureDebut}} à {{demande.affichageHeureFin}}
-            </ion-label> 
-            <ion-label style="text-align: right">
-              <button ion-button icon-only ion-button type="submit" [disabled] ="!demande.isNew || isHorsLigne" (click)="modifierDemandeAlert(demande)" >
-                 <ion-icon name="create"></ion-icon>
-              </button>             
+    <ion-item *ngFor="let demande of demandes" text-wrap [class.isNew]="demande.isNew" [class.isAccept]="demande.isAccept" [class.isRefuse]="demande.isRefuse">
+      <ion-label> {{demande.nom_typeDemande}}</ion-label>
+      <ion-label *ngIf="demande.isJourneeComplete" style="float: left; width: 500px;">
+        Du {{demande.affichageDateDebut}} au {{demande.affichageDateFin}}
       </ion-label>
-      </ion-item>
+      <ion-label *ngIf="!demande.isJourneeComplete" style="float: left; width: 500px;">
+        Le {{demande.affichageDateDebut}} de {{demande.affichageHeureDebut}} à {{demande.affichageHeureFin}}
+      </ion-label>
+      <ion-label style="text-align: right">
+        <button ion-button icon-only ion-button type="submit" [disabled]="!demande.isNew || isHorsLigne" (click)="modifierDemandeAlert(demande)">
+                 <ion-icon name="create"></ion-icon>
+              </button>
+      </ion-label>
+    </ion-item>
   </ion-list>
 </ion-content>
