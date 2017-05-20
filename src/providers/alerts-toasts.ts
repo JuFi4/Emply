@@ -161,10 +161,10 @@ export class AlertsToasts {
     toast.present();
   }//faireToastSynchronisation
 
-  afficherErreurChargementValidation() {
+    afficherErreurChargementValidation() {
     let alert = this.alertCtrl.create({
       title: 'Problème de chargement',
-      subTitle: 'Les horaires en attente de validation n''ont pas été chargés',
+      subTitle: 'Les horaires en attente de validation nont pas été chargés',
       buttons: ['Retour']
     });
     alert.present();

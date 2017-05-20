@@ -22,8 +22,9 @@ export class ValidationPage {
 isHorsLigne : boolean;
 horairesAttenteValidation : Horaire[];
 
-  constructor(public pdfCtrl: ApiPdfService, public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: ApiBddService, private connectivityService: ConnectivityService, private affichageValidation : AffichageValidationHoraireService.private AlertsToasts: AlertsToasts
-   ) {
+  constructor(public pdfCtrl: ApiPdfService, public navCtrl: NavController, public navParams: NavParams, private abiBddCtrl: 
+            ApiBddService, private connectivityService: ConnectivityService, private affichageValidation : AffichageValidationHoraireService, private AlertsToasts: AlertsToasts)
+  {
     this.isHorsLigne = window.localStorage.getItem('noNetwork') === '1' || connectivityService.isOffline();
 
     // Méthodes à lancer au chargement de la page
@@ -63,7 +64,6 @@ horairesAttenteValidation : Horaire[];
         );            
         this.horairesAttenteValidation.push(horaire);  // On ajoute l'horaire dans le tableau
       } 
-  );
   }//traiterHorairesAttenteValidation
 
   afficherValidationAttenteAlert(horaire : Horaire) {
