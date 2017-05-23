@@ -73,7 +73,7 @@ export class DemandesPage {
         } else if (data === 'demi') {
           this.faireChoixDemande(0);
         } else {
-          console.log("RIEN!!!!!");
+          return;
         }
       }
     });
@@ -86,7 +86,7 @@ export class DemandesPage {
     alert.addInput({
       type: 'radio',
       label: 'Demande de férié',
-      id: '2',
+      id: '14',
       value: 'demandeConge',
       name: 'conge',
       checked: true
@@ -115,14 +115,6 @@ export class DemandesPage {
       name: 'formation',
       checked: false
     });
-    /*alert.addInput({
-      type: 'radio',
-      label: 'Demande de congé maternité',
-      id: '6',
-      value: 'demandeMaternite',
-      name: 'maternite',
-      checked: false
-    });*/
     alert.addInput({
       type: 'radio',
       label: 'Congé pour cause de décès',
@@ -155,22 +147,6 @@ export class DemandesPage {
       name: 'autre',
       checked: false
     }); 
-    /*alert.addInput({
-      type: 'radio',
-      label: 'Congé sans solde',
-      id: '11',
-      value: 'demandeSansSolde',
-      name: 'sansSolde',
-      checked: false
-    });
-    alert.addInput({
-      type: 'radio',
-      label: 'Demande de récupération',
-      id: '12',
-      value: 'demandeRecuperation',
-      name: 'recuperation',
-      checked: false
-    });*/
     alert.addButton('Annuler');
     alert.addButton({
       text: 'Confirmer',
@@ -179,16 +155,14 @@ export class DemandesPage {
         this.radioResult = data;
         //Pour les journées complètes
         if (data === "demandeConge" && idTypeDemande === 1) {
-          this.faireDemandeConge(2);
+          this.faireDemandeConge(14);
         } else if (data === 'demandeVacances' && idTypeDemande === 1) {
           this.faireDemandeConge(3);
         } else if (data === "demandeMilitaire" && idTypeDemande === 1) {
           this.faireDemandeConge(4);
         } else if (data === "demandeFormation" && idTypeDemande === 1) {
           this.faireDemandeConge(5);
-        } /*else if (data === "demandeMaternite" && idTypeDemande === 1) {
-          this.faireDemandeConge(6);
-        } */else if (data === "demandeDeces" && idTypeDemande === 1) {
+        } else if (data === "demandeDeces" && idTypeDemande === 1) {
           this.faireDemandeConge(7);
         } else if (data === "demandeDemenagement" && idTypeDemande === 1) {
           this.faireDemandeConge(8);
@@ -196,23 +170,18 @@ export class DemandesPage {
           this.faireDemandeConge(9);
         } else if (data === "demandePaternite" && idTypeDemande === 1) {
           this.faireDemandeConge(10);
-        } /*else if (data === "demandeSansSolde" && idTypeDemande === 1) {
-          this.faireDemandeConge(11);
-        } else if (data === "demandeRecuperation" && idTypeDemande === 1) {
-          this.faireDemandeConge(12);
+        
 
           //Pour les demi journées
-        } */else if (data === "demandeConge" && idTypeDemande === 0) {
-          this.faireDemandeDemiConge(2);
+         } else if (data === "demandeConge" && idTypeDemande === 0) {
+          this.faireDemandeDemiConge(14);
         } else if (data === 'demandeVacances' && idTypeDemande === 0) {
           this.faireDemandeDemiConge(3);
         } else if (data === "demandeMilitaire" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(4);
         } else if (data === "demandeFormation" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(5);
-        } /*else if (data === "demandeMaternite" && idTypeDemande === 0) {
-          this.faireDemandeDemiConge(6);
-        } */else if (data === "demandeDeces" && idTypeDemande === 0) {
+        } else if (data === "demandeDeces" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(7);
         } else if (data === "demandeDemenagement" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(8);
@@ -220,11 +189,7 @@ export class DemandesPage {
           this.faireDemandeDemiConge(9);
         } else if (data === "demandePaternite" && idTypeDemande === 0) {
           this.faireDemandeDemiConge(10);
-        } /*else if (data === "demandeSansSolde" && idTypeDemande === 0) {
-          this.faireDemandeDemiConge(11);
-        } else if (data === "demandeRecuperation" && idTypeDemande === 0) {
-          this.faireDemandeDemiConge(12);
-        } */else {
+        } else {
           return;
         }
       }
