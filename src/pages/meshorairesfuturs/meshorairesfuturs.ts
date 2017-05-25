@@ -28,19 +28,16 @@ export class MeshorairesfutursPage {
   }//constructor
 
   ionViewDidLoad() {
-    console.log('Hello Meshorairesfuturs Page');
   }//ionViewDidLoad
 
   getHorairesFuturs() {
-      console.log("Coucou les horaires futurs");
       //Icone de chargement
       let loader = this.loadCtrl.create({
         content: "Chargement"
       });  
       loader.present();
       // On va chercher les horaires futurs, quand on les a : on les range dans le tableau this.horairesFuturs, et on enlève l'affichage de l'icone de chargement
-      this.syncHoraireCtrl.gethorairesFuturs().then(result => this.horairesFuturs = this.syncHoraireCtrl.horairesFuturs).then(result => loader.dismiss());
-      console.log(this.horairesFuturs);    
+      this.syncHoraireCtrl.gethorairesFuturs().then(result => this.horairesFuturs = this.syncHoraireCtrl.horairesFuturs).then(result => loader.dismiss()); 
   }//getHorairesFuturs
 
   telechargerPDF(){

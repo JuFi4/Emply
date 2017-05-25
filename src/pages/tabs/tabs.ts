@@ -17,7 +17,6 @@ export class TabsPage {
   constructor(public navCtrl: NavController, public navParams: NavParams) {}
 
   ionViewDidLoad() {
-    console.log('Hello Tabs Page');
   }//ionViewDidLoad
 
 }//TabsPage

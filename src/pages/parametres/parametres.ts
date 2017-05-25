@@ -41,7 +41,6 @@ export class ParametresPage {
   }//constructor
 
   ionViewDidLoad() {
-    console.log('Hello Parametres Page');
   }//ionViewDidLoad
 
   saveAutoImportChange() {

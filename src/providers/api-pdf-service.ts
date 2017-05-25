@@ -46,7 +46,6 @@ export class ApiPdfService {
       const fileTransfer: TransferObject = new Transfer().create();
       let url = this.baseUrl+"type=horaires&userId="+encodeURI(userId)+"&token="+encodeURI(token);
       let dest = cordova.file.externalRootDirectory + 'horaires.pdf';
-      console.log(url);
       fileTransfer.download(url, dest).then((entry) => {
           this.afficherMessageOK("Le ficher PDF de vos horaires a bien été téléchargé dans le dossier de stockage de votre téléphone", entry.toURL());        
         }, (error) => {

@@ -36,7 +36,6 @@ export class DemandesPage {
   }//constructor
 
   ionViewDidLoad() {
-    console.log('Hello Demandes Page');
   }//ionViewDidLoad
 
   saisirDemande() {

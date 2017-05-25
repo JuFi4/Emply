@@ -31,15 +31,13 @@ export class ValidationPage {
   }//constructor
 
   ionViewDidLoad() {
-    console.log('Hello Validation Page');
   }//ionViewDidLoad
 
   getHorairesAttenteValidation() {
     if (!this.isHorsLigne) { // Si on a internet
       this.abiBddCtrl.getHorairesAttenteValidation(window.localStorage.getItem('id'), window.localStorage.getItem('tokenBDD')).subscribe(
         data => {
-          if (data) { // Si les données sont bien chargées 
-            console.log("Les horaires en attente de validation ont été chargés.");
+          if (data) { // Si les données sont bien chargées
             window.localStorage.setItem('getHorairesAttenteValidation', JSON.stringify(data));//On sauvegarde les données en local    
             this.traiterHorairesAttenteValidation(data);
           } else {

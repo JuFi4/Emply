@@ -21,7 +21,6 @@ export class ApiBddService {
  // Renvoie :  un JSON avec les données utilisateurs (connexion résussi), soit False (connexion échouée)
   connexion(login : string, password: string, deviceToken: string){  
     var url =this.baseUrl + 'type=connect&login=' + encodeURI(login) + '&password=' + encodeURI(password) + '&deviceToken=' + encodeURI(deviceToken);
-    console.log(url);
     var response = this.http.get(url).map(res => res.json());  
     return response;
    }//connexion
@@ -30,7 +29,6 @@ export class ApiBddService {
  // Renvoie : true ou false. TRUE = déconnexion effectule, FALSE = erreur (mauvais  userId ou Token)
   deconnexion(userId : string, token: string)  {    
      var url =this.baseUrl + 'type=logout&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//deconnexion
@@ -39,7 +37,6 @@ export class ApiBddService {
  // / Renvoie : true ou false. TRUE = nouveau mot de passe généré + envoyé par mail, FALSE = erreur  => l'adresse email n'existe pas
   setNewPassword(email : string){
      var url =this.baseUrl + 'type=setNewPassword&email=' + encodeURI(email);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//setNewPassword
@@ -48,7 +45,6 @@ export class ApiBddService {
  // Renvoie :  un JSON avec les données du profil utilisateurs (requête réussie), soit False (requête réussie)
   getProfil(userId : string, token: string) : Observable<Utilisateur> {
      var url =this.baseUrl + 'type=getProfil&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
-     console.log(url);
      var response = this.http.get(url).map(res => <Utilisateur>res.json());
      return response;
    }//getProfil
@@ -57,7 +53,6 @@ export class ApiBddService {
  // Renvoie : un JSON avec les données du profil utilisateurs (requête réussie), soit False (requête réussie)
   getEtablissement(userId : string, token: string) : Observable<Etablissement> {
      var url =this.baseUrl + 'type=getEtablissement&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
-     console.log(url);
      var response = this.http.get(url).map(res => <Etablissement>res.json());
      return response;
    }//getEtablissement
@@ -69,7 +64,6 @@ export class ApiBddService {
      var url =this.baseUrl + 'type=setProfil&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&nom=' + encodeURI(nom) + '&prenom=' + encodeURI(prenom) + 
          '&dateNaissance=' + encodeURI(dateNaissance) + '&adresse=' + encodeURI(adresse) + '&suppAdresse=' + encodeURI(suppAdresse) + 
          '&codePostal=' + encodeURI(codePostal.toString()) + '&ville=' + encodeURI(ville) + '&telFix=' + encodeURI(telFix) + '&telMobile=' + encodeURI(telMobile);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//setProfil
@@ -78,7 +72,6 @@ export class ApiBddService {
  // Renvoie : true ou false. TRUE = modification enregsitrée, FALSE = erreur (mauvais mot  de passe, ou userId ou Token)
   setPassword(userId : string, token: string, ancienPassword : string, nouveauPassword : string)  {
      var url =this.baseUrl + 'type=setPassword&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&oldPassword=' + encodeURI(ancienPassword) + '&newPassword=' + encodeURI(nouveauPassword);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//setPassword
@@ -87,7 +80,6 @@ export class ApiBddService {
  // Renvoie : true ou false. TRUE = modification enregsitrée, FALSE = erreur (mauvais mot  de passe, ou userId ou Token)
   setEmail(userId : string, token: string, mail : string)  {
      var url =this.baseUrl + 'type=setLogin&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&mail=' + encodeURI(mail);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//setEmail
@@ -96,7 +88,6 @@ export class ApiBddService {
  // Renvoie :  un JSON avec les horaires pour la periode demandée (requête réussie), soit False (requête réussie)
   getHorairesMensuels(userId : string, token: string, annee : string, mois: string) {
      var url =this.baseUrl + 'type=getHoraires&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&annee=' + encodeURI(annee) + '&mois=' + encodeURI(mois);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());     
      return response;
    }//getHorairesMensuels
@@ -105,7 +96,6 @@ export class ApiBddService {
   // Renvoie :  un JSON avec les horaires pour la periode demandée (requête réussie), soit False (requête réussie)
   getHorairesFuturs(userId : string, token: string) {
      var url =this.baseUrl + 'type=getHorairesFuturs&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());     
      return response;
    }//getHorairesFuturs
@@ -114,7 +104,6 @@ export class ApiBddService {
   // Renvoie :  un JSON avec les horaires en attente de validation (requête réussie), soit False (requête réussie)
   getHorairesAttenteValidation(userId : string, token: string) {
      var url =this.baseUrl + 'type=getHorairesAttenteValidation&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());     
      return response;
    }//getHorairesAttenteValidation
@@ -124,7 +113,6 @@ export class ApiBddService {
   setDemande(userId:string, token:string, typeDemId:string, dateDebut: string, dateFin:string, isJourneeComplete:string, motif:string) {
      var url =this.baseUrl + 'type=setDemande&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&demId=' + encodeURI(typeDemId) 
       + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin) + '&isJourneeComplete=' + encodeURI(isJourneeComplete) + '&motif=' + encodeURI(motif);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//setDemande
@@ -134,7 +122,6 @@ export class ApiBddService {
   modDemande(userId:string, token:string, demId:string, dateDebut: string, dateFin:string, isJourneeComplete:string, motif:string) {
      var url =this.baseUrl + 'type=modDemande&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&id=' + encodeURI(demId) 
       + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin) +  '&isJourneeComplete=' + encodeURI(isJourneeComplete)  +'&motif=' + encodeURI(motif);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//modDemande
@@ -143,7 +130,6 @@ export class ApiBddService {
   // Renvoie :  un JSON avec les demandes non passées (requête réussie), soit False (requête réussie)
   getDemandes(userId:string, token:string) {
      var url =this.baseUrl + 'type=getDemandes&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//getDemandes
@@ -154,7 +140,6 @@ export class ApiBddService {
      var url =this.baseUrl + 'type=valHoraire&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + 
      '&hopId=' + encodeURI(hopId) + '&dateTimeDebut=' + encodeURI(dateTimeDebut) + '&dateTimeFin=' + encodeURI(dateTimeFin) +
      '&traValide='+ encodeURI(traValide);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//getModHoraire
@@ -164,7 +149,6 @@ export class ApiBddService {
    setValMensuelle(userId:string, token:string, annee : string, mois:string) {
      var url =this.baseUrl + 'type=valMensuelle&userId=' + encodeURI(userId) + '&annee=' + encodeURI(annee) + '&token=' + encodeURI(token) + 
      '&mois=' + encodeURI(mois);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//setValMensuelle
@@ -173,7 +157,6 @@ export class ApiBddService {
   // Renvoie :  un JSON avec les demandes demandées (requête réussie), soit False (requête réussie)
   getDemandesParMois(userId:string, token:string,  annee : string,  mois: string) {
      var url =this.baseUrl + 'type=getDemandesParMois&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&annee=' + encodeURI(annee) + '&mois=' + encodeURI(mois);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//getDemandesParMois
@@ -182,7 +165,6 @@ export class ApiBddService {
   // Renvoie :  un JSON avec les demandes demandées (requête réussie), soit False (requête réussie)
   getMaladiesParMois(userId:string, token:string,  annee : string, mois: string) {
      var url =this.baseUrl + 'type=getMaladiesParMois&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&annee=' + encodeURI(annee) + '&mois=' + encodeURI(mois);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response;
    }//getMaladiesParMois
@@ -191,14 +173,12 @@ export class ApiBddService {
    setMaladieAccident(userId : string, token : string, dateDebut : string, dateFin: string, isAccdient : string, horaireId : string){ 
      var url =this.baseUrl + 'type=dateMaladieAccident&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin)+ 
       '&isAccident=' + encodeURI(isAccdient) +'&horaireId='+ encodeURI(horaireId);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//setMaladieAccident
 
     setValVueHoraire(userId : string, token : string){ 
      var url =this.baseUrl + 'type=getValVueHor&userId=' + encodeURI(userId) + '&token=' + encodeURI(token);
-     console.log(url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//setValVueHoraire
@@ -206,7 +186,6 @@ export class ApiBddService {
    //retourne le numéro de l'établissement de l'employé connecté 
    getIdEtablissement(userId : string, token : string, idDep : string){ 
      var url =this.baseUrl + 'type=getIdEtablissement&userId=' + encodeURI(userId)+'&token=' + encodeURI(token) +'&idDep=' + encodeURI(idDep);
-     console.log("getEtablissement "+ url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//getIdEtablissement
@@ -214,7 +193,6 @@ export class ApiBddService {
    //retourne les heures que l'employé a effectué  
    getInfosSolde(userId : string, dateDebut : string, dateFin : string, token : string){ 
      var url =this.baseUrl + 'type=getInfosSoldes&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin);
-     console.log("getInfoSolde "+ url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//getIdEtablissement
@@ -222,7 +200,6 @@ export class ApiBddService {
    //retourne les informations sur ....
    getInfosHeuresMois(userId : string, mois : string, annee : string, idEta : string, token : string){ 
      var url =this.baseUrl + 'type=getInfosHeuresMois&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&mois=' + encodeURI(mois) + '&annee=' + encodeURI(annee) + '&idEta=' + encodeURI(idEta);
-     console.log("getInfosHeuresMois "+ url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//getInfosHeuresMois
@@ -230,7 +207,6 @@ export class ApiBddService {
    //retourne les informations sur .....
    getCalculerSoldeEmployee(userId : string, mois : string, annee : string, idEta : string, token : string){ 
      var url =this.baseUrl + 'type=calculerSoldeEmployee&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&mois=' + encodeURI(mois) + '&annee=' + encodeURI(annee) + '&idEta=' + encodeURI(idEta);
-     console.log("calculerSoldeEmployee "+ url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//getCalculerSoldeEmployee
@@ -238,7 +214,6 @@ export class ApiBddService {
   //retourne le numéro de l'établissement de l'employé connecté 
    getTypeHoraireContrat(userId : string, token : string){ 
      var url =this.baseUrl + 'type=getTypeHoraireContrat&userId=' + encodeURI(userId)+'&token=' + encodeURI(token);
-     console.log("getTypeHoraireContrat "+ url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//getTypeHoraireContrat
@@ -246,7 +221,6 @@ export class ApiBddService {
   //retourne le numéro de l'établissement de l'employé connecté 
    getIdDepartement(userId : string, token : string){ 
      var url =this.baseUrl + 'type=getIdDepartement&userId=' + encodeURI(userId)+'&token=' + encodeURI(token);
-     console.log("getIdDepartement "+ url);
      var response = this.http.get(url).map(res => res.json());
      return response; 
    }//getIdDepartement

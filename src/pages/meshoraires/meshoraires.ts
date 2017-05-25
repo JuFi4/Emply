@@ -70,8 +70,7 @@ export class MeshorairesPage {
      this.supprimerAnciennesSauvegares(); //Supprime les sauvegardes locales trop ancienne pour éviter de surcharger la mémoire du téléphone    
   }//constructor
 
-    ionViewDidLoad() {
-      console.log('Hello MesHoraires Page');      
+    ionViewDidLoad() {    
     }//ionViewDidLoad
 
     selectionnerMois(){

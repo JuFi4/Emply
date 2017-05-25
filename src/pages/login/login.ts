@@ -77,7 +77,6 @@ export class LoginPage {
 
   changeResteConnecte(){
     this.resteConnecte = !this.resteConnecte;
-    console.log(this.resteConnecte);
   }//changeResteConnece
 
   // Vérification des données mobiles pour pouvoir traiter le mode hors ligne
@@ -91,7 +90,6 @@ export class LoginPage {
   }//checkNetwork
 
    ionViewDidLoad() {
-    console.log('Hello Login Page');
   }//ionViewDidLoad
 
   nouveauMotDePasse(){
@@ -108,7 +106,6 @@ export class LoginPage {
         text: 'Annuler',
         role: 'cancel',
         handler: data => {
-          console.log('Cancel clicked');
         }
       },
       {
@@ -202,7 +199,6 @@ export class LoginPage {
       // Récupération du deviceToken
       push.on('registration', (data) => {
        this.deviceToken = data.registrationId;
-        console.log("device token ->", this.deviceToken);
       });
 
       // Action en cas de récéption de Push
@@ -214,7 +210,6 @@ export class LoginPage {
 
       // Gestion des erreurs
       push.on('error', (e) => {
-        console.log(e.message);
       });
     }); 
   }//instancierNotificationsPush

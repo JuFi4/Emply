@@ -12,16 +12,13 @@ import { Horaire } from '../models/horaire';
 export class NotificationsLocalesService {
 
   constructor(public http: Http) {
-    console.log('Hello NotificationsLocalesService Provider');
   }//constructor
 
   // Suppression des notifications de fin de service
   public resetNotification(){
       LocalNotifications.getAllIds().then((data) => {
-            console.log(data);
             for(let i = 0; i < data.length; i++){
-                LocalNotifications.cancel(data[i]);
-                console.log(data[i]);                
+                LocalNotifications.cancel(data[i]);       
             }
         }); 
   }//resetNotification
@@ -51,7 +48,7 @@ export class NotificationsLocalesService {
                 data: JSON.stringify(horaire)
             });
       } else {
-          console.log('NotificationFinDeService :notifications désactivées');
+          // Les notifications ne seront pas activées
       }
     } //scheduleNotificationFinDeService
 

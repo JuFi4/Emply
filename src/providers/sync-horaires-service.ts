@@ -189,17 +189,17 @@ export class SyncHorairesService {
               this.calendrierEvents[eventState].endDate).then(
                 (msg) => { // Une fois que l'event a bien été supprimé : on va le re-créer
                   Calendar.createEvent(event.title, event.location, event.notes, event.startDate, event.endDate).then(  // On enregsitre l'évenement dans le calendrier
-                    (msg) => { console.log("Création OK"); }, // On enregsitre l'évenement dans le calendrier
-                    (err) => { console.log("Creation erreur " + err); }
+                    (msg) => { }, // On enregsitre l'évenement dans le calendrier
+                    (err) => { } // Création erreur
                   );   
               }, // On enregsitre l'évenement dans le calendrier
-                (err) => { console.log("Delete erreur " + err) }   
+                (err) => { } // Delete erreur  
               );
           } else {//Sinon
               // On créer / re-créer l'event
               Calendar.createEvent(event.title, event.location, event.notes, event.startDate, event.endDate).then(  // On enregsitre l'évenement dans le calendrier
-                    (msg) => { console.log("Création OK"); },
-                    (err) => { console.log("Creation erreur " + err); }
+                    (msg) => { }, // Création ok
+                    (err) => { } // Création erreur
               );    
           }    
        }   
@@ -212,7 +212,6 @@ export class SyncHorairesService {
         this.calendrierEventsUpdate = []; // Instanciation de l'array qui stock les nouveau events
         try{
               let data = JSON.parse(window.localStorage.getItem('calendrierEvents')); // On récupère les events précédement crées depuis la mémoire locale
-              console.log(data);
               for(let i = 0; i < data.length; i++){
                   let event = new CalendrierEvent(data[i].title, data[i].location, data[i].notes, new Date(data[i].startDate), new Date(data[i].endDate), data[i].id);
                   if(event.endDate >= this.dateCourrante){ // Si l'event à lieux aujourd'hui ou dans le futur
@@ -244,7 +243,7 @@ export class SyncHorairesService {
         if(horaire.heureFin > new Date()){ // Si l'horaire est dans le futur (on ne va pas enregistrer des notif pour un horaire passé !)          
           this.notificationsLocalesCtrl.scheduleNotificationFinDeService(horaire); // On enregsitre la notification locale
         } else {
-          console.log("On enregsitre pas de notification pour cet horaire : " + horaire.heureFin);
+          // On enregsitre pas de notification pour cet horaire
         }
     }//enregistrerNotification
 

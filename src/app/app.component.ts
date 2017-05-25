@@ -60,7 +60,6 @@ export class MyApp {
         text: 'Annuler',
         role: 'cancel',
         handler: () => {
-          console.log('Cancel clicked');
           this.menu.close();
         }
       },
@@ -73,14 +72,8 @@ export class MyApp {
             });
           
           // On définit à "undefined" l'utilisateur et le motDePasse au lieu de faire clear -> afin de garder les données pour le mode hors connexion
-          //window.localStorage.clear();
           window.localStorage.setItem('utilisateur', "undefined");
           window.localStorage.setItem('motDePasse', "undefined");
-          console.log('Logged out');
-          console.log("Utilisateur: " + window.localStorage.getItem('utilisateur'));
-          console.log("Mot de passe: " + window.localStorage.getItem('motDePasse'));
-          console.log("Id: " + window.localStorage.getItem('id'));
-          console.log("Token bdd: " + window.localStorage.getItem('tokenBDD'));
 
           // On supprime les notifications locales -  elles vont être re-crées quand la personne se reconnectera et ira voir ses horaires  
            this.notificationsLocalesCtrl.resetNotification();
