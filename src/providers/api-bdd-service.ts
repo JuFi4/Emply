@@ -213,7 +213,7 @@ export class ApiBddService {
 
    //retourne les heures que l'employé a effectué  
    getInfosSolde(userId : string, dateDebut : string, dateFin : string, token : string){ 
-     var url =this.baseUrl + 'type=getInfosSolde&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin);
+     var url =this.baseUrl + 'type=getInfosSoldes&userId=' + encodeURI(userId) + '&token=' + encodeURI(token) + '&dateDebut=' + encodeURI(dateDebut) + '&dateFin=' + encodeURI(dateFin);
      console.log("getInfoSolde "+ url);
      var response = this.http.get(url).map(res => res.json());
      return response; 

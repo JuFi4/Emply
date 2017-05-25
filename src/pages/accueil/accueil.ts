@@ -23,16 +23,16 @@ export class AccueilPage {
   utilisateur: string;
   inputDisabled;
   etablissement : number;
-  dataInfoUser : InfoHeureUser;
-  infoEta : InfosEtablissement;
-  idEtablissement;
-  dataInfo;
+  dataInfoUser : InfoHeureUser = null;
+  infoEta : InfosEtablissement = null;
+  idEtablissement = null;
+  dataInfo = null;
   annneeCourrante = new Date().getFullYear(); // Année courrante
   moisCourant = new Date().getMonth()+1;
   jourCourant = new Date().getDay();
-  idDepartement : String;
-  infosContrat : InfosContrat;
-  soldeEmploye : SoldeEmploye;
+  idDepartement : string = null;
+  infosContrat : InfosContrat = null;
+  soldeEmploye : SoldeEmploye = null;
   heureSupp : number;
   nbHeureParSem : number;
   affichageHS : String;
@@ -56,109 +56,163 @@ export class AccueilPage {
     // On synchronise les horaires (calendrier + notification ), ensuite: on récupère les stats, et quand c'est fini, on arrête l'affichage de l'icone de chargement
     syncHoraireCtrl.manangeSync().then(result => this.getStats()).then(result => loader.dismiss());
   }//constructor
+
+ //Récupération de  l'ID du département 
+ getIdDepartement(){
+    console.log("getIdDepartement");
+    return new Promise((resolve, reject) => {
+      this.apiBddService.getIdDepartement(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD')).subscribe(
+             dep => {
+               if(dep) { 
+                  this.idDepartement = dep;  
+                  console.log("this.idDepartement " + this.idDepartement);                                                    
+              } else { // Erreur
+                  console.log("Erreur");
+              }
+              resolve("Fini");    
+          }, err => resolve("Fini"));       
+     });
+ }//getIdDepartement
+
+  //Récupération de l'id de l'établissement
+  getIdEtablissement(){
+    console.log("getIdEtablissement");
+    return new Promise((resolve, reject) => {    
+      this.apiBddService.getIdEtablissement(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'), this.idDepartement).subscribe(
+           eta => {        
+            if(eta) { 
+              this.idEtablissement = eta;    
+               console.log("this.idEtablissement " + this.idEtablissement);                                       
+             } else { // Erreur
+               console.log("Erreur");
+             }
+             resolve("Fini");
+          }, err => resolve("Fini"));      
+     });
+  }//getIdEtablissement
+
+  //Récupération des infos de la personne lié au congé et aux horaires
+  getInfosSolde(){
+    return new Promise((resolve, reject) => {  
+       console.log("getInfosSolde");  
+       this.apiBddService.getInfosSolde(window.localStorage.getItem('id'), this.annneeCourrante+"-01-01",this.annneeCourrante+"-12-31",window.localStorage.getItem('tokenBDD')).subscribe(
+           dataInfoSolde => {
+                if(dataInfoSolde) { 
+                  this.dataInfoUser = new InfoHeureUser(
+                       dataInfoSolde.brut.time,
+                       dataInfoSolde.totalPause.time,
+                       dataInfoSolde.net.time, 
+                       dataInfoSolde.conges
+                  )   
+                } else { // Erreur
+                  console.log("Erreur");
+                }
+               resolve("Fini")
+            }, err => resolve("Fini"));
+     });
+  }//getInfosSolde
+
+  //Récupération des infos du contrat
+  getTypeHoraireContrat(){
+    console.log("getTypeHoraireContrat");
+    return new Promise((resolve, reject) => {    
+        this.apiBddService.getTypeHoraireContrat(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD')).subscribe(
+           typeContratH => {
+               if(typeContratH) { // OK
+                      this.infosContrat = new InfosContrat(
+                          typeContratH[0].conParticularite,
+                          typeContratH[0].idHor,
+               ) 
+               console.log("infosContrat");   console.log(this.infosContrat);  
+               } else { // Erreur
+                    console.log("Erreur");
+               }
+              resolve("Fini");
+          }, err => resolve("Fini"));
+     });
+  }//getTypeHoraireContrat
+
+  //Récupération des infos du solde de l'employé
+  getCalculerSoldeEmployee(){
+    console.log("getCalculerSoldeEmployee");
+    return new Promise((resolve, reject) => {    
+        this.apiBddService.getCalculerSoldeEmployee(window.localStorage.getItem('id'),''+this.moisCourant, ''+this.annneeCourrante, this.idEtablissement,window.localStorage.getItem('tokenBDD')).subscribe(
+                soldeEmploye => {
+                  if(soldeEmploye) { // OK
+                    this.soldeEmploye = new SoldeEmploye(
+                      soldeEmploye.solde_conges,
+                      soldeEmploye.solde_feries,
+                      soldeEmploye.solde_heures.time,
+                      soldeEmploye.solde_vacances,
+                   )
+                    this.heureSupp = this.soldeEmploye.soldeHeure; 
+                    console.log("heureSupp");   console.log(this.heureSupp);  
+                    window.localStorage.setItem('heureSupp', JSON.stringify(this.heureSupp));//Sauvegarde pour mode hors ligne                                                                                             
+                 } else { // Erreur
+                     console.log("Erreur");
+                }
+                resolve("Fini");
+         }, err => resolve("Fini"));      
+     });
+  }//getCalculerSoldeEmployee
+
+   //Récupération des infos du solde de l'employé
+  getInfosHeuresMois(){
+     console.log("getInfosHeuresMois");
+    return new Promise((resolve, reject) => {    
+        this.apiBddService.getInfosHeuresMois(window.localStorage.getItem('id'),''+this.moisCourant,''+this.annneeCourrante, this.idEtablissement,window.localStorage.getItem('tokenBDD') ).subscribe(
+             dataInfo => {
+              console.log(dataInfo);
+              if(dataInfo) { // OK
+                this.infoEta = new InfosEtablissement(
+                    dataInfo.droitvacances_annee.time,
+                    dataInfo.droitjoursferies_annee,
+                    dataInfo.heures_mois,
+                    dataInfo.heures_semaine,
+                    dataInfo.jourprisvacances,
+                    dataInfo.jourprisferies,
+                )   
+                console.log(this.infoEta);
+                                     
+                //calcul des vacances et feriers
+                var heureFerier = (this.infoEta.droitJourFerieAnnee - this.infoEta.jourPrisFer) + this.soldeEmploye.soldeFerier;                                   
+                var heureVac = Math.round(this.infoEta.droitVacanceAnnee - this.infoEta.jourPrisVac) + this.soldeEmploye.soldeVacance;
+                //si il c'est un contrat en pourcentage on fait fois le nombre d'heures de l'étabalissement
+                //sinon, on met les horaires normaux
+                if(this.infosContrat.type == 2){
+                    this.affichageHS = Math.round(this.infoEta.heureSemaine*this.infosContrat.nbHeure) +" H/Semaine";
+                }else{
+                    this.affichageHS = this.infosContrat.nbHeure + " H/Semaine";
+                }
+                //affichage des données
+                this.affichageConge = Math.round(heureVac) +"/"+Math.round(this.infoEta.droitVacanceAnnee);                                     
+                this.afficherFerier = heureFerier +"/"+ this.infoEta.droitJourFerieAnnee 
+                
+                //Sauvegarde pour mode hors ligne  
+                window.localStorage.setItem('affichageHS', JSON.stringify(this.affichageHS));
+                window.localStorage.setItem('affichageConge', JSON.stringify(this.affichageConge));
+                window.localStorage.setItem('afficherFerier', JSON.stringify(this.afficherFerier));       
+            } else { // Erreur
+                console.log("Erreur");
+            }
+            resolve("Fini");
+        }, err => resolve("Fini"));
+     });
+  }//getInfosHeuresMois
   
   getStats(){
     return new Promise((resolve, reject) => {
       console.log("getStats"); 
       if(!this.isHorsLigne) {  
-         //ici on récupère l'ID du département 
-          this.apiBddService.getIdDepartement(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD')).subscribe(
-                                  dep => {
-                                    if(dep) { 
-                                      this.idDepartement = dep;                                       
-                                    } else { // Erreur
-                                      console.log("Erreur");
-                                  }
-                            });
-
-          //Récupération de l'id de l'établissement
-          this.apiBddService.getIdEtablissement(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),window.localStorage.getItem('getDepartement')).subscribe(
-                                  eta => {
-                                    if(eta) { 
-                                      this.idEtablissement = eta;                                     
-                                    } else { // Erreur
-                                      console.log("Erreur");
-                                  }
-                            });
-
-             //On récupère les infos de la personne lié au congé et aux horaires
-            this.apiBddService.getInfosSolde(window.localStorage.getItem('id'), this.annneeCourrante+"-01-01",this.annneeCourrante+"-12-31",window.localStorage.getItem('tokenBDD'),).subscribe(
-                      dataInfoSolde => {
-                            if(dataInfoSolde) { 
-                                this.dataInfoUser = new InfoHeureUser(
-                                  dataInfoSolde.brut.time,
-                                  dataInfoSolde.totalPause.time,
-                                  dataInfoSolde.net.time, 
-                                  dataInfoSolde.conges
-                                )   
-                                window.localStorage.setItem('getInfoEta', JSON.stringify(this.dataInfoUser));
-                              } else { // Erreur
-                                console.log("Erreur");
-                              }
-            });
-
-        this.apiBddService.getInfosHeuresMois(window.localStorage.getItem('id'),''+this.moisCourant,''+this.annneeCourrante,window.localStorage.getItem('getEtablissement'),window.localStorage.getItem('tokenBDD') ).subscribe(
-                                  dataInfo => {
-                                    if(dataInfo) { // OK
-                                      this.infoEta = new InfosEtablissement(
-                                            dataInfo.droitvacances_annee.time,
-                                            dataInfo.droitjoursferies_annee,
-                                            dataInfo.heures_mois,
-                                            dataInfo.heures_semaine,
-                                            dataInfo.jourprisvacances,
-                                            dataInfo.jourprisferies,
-                                      )   
-                                     
-                                      //calcul des vacances et feriers
-                                      var heureFerier = (this.infoEta.droitJourFerieAnnee - this.infoEta.jourPrisFer) + this.soldeEmploye.soldeFerier;                                   
-                                      var heureVac = Math.round(this.infoEta.droitVacanceAnnee - this.infoEta.jourPrisVac) + this.soldeEmploye.soldeVacance;
-                                      
-                                       //si il c'est un contrat en pourcentage on fait fois le nombre d'heures de l'étabalissement
-                                       //sinon, on met les horaires normaux
-                                       if(this.infosContrat.type == 2){
-                                             this.affichageHS = Math.round(this.infoEta.heureSemaine*this.infosContrat.nbHeure) +" H/Semaine";
-                                       }else{
-                                            this.affichageHS = this.infosContrat.nbHeure + " H/Semaine";
-                                      }
-
-                                     //affichage des données
-                                      this.affichageConge = Math.round(heureVac) +"/"+Math.round(this.infoEta.droitVacanceAnnee);                                     
-                                      this.afficherFerier = heureFerier +"/"+ this.infoEta.droitJourFerieAnnee 
-                                      window.localStorage.setItem('getInfoEta', JSON.stringify(this.dataInfo));
-                                    } else { // Erreur
-                                      console.log("Erreur");
-                                    }
-                            });
-          
-           //récucpère les infos du contrat
-          this.apiBddService.getTypeHoraireContrat(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD')).subscribe(
-                                typeContratH => {
-                                  if(typeContratH) { // OK
-                                    this.infosContrat = new InfosContrat(
-                                          typeContratH[0].conParticularite,
-                                          typeContratH[0].idHor,
-                                    )   
-                                  } else { // Erreur
-                                    console.log("Erreur");
-                                  }
-             });
-
-            //On recupère les infos du solde de l'employé
-            this.apiBddService.getCalculerSoldeEmployee(window.localStorage.getItem('id'),''+this.moisCourant, ''+this.annneeCourrante, window.localStorage.getItem('getEtablissement'),window.localStorage.getItem('tokenBDD')).subscribe(
-                                soldeEmploye => {
-                                  if(soldeEmploye) { // OK
-                                    this.soldeEmploye = new SoldeEmploye(
-                                          soldeEmploye.solde_conges,
-                                          soldeEmploye.solde_feries,
-                                          soldeEmploye.solde_heures.time,
-                                          soldeEmploye.solde_vacances,
-                                    )
-                                    this.heureSupp = this.soldeEmploye.soldeHeure;                                     
-                                    window.localStorage.setItem('heureSupp', JSON.stringify(this.heureSupp));//Sauvegarde pour mode hors ligne                                                                                             
-                                  } else { // Erreur
-                                    console.log("Erreur");
-                                  }
-                });
+         // On récupère toutes les infos de l'utilisateur via les différents services
+         this.getIdDepartement()
+          .then(result=> this.getIdEtablissement())
+          .then(result=> this.getInfosSolde())
+          .then(result => this.getTypeHoraireContrat())
+          .then(result => this.getCalculerSoldeEmployee())
+          .then(result => this.getInfosHeuresMois())
+          .then(result => resolve("Fini"));   // Et on résoud la promise à la fin
+                   
         } else { // Si on est hors ligne          
             //On regarde si les données à afficher existent en sauvegarde locale, et si oui on affichera ces données
              if(window.localStorage.getItem('heureSupp') !== "undefined" &&  window.localStorage.getItem('heureSupp') !== null){
@@ -173,9 +227,9 @@ export class AccueilPage {
              if(window.localStorage.getItem('afficherFerier') !== "undefined" &&  window.localStorage.getItem('afficherFerier') !== null){
                 this.afficherFerier = window.localStorage.getItem('afficherFerier');
              }
+             //On résoud la promise
+             resolve("Fini");
         }
-        // Dans tous les cas : on résoud la promise
-         resolve("Fini");
      });
   }//getStats
 
