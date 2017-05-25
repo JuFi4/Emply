@@ -17,10 +17,18 @@ export class ConnectivityService {
   }//constructor
  
   isOnline(): boolean {
-    return true;
+    if(this.onDevice && Network.connection){
+      return Network.connection !== Connection.NONE;
+    } else {
+      return navigator.onLine; 
+    }
   }//isOnline
  
   isOffline(): boolean {
-   return false;
+    if(this.onDevice && Network.connection){
+      return Network.connection === Connection.NONE;
+    } else {
+      return !navigator.onLine;   
+    }
   }//isOffline
 }//ConnectivityService

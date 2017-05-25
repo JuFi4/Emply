@@ -33,11 +33,11 @@ export class AccueilPage {
   idDepartement : string = null;
   infosContrat : InfosContrat = null;
   soldeEmploye : SoldeEmploye = null;
-  heureSupp : number;
+  heureSupp;
   nbHeureParSem : number;
-  affichageHS : String;
-  affichageConge : String;
-  afficherFerier : String;
+  affichageHS : string;
+  affichageConge : string;
+  afficherFerier : string;
   isHorsLigne : boolean;
 
 
@@ -147,7 +147,7 @@ export class AccueilPage {
                    )
                     this.heureSupp = this.soldeEmploye.soldeHeure; 
                     console.log("heureSupp");   console.log(this.heureSupp);  
-                    window.localStorage.setItem('heureSupp', JSON.stringify(this.heureSupp));//Sauvegarde pour mode hors ligne                                                                                             
+                    window.localStorage.setItem('heureSupp', this.heureSupp);//Sauvegarde pour mode hors ligne                                                                                             
                  } else { // Erreur
                      console.log("Erreur");
                 }
@@ -189,9 +189,9 @@ export class AccueilPage {
                 this.afficherFerier = heureFerier +"/"+ this.infoEta.droitJourFerieAnnee 
                 
                 //Sauvegarde pour mode hors ligne  
-                window.localStorage.setItem('affichageHS', JSON.stringify(this.affichageHS));
-                window.localStorage.setItem('affichageConge', JSON.stringify(this.affichageConge));
-                window.localStorage.setItem('afficherFerier', JSON.stringify(this.afficherFerier));       
+                window.localStorage.setItem('affichageHS', this.affichageHS);
+                window.localStorage.setItem('affichageConge', this.affichageConge);
+                window.localStorage.setItem('afficherFerier', this.afficherFerier);       
             } else { // Erreur
                 console.log("Erreur");
             }
@@ -216,7 +216,7 @@ export class AccueilPage {
         } else { // Si on est hors ligne          
             //On regarde si les données à afficher existent en sauvegarde locale, et si oui on affichera ces données
              if(window.localStorage.getItem('heureSupp') !== "undefined" &&  window.localStorage.getItem('heureSupp') !== null){
-                this.heureSupp = parseInt(window.localStorage.getItem('heureSupp'));
+                this.heureSupp = window.localStorage.getItem('heureSupp');
              }
              if(window.localStorage.getItem('affichageHS') !== "undefined" &&  window.localStorage.getItem('affichageHS') !== null){
                 this.affichageHS = window.localStorage.getItem('affichageHS');
