@@ -173,25 +173,29 @@ export class AccueilPage {
                     dataInfo.jourprisferies,
                 )   
                 console.log(this.infoEta);
-                                     
-                //calcul des vacances et feriers
-                var heureFerier = (this.infoEta.droitJourFerieAnnee - this.infoEta.jourPrisFer) + this.soldeEmploye.soldeFerier;                                   
-                var heureVac = Math.round(this.infoEta.droitVacanceAnnee - this.infoEta.jourPrisVac) + this.soldeEmploye.soldeVacance;
-                //si il c'est un contrat en pourcentage on fait fois le nombre d'heures de l'étabalissement
-                //sinon, on met les horaires normaux
-                if(this.infosContrat.type == 2){
-                    this.affichageHS = Math.round(this.infoEta.heureSemaine*this.infosContrat.nbHeure) +" H/Semaine";
-                }else{
-                    this.affichageHS = this.infosContrat.nbHeure + " H/Semaine";
+                try {                
+                  //calcul des vacances et feriers
+                  var heureFerier = (this.infoEta.droitJourFerieAnnee - this.infoEta.jourPrisFer) + this.soldeEmploye.soldeFerier;                                   
+                  var heureVac = Math.round(this.infoEta.droitVacanceAnnee - this.infoEta.jourPrisVac) + this.soldeEmploye.soldeVacance;
+                  //si il c'est un contrat en pourcentage on fait fois le nombre d'heures de l'étabalissement
+                  //sinon, on met les horaires normaux
+                  if(this.infosContrat.type == 2){
+                      this.affichageHS = Math.round(this.infoEta.heureSemaine*this.infosContrat.nbHeure) +" H/Semaine";
+                  }else{
+                      this.affichageHS = this.infosContrat.nbHeure + " H/Semaine";
+                  }
+                  //affichage des données
+                  this.affichageConge = Math.round(heureVac) +"/"+Math.round(this.infoEta.droitVacanceAnnee);                                     
+                  this.afficherFerier = heureFerier +"/"+ this.infoEta.droitJourFerieAnnee 
+                  
+                  //Sauvegarde pour mode hors ligne  
+                  window.localStorage.setItem('affichageHS', this.affichageHS);
+                  window.localStorage.setItem('affichageConge', this.affichageConge);
+                  window.localStorage.setItem('afficherFerier', this.afficherFerier);     
+                }  catch(Exception){
+                  //Erreur dans les calculs
+                  resolve("Fini");    
                 }
-                //affichage des données
-                this.affichageConge = Math.round(heureVac) +"/"+Math.round(this.infoEta.droitVacanceAnnee);                                     
-                this.afficherFerier = heureFerier +"/"+ this.infoEta.droitJourFerieAnnee 
-                
-                //Sauvegarde pour mode hors ligne  
-                window.localStorage.setItem('affichageHS', this.affichageHS);
-                window.localStorage.setItem('affichageConge', this.affichageConge);
-                window.localStorage.setItem('afficherFerier', this.afficherFerier);       
             } else { // Erreur
                 console.log("Erreur");
             }
