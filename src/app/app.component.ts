@@ -34,7 +34,7 @@ export class MyApp {
       {title: 'Accueil', component: AccueilPage },
       {title: 'Validations', component: ValidationPage },
       {title: 'Mes horaires', component: TabsPage },
-      {title: 'Demandes', component: DemandesPage },
+      {title: 'Mes demandes', component: DemandesPage },
       {title: 'Mon profil', component: MonprofilPage },
       {title: 'Paramètres', component: ParametresPage },
     ];
