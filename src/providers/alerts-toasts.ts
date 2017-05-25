@@ -11,8 +11,7 @@ import { ToastController } from 'ionic-angular';
 export class AlertsToasts {
 
   constructor(public http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController) {
-    console.log('Hello AlertsToasts Provider');
-  }
+  }//constructor
 
   //Alerts pour les demandes dont les dates ne sont pas cohérentes (dateDebut > dateFin)
   afficherAlertPasValide() {
@@ -31,7 +30,7 @@ export class AlertsToasts {
       buttons: ['OK']
     });
     alert.present();
-  }
+  }//afficherAlerteDatePasse
 
   //Alert pour les dates qui sont dans le passé
   faireAlertePasOkDatePassee() {
@@ -112,8 +111,6 @@ export class AlertsToasts {
     });
     prompt.present();
   }//faireAlertMdpPasValide
-
-  //Page login
 
   faireAlertModeHorsLigne() {
     let alert = this.alertCtrl.create({

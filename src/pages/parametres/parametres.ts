@@ -108,7 +108,6 @@ export class ParametresPage {
 
   // Supprime tous les events futurs programmés dans le calendrier
   public supprimerCalendrierEvents() {
-    console.log("supprimerCalendrierEvents");
 
     //Icone de chargement
       let loader = this.loadCtrl.create({

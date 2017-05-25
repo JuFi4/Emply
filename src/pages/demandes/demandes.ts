@@ -170,7 +170,6 @@ export class DemandesPage {
           this.faireDemandeConge(9);
         } else if (data === "demandePaternite" && idTypeDemande === 1) {
           this.faireDemandeConge(10);
-        
 
           //Pour les demi journées
          } else if (data === "demandeConge" && idTypeDemande === 0) {

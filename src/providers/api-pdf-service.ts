@@ -23,7 +23,7 @@ export class ApiPdfService {
                 function(status) { // Si pas d'erreur
                   if (status.hasPermission) { resolve("Permission is now granted");} // Si accès autorisé
                   else {reject('Permission is not turned on')}//Sinon
-                } , 
+                }, 
                 function(){ reject('Permission is not turned on')})  // Si erreur
             }
           })

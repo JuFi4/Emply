@@ -53,7 +53,7 @@ export class AccueilPage {
     });  
     loader.present();
 
-    // On synchrnoise les horaires (calendrier + notification ), ensuite: on récupère les stats, et quand c'est fini, on arrête l'affichage de l'icone de chargement
+    // On synchronise les horaires (calendrier + notification ), ensuite: on récupère les stats, et quand c'est fini, on arrête l'affichage de l'icone de chargement
     syncHoraireCtrl.manangeSync().then(result => this.getStats()).then(result => loader.dismiss());
   }//constructor
   
@@ -65,10 +65,9 @@ export class AccueilPage {
           this.apiBddService.getIdDepartement(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD')).subscribe(
                                   dep => {
                                     if(dep) { 
-                                      this.idDepartement = dep;                                     
-                                      
+                                      this.idDepartement = dep;                                       
                                     } else { // Erreur
-                                      console.log("Pas ok");
+                                      console.log("Erreur");
                                   }
                             });
 
@@ -76,14 +75,13 @@ export class AccueilPage {
           this.apiBddService.getIdEtablissement(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'),window.localStorage.getItem('getDepartement')).subscribe(
                                   eta => {
                                     if(eta) { 
-                                      this.idEtablissement = eta;
-                                                                         
+                                      this.idEtablissement = eta;                                     
                                     } else { // Erreur
-                                      console.log("Pas ok");
+                                      console.log("Erreur");
                                   }
                             });
 
-             //Ici on récupère les infos de la personne lié au congé et aux horaires
+             //On récupère les infos de la personne lié au congé et aux horaires
             this.apiBddService.getInfosSolde(window.localStorage.getItem('id'), this.annneeCourrante+"-01-01",this.annneeCourrante+"-12-31",window.localStorage.getItem('tokenBDD'),).subscribe(
                       dataInfoSolde => {
                             if(dataInfoSolde) { 
@@ -92,20 +90,16 @@ export class AccueilPage {
                                   dataInfoSolde.totalPause.time,
                                   dataInfoSolde.net.time, 
                                   dataInfoSolde.conges
-                                ) 
-                                console.log("dataInfoUser");
-                                console.log(this.dataInfoUser);  
+                                )   
                                 window.localStorage.setItem('getInfoEta', JSON.stringify(this.dataInfoUser));
                               } else { // Erreur
-                                console.log("Pas ok");
+                                console.log("Erreur");
                               }
             });
-
 
         this.apiBddService.getInfosHeuresMois(window.localStorage.getItem('id'),''+this.moisCourant,''+this.annneeCourrante,window.localStorage.getItem('getEtablissement'),window.localStorage.getItem('tokenBDD') ).subscribe(
                                   dataInfo => {
                                     if(dataInfo) { // OK
-                                     
                                       this.infoEta = new InfosEtablissement(
                                             dataInfo.droitvacances_annee.time,
                                             dataInfo.droitjoursferies_annee,
@@ -130,10 +124,9 @@ export class AccueilPage {
                                      //affichage des données
                                       this.affichageConge = Math.round(heureVac) +"/"+Math.round(this.infoEta.droitVacanceAnnee);                                     
                                       this.afficherFerier = heureFerier +"/"+ this.infoEta.droitJourFerieAnnee 
-                                     
                                       window.localStorage.setItem('getInfoEta', JSON.stringify(this.dataInfo));
                                     } else { // Erreur
-                                      console.log("Pas ok");
+                                      console.log("Erreur");
                                     }
                             });
           
@@ -141,24 +134,19 @@ export class AccueilPage {
           this.apiBddService.getTypeHoraireContrat(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD')).subscribe(
                                 typeContratH => {
                                   if(typeContratH) { // OK
-                                   
                                     this.infosContrat = new InfosContrat(
                                           typeContratH[0].conParticularite,
                                           typeContratH[0].idHor,
-                                    )
-                                          
-                                    console.log(this.infosContrat.nbHeure);
-                            
+                                    )   
                                   } else { // Erreur
-                                    console.log("Pas ok");
+                                    console.log("Erreur");
                                   }
              });
 
-            //Ici nous récupérons les infos solde de l'employé
+            //On recupère les infos du solde de l'employé
             this.apiBddService.getCalculerSoldeEmployee(window.localStorage.getItem('id'),''+this.moisCourant, ''+this.annneeCourrante, window.localStorage.getItem('getEtablissement'),window.localStorage.getItem('tokenBDD')).subscribe(
                                 soldeEmploye => {
                                   if(soldeEmploye) { // OK
-                                    
                                     this.soldeEmploye = new SoldeEmploye(
                                           soldeEmploye.solde_conges,
                                           soldeEmploye.solde_feries,
@@ -168,12 +156,10 @@ export class AccueilPage {
                                     this.heureSupp = this.soldeEmploye.soldeHeure;                                     
                                     window.localStorage.setItem('heureSupp', JSON.stringify(this.heureSupp));//Sauvegarde pour mode hors ligne                                                                                             
                                   } else { // Erreur
-                                    console.log("Pas ok");
+                                    console.log("Erreur");
                                   }
                 });
-      
         } else { // Si on est hors ligne          
-            // TODO VANESSA : si tu rajoute des variables pour l'affichage, tu peux leur faire leur traitement pour le mode hors ligne, ou me le dire pour que je le fasse ???
             //On regarde si les données à afficher existent en sauvegarde locale, et si oui on affichera ces données
              if(window.localStorage.getItem('heureSupp') !== "undefined" &&  window.localStorage.getItem('heureSupp') !== null){
                 this.heureSupp = parseInt(window.localStorage.getItem('heureSupp'));
@@ -192,7 +178,6 @@ export class AccueilPage {
          resolve("Fini");
      });
   }//getStats
-
 
   ionViewDidLoad() {
     console.log('Hello Accueil Page');

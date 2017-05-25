@@ -135,7 +135,7 @@ export class SyncHorairesService {
                   this.enregsitrerDansCalendrierSmartphone(horaire); // On enregsitrer dans le calendrier du smartphone
                   verifierCalendrierEvents = true;          
             } else {
-              console.log("Aucune modification des horaires ou sync désactivée - pas besoin de vérifier  les events");
+              //Aucune modification des horaires ou sync désactivée - pas besoin de vérifier  les events
             } 
           } //For
 

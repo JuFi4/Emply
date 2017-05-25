@@ -169,22 +169,18 @@ export class LoginPage {
      window.localStorage.setItem('motDePasse', this.motDePasse.trim());
      window.localStorage.setItem('deviceToken', this.deviceToken);
      window.localStorage.setItem('utilisateurConnecte', "1");
-
       if (this.resteConnecte) { 
          window.localStorage.setItem('resteConnecte', '1'); // On sauvegarde le fait qu'on veut rester connecter                                        
      } else {
         window.localStorage.setItem('resteConnecte', '0'); // On sauvegarde le fait qu'on ne veut pas rester connecter
      }
-
       // Si on a une notification en attente, on l'affiche
       if(this.isNotificationEnAttente) {
           this.afficherNotificationLocale(this.notificationEnAttente.id, this.notificationEnAttente.titre, this.notificationEnAttente.message, this.notificationEnAttente.data);
-      }                  
-                        
+      }                                      
      // On redirige vers la bonne page
      this.navCtrl.push(this.rootPage, {utilisateur: this.utilisateur.trim()});
   }//connexionOk
-
 
   instancierNotificationsPush(){
    this.deviceToken = null;

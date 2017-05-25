@@ -130,7 +130,7 @@ export class MeshorairesPage {
 
         // 1) on récupres les horaires
         // 2) on récupère les maladies/ accidents pour ce mois
-        // 3) on récupàre les demandes validées pour ce mois
+        // 3) on récupère les demandes validées pour ce mois
         // 4) on traite tout ça
         // 5) on arrête l'icone de chargement
         this.getHorairesMensuels(annee, mois)
@@ -176,10 +176,7 @@ export class MeshorairesPage {
            data => {  
                if(data) { // Si les données sont bien chargées 
                   for(let i = 0; i < data.length; i++){ //Remplissage du tableau maladies avec les données demandes formatées
-                    console.log(data[i]);
-                      // Bug très étranger à régler
-                      //let mal = new Maladie(test.id, new Date(test.dateDebut), new Date(test.dateFin), test.isAccident);
-                      this.maladiesDuMois.push(new Maladie(data[i].id, new Date(data[i].dateDebut), new Date(data[i].dateFin), data[i].isAccident));                              
+                    this.maladiesDuMois.push(new Maladie(data[i].id, new Date(data[i].dateDebut), new Date(data[i].dateFin), data[i].isAccident));                              
                    }//for
                     resolve(true); // On résout la promise à true
                } else {
@@ -223,10 +220,9 @@ export class MeshorairesPage {
         this.jours = savedJours;//On remplace this.jours par les jours sauvegardés
                                 // -> Ce qui veut dire que son on a pas ces jours sauvés, ça va afficher le calendrier avec aucune info dans les jours
       } else {
-        console.log("On garde les jours vides ");
+        return;//On garde les jours vides
       }
     }
-    console.log("mois : " + mois + " this.dateCourrante.getMonth() :" + this.dateCourrante.getMonth());
     if(mois == this.dateCourrante.getMonth()+1){ // Si le mois qu'on traite est le mois courant
       this.detailHoraire(this.jours[this.dateCourrante.getDate()-1]); // On affiche le détail du jours courant
     }

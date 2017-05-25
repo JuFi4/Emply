@@ -14,23 +14,13 @@ export class ConnectivityService {
  
   constructor(public platform: Platform){
     this.onDevice = this.platform.is('cordova');
-  }
+  }//constructor
  
   isOnline(): boolean {
-  //  if(this.onDevice && Network.connection){
-  //    return Network.connection !== Connection.NONE;
-  //  } else {
-  //    return navigator.onLine; 
-  //  }
     return true;
-  }
+  }//isOnline
  
   isOffline(): boolean {
-  //  if(this.onDevice && Network.connection){
-  //    return Network.connection === Connection.NONE;
-  //  } else {
-  //    return !navigator.onLine;   
-  //  }
    return false;
-  }
+  }//isOffline
 }//ConnectivityService
