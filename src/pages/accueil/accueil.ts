@@ -59,13 +59,11 @@ export class AccueilPage {
 
  //Récupération de  l'ID du département 
  getIdDepartement(){
-    console.log("getIdDepartement");
     return new Promise((resolve, reject) => {
       this.apiBddService.getIdDepartement(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD')).subscribe(
              dep => {
                if(dep) { 
                   this.idDepartement = dep;  
-                  console.log("this.idDepartement " + this.idDepartement);                                                    
               } else { // Erreur
                   console.log("Erreur");
               }
@@ -76,13 +74,11 @@ export class AccueilPage {
 
   //Récupération de l'id de l'établissement
   getIdEtablissement(){
-    console.log("getIdEtablissement");
     return new Promise((resolve, reject) => {    
       this.apiBddService.getIdEtablissement(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD'), this.idDepartement).subscribe(
            eta => {        
             if(eta) { 
               this.idEtablissement = eta;    
-               console.log("this.idEtablissement " + this.idEtablissement);                                       
              } else { // Erreur
                console.log("Erreur");
              }
@@ -94,7 +90,6 @@ export class AccueilPage {
   //Récupération des infos de la personne lié au congé et aux horaires
   getInfosSolde(){
     return new Promise((resolve, reject) => {  
-       console.log("getInfosSolde");  
        this.apiBddService.getInfosSolde(window.localStorage.getItem('id'), this.annneeCourrante+"-01-01",this.annneeCourrante+"-12-31",window.localStorage.getItem('tokenBDD')).subscribe(
            dataInfoSolde => {
                 if(dataInfoSolde) { 
@@ -114,7 +109,6 @@ export class AccueilPage {
 
   //Récupération des infos du contrat
   getTypeHoraireContrat(){
-    console.log("getTypeHoraireContrat");
     return new Promise((resolve, reject) => {    
         this.apiBddService.getTypeHoraireContrat(window.localStorage.getItem('id'),window.localStorage.getItem('tokenBDD')).subscribe(
            typeContratH => {
@@ -123,7 +117,6 @@ export class AccueilPage {
                           typeContratH[0].conParticularite,
                           typeContratH[0].idHor,
                ) 
-               console.log("infosContrat");   console.log(this.infosContrat);  
                } else { // Erreur
                     console.log("Erreur");
                }
@@ -134,7 +127,6 @@ export class AccueilPage {
 
   //Récupération des infos du solde de l'employé
   getCalculerSoldeEmployee(){
-    console.log("getCalculerSoldeEmployee");
     return new Promise((resolve, reject) => {    
         this.apiBddService.getCalculerSoldeEmployee(window.localStorage.getItem('id'),''+this.moisCourant, ''+this.annneeCourrante, this.idEtablissement,window.localStorage.getItem('tokenBDD')).subscribe(
                 soldeEmploye => {
@@ -146,7 +138,6 @@ export class AccueilPage {
                       soldeEmploye.solde_vacances,
                    )
                     this.heureSupp = this.soldeEmploye.soldeHeure; 
-                    console.log("heureSupp");   console.log(this.heureSupp);  
                     window.localStorage.setItem('heureSupp', this.heureSupp);//Sauvegarde pour mode hors ligne                                                                                             
                  } else { // Erreur
                      console.log("Erreur");
@@ -158,7 +149,6 @@ export class AccueilPage {
 
    //Récupération des infos du solde de l'employé
   getInfosHeuresMois(){
-     console.log("getInfosHeuresMois");
     return new Promise((resolve, reject) => {    
         this.apiBddService.getInfosHeuresMois(window.localStorage.getItem('id'),''+this.moisCourant,''+this.annneeCourrante, this.idEtablissement,window.localStorage.getItem('tokenBDD') ).subscribe(
              dataInfo => {
@@ -206,7 +196,6 @@ export class AccueilPage {
   
   getStats(){
     return new Promise((resolve, reject) => {
-      console.log("getStats"); 
       if(!this.isHorsLigne) {  
          // On récupère toutes les infos de l'utilisateur via les différents services
          this.getIdDepartement()
@@ -237,7 +226,6 @@ export class AccueilPage {
      });
   }//getStats
 
-  ionViewDidLoad() {
-    console.log('Hello Accueil Page');
-  }//ionViewDidLoad
+  ionViewDidLoad() {}//ionViewDidLoad
+  
 }//AccueilPage
